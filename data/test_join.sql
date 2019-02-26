@@ -1,0 +1,1 @@
+select * from cachedate left join caractrap on cachedate.comp = caractrap.comp where cachedate.jour > "2019-01-01";
