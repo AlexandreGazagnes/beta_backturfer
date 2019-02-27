@@ -4,6 +4,16 @@
 
 
 {% block body %}
+
+    {% if errors %}
+        <p>find here the from check response</p>
+        <ul>
+        {%for error in errors %}
+            <li>{{error}}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+
     <p>find here the form to backturf with</p>
 
     <h2>database options</h2>

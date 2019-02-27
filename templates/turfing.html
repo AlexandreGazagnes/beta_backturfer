@@ -6,6 +6,11 @@
 {% block body %}
     <p>find your results here</p>
 
+    <ul>
+          {% for i in var %}
+              <li>{{ i }}</li>
+          {% endfor %}
+    </ul>
 
     <a href="{{url_for('index')}}"">go back to index</a>
 

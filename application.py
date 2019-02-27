@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 # coding: utf-8
 
+
 # import
 from src.misc import *
-from src.app import PostCheck
+from src.app import FormCheck
 from flask import Flask, render_template, request
 
 # init
@@ -15,4 +16,8 @@ def index():
 
 @app.route("/turfing", methods=["POST"])
 def turfing():
-    return render_template("turfing.html")
+    errors = FormCheck.check(request.form)
+    if errors :
+        return render_template("index.html", errors=errors)
+    else :
+        return render_template("turfing.html")
