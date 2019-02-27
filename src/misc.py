@@ -49,8 +49,9 @@ class change_repr(object):
 # functs
 def gsf(i) : 
     """get size of in Mo"""
-    
-    return f'{sys.getsizeof(i) / 1000000} Mo'
+    s = sys.getsizeof(i) / 1000000
+    s = round(s, 2)
+    return f'{s} Mo'
 
 
 def pk_save(data, filename, path) : 
@@ -81,6 +82,14 @@ def pk_clean(path) :
 
 
 def get_min_max_of(d) : 
+    try : 
+        D = np.iinfo(d)
+        return(D.min, D.max)
+    except : 
+        D = np.finfo(d)
+        return(D.min, D.max)
+
+def get_min_cast(d) : 
     try : 
         D = np.iinfo(d)
         return(D.min, D.max)

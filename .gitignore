@@ -105,3 +105,6 @@ venv.bak/
 
 utils/*.txt
 temp/*/*.pk
+data/cachedate*.csv
+data/caractrap*.csv
+

@@ -1,4 +1,4 @@
- #!/usr/bin/env python3
+#!/usr/bin/env python3
 # coding: utf-8
 
 
@@ -10,7 +10,7 @@ from src.misc import *
 class Build : 
     """functs used to build cachedate and caratrap first dataframes"""
 
-    def create_dataframe(filename, path, lim_l=100000000, lim_c=22, reverse=False, verbose=True) :
+    def init_dataframe(filename, path, sep="\t", lim_l=100000000, lim_c=30, reverse=False, verbose=True) :
         """just an overkilled df.read_csv"""
         
         # arg checks
@@ -21,11 +21,12 @@ class Build :
         t0 = time.time()
         
         # dataframe
-        df = pd.read_csv(path+filename)
+        df = pd.read_csv(path+filename, sep=sep)
         df.columns = pd.Series(df.columns).apply(str.strip)
-        df["jour"] = df.jour.apply(lambda i : pd.Timestamp(i)) 
+        if "jour" in df.columns : 
+            df["jour"] = df.jour.apply(lambda i : pd.Timestamp(i)) 
         if reverse : 
-            df = df.sort_values("numcourse", ascending=False, inplace=False)
+            df = df.sort_values("comp", ascending=False, inplace=False)
         df = df.iloc[:lim_l, :lim_c]
         df.index = range(len(df.index))
 
@@ -33,14 +34,15 @@ class Build :
         if verbose : 
             warning(f"df size in Mo : {sys.getsizeof(df) / 1000000}")
             warning(f"timer load df : {round(time.time() - t0, 2)}")
-            warning(f"debut {df.jour.min()} fin {df.jour.max()}")
+            try :    warning(f"debut {df.jour.min()} fin {df.jour.max()}")
+            except : pass
             warning(df.shape)
             warning(df.dtypes)
 
         return df
 
 
-    def recast_cachedate_if_needed(df, verbose=True) : 
+    def recast_dataframe(df, verbose=True) : 
         """recast col by col if needed to save RAM"""
 
         # time
@@ -52,8 +54,8 @@ class Build :
             df["jour"]                                      = df.jour.astype(np.uint16)
 
         # cl
-        df["old_cl"] = df.cl.copy()
         if "cl" in df.columns : 
+            df["old_cl"] = df.cl.copy()
             df["cl"]                                        = np.float16(0.0)
             temp_cl                                         = df.old_cl.apply(lambda i : str(i)[:4].strip())
 
@@ -83,7 +85,7 @@ class Build :
         # others
         if "id" in df.columns :         df["id"]            = df.id.astype(np.uint64)
         if "comp" in df.columns :       df["comp"]          = df.comp.astype(np.uint32)
-        if "hippo" in df.columns :      df["hippo"]         = df.hippo.apply(lambda i : str(i)[:10].lower().strip())
+        if "hippo" in df.columns :      df["hippo"]         = df.hippo.apply(lambda i : str(i)[:18].lower().strip())
         if "numcourse" in df.columns :  df["numcourse"]     = df.numcourse.astype(np.uint32)
         if "dist" in df.columns :       df["dist"]          = df.dist.astype(np.uint16)
         if "partant" in df.columns :    df["partant"]       = df.partant.astype(np.uint8)
@@ -91,27 +93,32 @@ class Build :
         if "recence" in df.columns :    df["recence"]       = df.recence.astype(np.uint16)
         if "coteprob" in df.columns :   df["coteprob"]      = df.coteprob.astype(np.float16)    
         if "cotedirect" in df.columns : df["cotedirect"]    = df.cotedirect.astype(np.float16)
-        if "cheval" in df.columns :     df["cheval"]        = df.cheval.apply(lambda i : str(i).lower())
-        if "typec" in df.columns :      df["typec"]         = df.typec.apply(lambda i : str(i) if str(i) in ['Steeple-chase', 'Haies', 'Plat', 'Steeple-chase cross-country', 'Attelé', 'Monté'] else np.nan)
+        if "cheval" in df.columns :     df["cheval"]        = df.cheval.apply(lambda i : str(i).lower().strip())
+        if "typec" in df.columns :      df["typec"]         = df.typec.apply(lambda i : str(i).lower().strip())
+        if "typec" in df.columns :      df["typec"]         = df.typec.apply(lambda i : str(i) if str(i) in ['steeple-chase', 'haies', 'plat', 'steeple-chase cross-country', 'attelé', 'monté'] else np.nan)
         if "age" in df.columns :        df["age"]           = df.age.astype(np.uint8) 
+        if "quinte" in df.columns :     df["quinte"]        = df.quinte.astype(bool)
+        if "prix" in df.columns :       df["prix"]          = df.prix.astype(np.uint8)        
+        
 
-        # verbose
+        # verbose   
         if verbose : 
             warning(f"df size in Mo : {sys.getsizeof(df) / 1000000}")
             warning(f"timer load df : {round(time.time() - t0, 2)}")
-            warning(f"debut {df.jour.min()} fin {df.jour.max()}")
+            try :       warning(f"debut {df.jour.min()} fin {df.jour.max()}")
+            except :    pass
             warning(df.shape)
             warning(df.dtypes)
 
         return df
 
 
-    def del_useless_params_cachedate(df, params=None, verbose=True) : 
+    def del_useless_params(df, params=None, verbose=True) : 
         """del useless params"""
 
         t0 = time.time()
 
-        if not params :             params = ["sexe", "old_cl", "id", "recence", "cheque", "ecurie", "age", "distpoids"]
+        if not params :             params = ["old_cl", "id" ]
         
         for i in params :
             if i in df.columns:     df.drop(i, axis=1, inplace=True)
@@ -120,24 +127,40 @@ class Build :
         if verbose : 
             warning(f"df size in Mo : {sys.getsizeof(df) / 1000000}")
             warning(f"timer load df : {round(time.time() - t0, 2)}")
-            warning(f"debut {df.jour.min()} fin {df.jour.max()}")
+            try :       warning(f"debut {df.jour.min()} fin {df.jour.max()}")
+            except :    pass
             warning(df.shape)
             warning(df.dtypes)
 
         return df
 
 
-    def create_cachedate_dataframe(filename, path) : 
+    def create_dataframe(filename, path) : 
         """create cachedate dataframe, recast cols if needed and del useless params"""
 
         if path[-1] != "/" : path+= "/"
         assert os.path.isdir(path)  
         assert os.path.isfile(path+filename)
 
-        df      = Build.create_dataframe(filename, path ) 
-        df      = Build.recast_cachedate_if_needed(df)
-        df      = Build.del_useless_params_cachedate(df) 
+        df      = Build.init_dataframe(filename, path ) 
+        df      = Build.recast_dataframe(df)
+        df      = Build.del_useless_params(df) 
 
         return df
 
+
+
+
+if __name__ == '__main__':
+
+    # build csv
+
+    # build dataframe    
+    cachedate = Build.create_dataframe("cachedate_2016-2019_OK.csv", "data/")   
+    caractrap = Build.create_dataframe("caractrap_2016-2019_OK.csv", "data/")                              
+
+    # group and merge in One 
+    cachedate = GroupBy.group_by_courses(cachedate, cores=6, dest="temp/grouped_races/", verbose=True, clear_temp=True)
+    cachedate = GroupBy.compute_cote_score(cachedate, "prob")
+    cachedate = GroupBy.compute_cote_score(cachedate, "direct")
 

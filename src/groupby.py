@@ -23,8 +23,8 @@ class GroupBy :
             os.mkdir(dest)
 
         # here meta params for one  race
-        cols = ["comp", "numcourse", "jour", "hippo", "dist", "partant", "typec", "cheque_val", "cheque_type"]
-        for i in cols :  assert i in df.columns
+        cols = ["comp", "jour", "hippo", "numcourse", "partant", "typec", "cheque_val", "cheque_type"]
+        cols = [i for i in cols if i in df.columns]
 
         # time
         t0 = time.time()
@@ -178,6 +178,12 @@ class GroupBy :
         df.index = reindex(df)
 
         return df
+
+
+    def merge(df1, df2) : 
+
+        df = pd.merge(  df1, df2, method="left", on='comp', 
+                        suffixes=('_cache', '_carac'), validate="1:1")
 
 
     def create_fancy_dataframe(df) : 
