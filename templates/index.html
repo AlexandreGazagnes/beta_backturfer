@@ -69,11 +69,8 @@
       <label for="steeple-chase cross-country">cross-country</label>
       <input type="checkbox" name="steeple-chase cross-country" >
 
-
-
-
     <h2>bet options</h2>
-      <p>bet type</p>
+      <label for="bet_type">bet type</label>
       <select name="bet_type">
         <option value="winning">gagnant</option>
         <option value="placed">placé</option>
@@ -81,20 +78,28 @@
         <option value="ordered_tierce">tiercé ordre</option>
         <option value="unordered_tierce">tiercé désordre</option>
       </select>
-
-
-    <h2>strategy options</h2>
-      <p>strategy type</p>
+      <br>
+      <label for="stratey_type">strategy</label>
       <select name="stratey_type">
         <option value="n_winning_cote">bet on the nth best winning cote</option>
         <option value="random_1_on_n_best_winning_cote">bet randomly between the best an the nth best winning cote</option>
         <option value="never_bet">no bets, just stalk ladies</option>
         <option value="random_choice">just choose randomly</option>
       </select>
+      <br>
+      <label for="stratey_param">n</label>
+      <input type="number" name="stratey_param" min="0" max="100" placeholder="0">
 
-      <p>strategy param</p>
+
     <h2>money management options</h2>
-      <p>bet value</p>
+    <label for="bet_value">bet_value</label>
+    <input type="number" name="stratey_param" min="1" max="1000" placeholder="1">
+    <br>
+    <label for="bet_value_type">bet strategy</label>
+    <select name="bet_value_type">
+      <option value="fixed">fixed</option>
+      <option value="placed">dynamic</option>
+    </select>
 
     <h2>ready for back turf</h2>
     <input type="submit" value="Submit">

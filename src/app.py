@@ -178,7 +178,7 @@ class FormCheck :
         assert len(error_list) == 9
         error_list = [i for i in error_list if i]
 
-        return error_list
+        return form, error_list
 
 
 

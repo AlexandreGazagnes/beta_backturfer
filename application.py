@@ -4,8 +4,11 @@
 
 # import
 from src.misc import *
-from src.app import FormCheck
+from src.app import FormCheck, AppBackTurf
 from flask import Flask, render_template, request
+
+
+df = list()
 
 # init
 app = Flask(__name__)
