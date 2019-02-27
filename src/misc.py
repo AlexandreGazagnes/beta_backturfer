@@ -17,6 +17,12 @@ import numpy  as np
 import pandas as pd
 tqdm.pandas()
 
+# visualization
+import matplotlib.pyplot as plt
+import seaborn as sns
+sns.set()
+
+
 
 # logger 
 logger = logging.getLogger()

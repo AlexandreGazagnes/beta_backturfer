@@ -14,9 +14,6 @@ class Strats :
     def random_choice(results, N=None, cote_type="direct") : 
         """chose one horse random"""
 
-        if not isinstance(N, int) : 
-            raise ValueError("N should be an int")
-
         return choice(results.numero)
 
     @change_repr

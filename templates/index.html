@@ -6,7 +6,7 @@
 {% block body %}
 
     {% if errors %}
-        <p>find here the from check response</p>
+        <p>sorry but some errors in your form/p>
         <ul>
         {%for error in errors %}
             <li>{{error}}</li>
@@ -28,17 +28,14 @@
       <label for="country">country</label>
       <select name="country">
         <option value="france">france</option>
+        <option value="france_10">france - top 10</option>
+        <option value="france_25">france - top 25</option>
+        <option value="france_50">france - top 50</option>
+        <option value="france_100">france - top 100</option>
         <option value="europe">europe</option>
-        <option value="world">world</option>
+        <option value="monde">world</option>
       </select>
-      <br>
-      <label for="top">top</label>
-      <select name="top">
-        <option value="10">top 10 </option>
-        <option value="30">top 30 </option>
-        <option value="50" selected="selected"> top 50 </option>
-        <option value="100">top 100</option>
-      </select>
+
       <br>
       <label for="hippo">specific hippodrome</label>
       <input type="text" name="hippo" placeholder="ex vincennes">

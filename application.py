@@ -16,8 +16,9 @@ def index():
 
 @app.route("/turfing", methods=["POST"])
 def turfing():
-    errors = FormCheck.check(request.form)
+    form, errors = FormCheck.check(request.form, verbose=True)
     if errors :
         return render_template("index.html", errors=errors)
-    else :
-        return render_template("turfing.html")
+    else : 
+        results = AppBackTurf.run(df, form)
+        return render_template("turfing.html", results=results)
