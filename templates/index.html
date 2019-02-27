@@ -5,5 +5,76 @@
 
 {% block body %}
     <p>find here the form to backturf with</p>
-{% endblock %}
 
+    <h2>database options</h2>
+    <form action="{{url_for('turfing')}}" method="post">
+      <p>dates</p>
+      <label for="date_start">start</label>
+      <input type="date" name="date_start">
+      <label for="date_stop">stop</label>
+      <input type="date" name="date_stop">
+
+      <p>hippodrome</p>
+      <label for="country">country</label>
+      <select name="country">
+        <option value="france">france</option>
+        <option value="europe">europe</option>
+        <option value="world">world</option>
+      </select>
+      <br>
+      <label for="top">top</label>
+      <select name="top">
+        <option value="10">top 10 </option>
+        <option value="30">top 30 </option>
+        <option value="50" selected="selected"> top 50 </option>
+        <option value="100">top 100</option>
+      </select>
+      <br>
+      <label for="hippo">specific hippodrome</label>
+      <input type="text" name="hippo" placeholder="ex vincennes">
+
+      <p>quinte</p>
+      <select name="quinte">
+        <option value="all" selected="selected">all</option>
+        <option value="quite">only quinte</option>
+        <option value="not quinte">only not quinte</option>
+      </select>
+
+      <p>price (€ only)</p>
+      <label for="price_min">min</label>
+      <input type="text" name="price_min" value="0">
+      <label for="price_max">max</label>
+      <input type="text" name="price_max" value="10 000 000">
+
+
+      <p>race type</p>
+      <label for="monte">monté</label>
+      <input type="checkbox" name="monte" checked>
+      <label for="attele">attelé</label>
+      <input type="checkbox" name="attele" checked>
+      <label for="plat">plat</label>
+      <input type="checkbox" name="plat" >
+      <label for="haies">haies</label>
+      <input type="checkbox" name="haies" >
+      <label for="steeple-chase">steeple-chase</label>
+      <input type="checkbox" name="steeple-chase" >
+      <label for="steeple-chase cross-country">cross-country</label>
+      <input type="checkbox" name="steeple-chase cross-country" >
+
+      <p>submit</p>
+      <input type="submit" value="Submit">
+
+    </form>
+
+
+    <h2>bet options</h2>
+      <p>bet type</p>
+    <h2>strategy options</h2>
+      <p>strategy type</p>
+      <p>strategy param</p>
+    <h2>money management options</h2>
+      <p>bet value</p>
+    <h2>ready for back turf</h2>
+
+
+{% endblock %}
