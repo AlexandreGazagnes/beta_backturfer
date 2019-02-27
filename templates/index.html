@@ -19,42 +19,43 @@
     <h2>database options</h2>
     <form action="{{url_for('turfing')}}" method="post">
       <p>dates</p>
-      <label for="date_start">start</label>
+      <label for="date_start">Start</label>
       <input type="date" name="date_start">
-      <label for="date_stop">stop</label>
+      <label for="date_stop">Stop</label>
       <input type="date" name="date_stop">
 
       <p>hippodrome</p>
       <label for="country">country</label>
       <select name="country">
-        <option value="france">france</option>
-        <option value="france_10">france - top 10</option>
-        <option value="france_25">france - top 25</option>
-        <option value="france_50">france - top 50</option>
-        <option value="france_100">france - top 100</option>
-        <option value="europe">europe</option>
-        <option value="monde">world</option>
+        <option value="france">France</option>
+        <option value="france_10">France - top 10</option>
+        <option value="france_25">France - top 25</option>
+        <option value="france_50">France - top 50</option>
+        <option value="france_100">France - top 100</option>
+        <option value="europe">Europe</option>
+        <option value="monde">Monde</option>
       </select>
-
       <br>
       <label for="hippo">specific hippodrome</label>
-      <input type="text" name="hippo" placeholder="ex vincennes">
-
-      <p>quinte</p>
-      <select name="quinte">
-        <option value="all" selected="selected">all</option>
-        <option value="quite">only quinte</option>
-        <option value="not quinte">only not quinte</option>
-      </select>
-
-      <p>price (€ only)</p>
-      <label for="price_min">min</label>
-      <input type="text" name="price_min" value="0">
-      <label for="price_max">max</label>
-      <input type="text" name="price_max" value="10 000 000">
-
+      <input type="text" name="hippo" placeholder="ex : Vincennes">
 
       <p>race type</p>
+      <select name="quinte">
+        <option value="all" selected="selected">All</option>
+        <option value="quite">Only quinte</option>
+        <option value="not quinte">Only not quinte</option>
+      </select>
+      <br>
+      <select name="euro_only">
+        <option value="True" selected="selected">Euro only</option>
+        <option value="False">All currencies</option>
+      </select>
+      <br>
+      <label for="price_min">min</label>
+      <input type="text" name="price_min" placeholder="0">
+      <label for="price_max">max</label>
+      <input type="text" name="price_max" placeholder="50 000 000">
+      <br>
       <label for="monte">monté</label>
       <input type="checkbox" name="monte" checked>
       <label for="attele">attelé</label>
