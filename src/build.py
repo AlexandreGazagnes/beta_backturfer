@@ -151,16 +151,3 @@ class Build :
 
 
 
-if __name__ == '__main__':
-
-    # build csv
-
-    # build dataframe    
-    cachedate = Build.create_dataframe("cachedate_2016-2019_OK.csv", "data/")   
-    caractrap = Build.create_dataframe("caractrap_2016-2019_OK.csv", "data/")                              
-
-    # group and merge in One 
-    cachedate = GroupBy.group_by_courses(cachedate, cores=6, dest="temp/grouped_races/", verbose=True, clear_temp=True)
-    cachedate = GroupBy.compute_cote_score(cachedate, "prob")
-    cachedate = GroupBy.compute_cote_score(cachedate, "direct")
-

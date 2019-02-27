@@ -89,14 +89,6 @@ def get_min_max_of(d) :
         D = np.finfo(d)
         return(D.min, D.max)
 
-def get_min_cast(d) : 
-    try : 
-        D = np.iinfo(d)
-        return(D.min, D.max)
-    except : 
-        D = np.finfo(d)
-        return(D.min, D.max)
-
 
 def get_epoch_unix() :  
     

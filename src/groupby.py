@@ -132,6 +132,23 @@ class GroupBy :
         return new_df
 
 
+    def recast_dataframe(df) :
+
+        if "jour" in df.columns:        df["jour"]          = df.jour.astype(np.uint16)
+        if "id" in df.columns :         df["id"]            = df.id.astype(np.uint64)
+        if "comp" in df.columns :       df["comp"]          = df.comp.astype(np.uint32)
+        if "hippo" in df.columns :      df["hippo"]         = df.hippo.apply(lambda i : str(i)[:18].lower().strip())
+        if "numcourse" in df.columns :  df["numcourse"]     = df.numcourse.astype(np.uint32)
+        if "dist" in df.columns :       df["dist"]          = df.dist.astype(np.uint16)
+        if "partant" in df.columns :    df["partant"]       = df.partant.astype(np.uint8)
+        if "typec" in df.columns :      df["typec"]         = df.typec.apply(lambda i : str(i).lower().strip())
+        if "typec" in df.columns :      df["typec"]         = df.typec.apply(lambda i : str(i) if str(i) in ['steeple-chase', 'haies', 'plat', 'steeple-chase cross-country', 'attelé', 'monté'] else np.nan)
+        if "quinte" in df.columns :     df["quinte"]        = df.quinte.astype(bool)
+        if "prix" in df.columns :       df["prix"]          = df.prix.astype(np.uint8)        
+ 
+        return df 
+
+
     def __cote_score(results, cote_type) :
 
         assert isinstance(cote_type, str)
@@ -162,7 +179,7 @@ class GroupBy :
 
         results = df.results
         sorted_results = results.apply(lambda i : GroupBy.__sort_by_cl(i))
-        df["sorted_results"] = sorted_results 
+        df["results"] = sorted_results 
 
         return df
 
@@ -180,17 +197,53 @@ class GroupBy :
         return df
 
 
-    def merge(df1, df2) : 
+    def merge_cache_carac(cache, carac) : 
 
-        df = pd.merge(  df1, df2, method="left", on='comp', 
+        comp_cache = cache.comp
+        comp_carac = carac.comp
+
+        if comp_cache.shape[0] != comp_cache.unique().shape[0] : 
+            info("error mismatch len cache key")
+            k = comp_cache.value_counts()
+            k = [i for i in k[k>1].index.values]
+            info(f"please check after cachetrap.comp = {k}")
+
+            for i in k  : 
+                idx_drop = comp_cache[comp_cache == i].index
+                if len(idx_drop)>1 : 
+                    idx_drop = idx_drop[1:]
+                    cache = cache.drop(idx_drop, axis=0, inplace=False)
+                else : 
+                    pass
+
+        if comp_carac.shape[0] != comp_carac.unique().shape[0] : 
+            info("error mismatch len carac key")
+            k = comp_carac.value_counts()
+            k = [i for i in k[k>1].index.values]
+            info(f"please check after caractrap.comp = {k}")
+
+            for i in k  : 
+                idx_drop = comp_carac[comp_carac == i].index
+                if len(idx_drop)>1 : 
+                    idx_drop = idx_drop[1:]
+                    carac = carac.drop(idx_drop, axis=0, inplace=False)
+                else : 
+                    pass
+
+
+        df = pd.merge(  cache, carac, how="left", on='comp', 
                         suffixes=('_cache', '_carac'), validate="1:1")
 
+        return df
 
-    def create_fancy_dataframe(df) : 
-        """from a basic dataframe, perform a groupby races and then a selection to keep only valuable races"""
+
+    def create_merged_dataframe(cache, carac) : 
+        """from a basic cache dataframe, perform a groupby races and merge with carac"""
         
-        df = GroupBy.group_by_courses(df, cores=6, dest="temp/grouped_races/", verbose=True, clear_temp=True)
-        df = GroupBy.select_only_valuable_races(df)
+        cache = GroupBy.group_by_courses(cache, cores=6, dest="temp/grouped_races/", verbose=True, clear_temp=True)
+        cache = GroupBy.recast_dataframe(cache)
+        df    = GroupBy.merge_cache_carac(cache, carac)
+
         return df
 
 

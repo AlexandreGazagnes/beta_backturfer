@@ -13,7 +13,7 @@ USER_AGENT = {'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKi
 
 
 # class
-class CotePodium :
+class CotePlaced :
     """functions used to scrap and integrade cotepodium in the main dataframe"""
 
     def __extract_cotes_from_url(url) : 
@@ -170,3 +170,13 @@ class CotePodium :
         return df
 
 
+
+
+
+class CoteDuo : 
+    pass
+
+
+
+class CoteTierce : 
+    pass

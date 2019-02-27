@@ -12,6 +12,9 @@
 
 # import 
 from src.misc           import * 
+from src.build          import Build
+from src.groupby        import GroupBy
+from src.coteadd        import CotePlaced, CoteDuo, CoteTierce
 from src.turfing        import BetRoom, TurfingRoom
 from strats.easy        import Strats
 
@@ -20,8 +23,17 @@ from strats.easy        import Strats
 
 
 def main() : 
+
+    # # build dataframe    
+    # cachedate = Build.create_dataframe("cachedate_2016-2019_OK.csv", "data/")   
+    # caractrap = Build.create_dataframe("caractrap_2016-2019_OK.csv", "data/")                              
+
+    # # group and merge in One df
+    # df = GroupBy.create_merged_dataframe(cachedate, caractrap)
+    # del caractrap, cachedate
+
     # main dataframe
-    df  = pk_load("ptu_cache_18_vince_only_1_cote_added_cotepodium", "data/")
+    df  = pk_load("pturf_grouped_and_merged_cache_carac_2016-2019_OK", "data/")
     DF  = df.copy()
 
 

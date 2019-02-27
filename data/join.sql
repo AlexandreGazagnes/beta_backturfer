@@ -42,6 +42,7 @@ CREATE TABLE temp_caractrap (
   prix double ,
   prixnom varchar(255) ,
   partant varchar(255) ,
+  dist smallint(4),
   quinte double ,
   arriv varchar(255) ,
   url text
@@ -49,7 +50,7 @@ CREATE TABLE temp_caractrap (
 
 -- copy new tab
 INSERT INTO temp_caractrap 
-SELECT id, comp, heure, reun, prix, prixnom, partant, quinte, arriv, url 
+SELECT id, comp, heure, reun, prix, prixnom, partant, dist, quinte, arriv, url 
 FROM caractrap WHERE jour > "2016-01-01" ;
 
 
