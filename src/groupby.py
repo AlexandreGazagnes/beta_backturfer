@@ -11,7 +11,7 @@ class GroupBy :
     """functions used to enhance the first dataFrame with an new level of data. see group_by_courses"""
 
 
-    def group_by_courses(df, cores=1, dest="temp/grouped_races/", verbose=True, clear_temp=True) : 
+    def _group_by_courses(df, cores=1, dest="temp/grouped_races/", verbose=True, clear_temp=True) : 
         """perform a groupby action on a basic dataframe and return a new dataframe with meta data as cols + "results"""
 
         # check agrs
@@ -132,7 +132,7 @@ class GroupBy :
         return new_df
 
 
-    def recast_dataframe(df) :
+    def _recast_dataframe(df) :
 
         if "jour" in df.columns:        df["jour"]          = df.jour.astype(np.uint16)
         if "id" in df.columns :         df["id"]            = df.id.astype(np.uint64)
@@ -157,7 +157,7 @@ class GroupBy :
         return round(sum(results[f"cote{cote_type}"] > 0.0) /  len(results[f"cote{cote_type}"]), 2)
 
 
-    def compute_cote_score(df, cote_type) : 
+    def _compute_cote_score(df, cote_type) : 
         """compute and add cotedirect/coteprob score based on the .isna() rate. 
         ie 1 : very good, 0 : very bad"""
 
@@ -174,7 +174,7 @@ class GroupBy :
         return results.sort_values("cl", ascending=True, inplace=False)
 
 
-    def compute_sort_by_cl(df) : 
+    def _compute_sort_by_cl(df) : 
         """sort by cl on a df"""
 
         results = df.results
@@ -184,7 +184,7 @@ class GroupBy :
         return df
 
 
-    def select_only_valuable_races(df, n=0.99) : 
+    def _select_only_valuable_races(df, n=0.99) : 
         """based on on a grouped by df, compute and select only good races, with coteprob and cotedirect >= n"""
 
         df = df.loc[df.hippo == "vincennes"]
@@ -197,7 +197,7 @@ class GroupBy :
         return df
 
 
-    def merge_cache_carac(cache, carac) : 
+    def _merge_cache_carac(cache, carac) : 
 
         comp_cache = cache.comp
         comp_carac = carac.comp
@@ -237,12 +237,50 @@ class GroupBy :
         return df
 
 
+    def externalize_results(df, path) : 
+        """drop results and save it locally"""
+
+        if  not "results" in df.columns : 
+            raise ValueError ("results not in columns")
+
+        assert len(df.comp.unique()) == len(df)
+
+        for i in tqdm(df.index) : 
+            comp    = df.loc[i, "comp"]
+            results = df.loc[i, "results"]
+            pk_save(results, str(comp), path)
+
+        df.drop("results", axis=1, inplace=True)
+        
+        return df
+
+
+    def internalize_results(df, path) : 
+        """load results from local path"""
+
+        if "results" in df.columns : 
+            raise ValueError ("results ALREADY in columns")
+
+        assert len(df.comp.unique()) == len(df)
+
+        results_list = list()
+        for i in tqdm(df.index) : 
+            comp    = df.loc[i, "comp"]
+            results = pk_load(str(comp), path)
+            results_list.append(results)
+
+        df["results"] = results_list
+        
+        return df
+
+
     def create_merged_dataframe(cache, carac) : 
         """from a basic cache dataframe, perform a groupby races and merge with carac"""
         
-        cache = GroupBy.group_by_courses(cache, cores=6, dest="temp/grouped_races/", verbose=True, clear_temp=True)
-        cache = GroupBy.recast_dataframe(cache)
-        df    = GroupBy.merge_cache_carac(cache, carac)
+        cache = GroupBy._group_by_courses(cache, cores=6, dest="temp/grouped_races/", verbose=True, clear_temp=True)
+        cache = GroupBy._recast_dataframe(cache)
+        df    = GroupBy._merge_cache_carac(cache, carac)
+        df    = GroupBy.externalize_results(df, "data/results/")
 
         return df
 

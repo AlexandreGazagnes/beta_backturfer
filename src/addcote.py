@@ -71,7 +71,7 @@ class CotePlaced :
         return df.loc[:, ]
 
 
-    def add_cotes(df, cores=6, dest="temp/scrap/", verbose=True, clear_temp=True, lazy=True) : 
+    def _add_cotes(df, cores=6, dest="temp/scrap/", verbose=True, clear_temp=True, lazy=True) : 
         """for all lines of the dataframe, perform a multiporcess scrap of all urls"""
 
         assert isinstance(df, pd.DataFrame)
@@ -138,7 +138,7 @@ class CotePlaced :
         return new_df 
 
 
-    def handle_cotepodium(df) :  
+    def _handle_cotepodium(df) :  
         """ from raw cotepodium, transform in a dict and integrate data in df.results."""
 
         def f(v) : 
@@ -161,11 +161,11 @@ class CotePlaced :
         return df
 
 
-    def create_fancy_cotepodium(df) : 
+    def add(df) : 
         """ scrap and manage cotepodium info"""
     
-        df = CotePodium.add_cotes(df, cores=6, dest="temp/scrap/", verbose=True, clear_temp=True, lazy=True) 
-        df = CotePodium.handle_cotepodium(df)
+        df = CotePodium._add_cotes(df, cores=6, dest="temp/scrap/", verbose=True, clear_temp=True, lazy=True) 
+        df = CotePodium._handle_cotepodium(df)
 
         return df
 

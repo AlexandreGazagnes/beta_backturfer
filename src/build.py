@@ -10,7 +10,7 @@ from src.misc import *
 class Build : 
     """functs used to build cachedate and caratrap first dataframes"""
 
-    def init_dataframe(filename, path, sep="\t", lim_l=100000000, lim_c=30, reverse=False, verbose=True) :
+    def _init_dataframe(filename, path, sep="\t", lim_l=100000000, lim_c=30, reverse=False, verbose=True) :
         """just an overkilled df.read_csv"""
         
         # arg checks
@@ -42,7 +42,7 @@ class Build :
         return df
 
 
-    def recast_dataframe(df, verbose=True) : 
+    def _recast_dataframe(df, verbose=True) : 
         """recast col by col if needed to save RAM"""
 
         # time
@@ -113,7 +113,7 @@ class Build :
         return df
 
 
-    def del_useless_params(df, params=None, verbose=True) : 
+    def _del_useless_params(df, params=None, verbose=True) : 
         """del useless params"""
 
         t0 = time.time()
@@ -142,9 +142,9 @@ class Build :
         assert os.path.isdir(path)  
         assert os.path.isfile(path+filename)
 
-        df      = Build.init_dataframe(filename, path ) 
-        df      = Build.recast_dataframe(df)
-        df      = Build.del_useless_params(df) 
+        df      = Build._init_dataframe(filename, path ) 
+        df      = Build._recast_dataframe(df)
+        df      = Build._del_useless_params(df) 
 
         return df
 

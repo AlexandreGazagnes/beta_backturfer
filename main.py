@@ -14,14 +14,15 @@
 from src.misc           import * 
 from src.build          import Build
 from src.groupby        import GroupBy
-from src.coteadd        import CotePlaced, CoteDuo, CoteTierce
+from src.addcote        import CotePlaced, CoteDuo, CoteTierce
 from src.turfing        import BetRoom, TurfingRoom
 from strats.easy        import Strats
 
 
 
 df  = pk_load("pturf_grouped_and_merged_cache_carac_2016-2019_OK", "data/")
-
+df  = GroupBy.externalize_results(df, "data/results/")
+df  = pk_save(df, "WITHOUT_RESULTS_pturf_grouped_and_merged_cache_carac_2016-2019_OK", "data/")
 
 def main() : 
 
