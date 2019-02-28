@@ -273,7 +273,8 @@ class App:
         if verbose : 
             info(f"len df {len(df)} ")
             info(f"df cols {df.columns} ")
-            pk_save(df, get_an_hash(), "temp/web_df/")
+            df.to_csv(f"temp/web_df/{get_an_hash()}.csv", index=False)
+            # pk_save(df, get_an_hash(), "temp/web_df/")
         
 
         return "No errors in App.run", None
