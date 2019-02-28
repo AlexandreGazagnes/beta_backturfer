@@ -34,7 +34,8 @@ EPOCH_UNIX = pd.Timestamp('1970-01-01 00:00:00')
 
 
 
-# class
+# decorators
+
 class change_repr(object):
     """just a decorator to help repr"""
     
@@ -50,6 +51,40 @@ class change_repr(object):
 
     def __repr__(self):
         return self.functor.__name__
+
+
+def time_it(funct) :  
+    """time it decorator"""
+
+    def timer(*param, **params) :  
+        """internal funct of time it decorator"""
+        
+        t0 = time.time() 
+        d = funct(*param, **params) 
+        t1 = round(time.time() - t0, 2)
+        s = str(funct)
+        s = s.split("at")
+        s = s[0].strip()
+        info(f"{s} done in {t1} secondes") 
+
+        return d 
+
+    return timer 
+
+
+def get_size_of(funct) : 
+
+    def get_size(*param, **params) : 
+
+        d = funct(*param, **params)
+        s = round(sys.getsizeof(d) / 1000000, 4)
+        info(f"data {s} Mo")
+
+        return d
+
+    return get_size
+    
+
 
 
 # functs

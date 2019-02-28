@@ -40,28 +40,52 @@ except Exception as e :
     warning(s)
 
 
-
+# find thead
 try : 
     soup = BeautifulSoup(html, 'html.parser') 
-    result_block = soup.find_all('table', attrs={'class': "table table-condensed tablesorter"})
+    result_block = soup.find_all('table', attrs={'id' : 'liste_hippodromes', 'class': "table table-condensed tablesorter"})
 except Exception as e :
     s = f"error request {e} for url {url}"
     warning(s)
 
-
-
-# look for just 1 table
 if len(result_block) == 1  : 
-    table = result_block[0]
+    cols_raw = str(result_block[0])
 else : 
     s = f"error  BS4 len {len(result_block)} for url {url}"
     warning(s)
 
-
-cols = pd.read_html(str(table))[0].columns
-
+cols_raw = cols_raw.replace("</table>", "")
 
 
+# find trow
+try : 
+    soup = BeautifulSoup(html, 'html.parser') 
+    result_block = soup.find_all('tr', attrs={ 'class':"hidden-xs"})
+except Exception as e :
+    s = f"error request {e} for url {url}"
+    warning(s)
+
+for result in result_block : 
+    cols_raw += str(result)
+
+
+# end table
+cols_raw+="</table>"
+
+
+# dataframe
+df = pd.read_html(cols_raw)[0]
+
+info(f" df shape : {df.shape}")
+info(f" df cols :  {df.columns}")
 
 
 
+
+
+# dataframe manipulation
+
+df = df.loc[:, ["Hippodrome", 
+df = df.sort_values('Classement nombre de courses', axis=1)
+df["Hippodrome"] = df.Hippodrome.apply(str.lower)
+ 

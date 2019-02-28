@@ -10,6 +10,8 @@ from src.misc import *
 class Build : 
     """functs used to build cachedate and caratrap first dataframes"""
 
+    @time_it 
+    @get_size_of
     def _init_dataframe(filename, path, sep="\t", lim_l=100000000, lim_c=30, reverse=False, verbose=True) :
         """just an overkilled df.read_csv"""
         
@@ -41,7 +43,8 @@ class Build :
 
         return df
 
-
+    @time_it 
+    @get_size_of
     def _recast_dataframe(df, verbose=True) : 
         """recast col by col if needed to save RAM"""
 
@@ -112,7 +115,8 @@ class Build :
 
         return df
 
-
+    @time_it 
+    @get_size_of
     def _del_useless_params(df, params=None, verbose=True) : 
         """del useless params"""
 
@@ -134,7 +138,8 @@ class Build :
 
         return df
 
-
+    @time_it 
+    @get_size_of
     def create_dataframe(filename, path) : 
         """create cachedate dataframe, recast cols if needed and del useless params"""
 

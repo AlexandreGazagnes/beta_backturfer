@@ -10,7 +10,8 @@ from src.misc import *
 class GroupBy : 
     """functions used to enhance the first dataFrame with an new level of data. see group_by_courses"""
 
-
+    @time_it 
+    @get_size_of
     def _group_by_courses(df, cores=1, dest="temp/grouped_races/", verbose=True, clear_temp=True) : 
         """perform a groupby action on a basic dataframe and return a new dataframe with meta data as cols + "results"""
 
@@ -131,7 +132,8 @@ class GroupBy :
 
         return new_df
 
-
+    @time_it 
+    @get_size_of
     def _recast_dataframe(df) :
 
         if "jour" in df.columns:        df["jour"]          = df.jour.astype(np.uint16)
@@ -196,7 +198,8 @@ class GroupBy :
 
         return df
 
-
+    @time_it 
+    @get_size_of
     def _merge_cache_carac(cache, carac) : 
 
         comp_cache = cache.comp
@@ -236,7 +239,8 @@ class GroupBy :
 
         return df
 
-
+    @time_it 
+    @get_size_of
     def externalize_results(df, path="data/results/") : 
         """drop results and save it locally"""
 
@@ -254,7 +258,8 @@ class GroupBy :
         
         return df
 
-
+    @time_it 
+    @get_size_of
     def internalize_results(df, path="data/results/") : 
         """load results from local path"""
 
@@ -273,7 +278,8 @@ class GroupBy :
         
         return df
 
-
+    @time_it 
+    @get_size_of
     def create_merged_dataframe(cache, carac) : 
         """from a basic cache dataframe, perform a groupby races and merge with carac"""
         
