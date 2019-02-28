@@ -20,6 +20,7 @@ from strats.easy        import Strats
 
 
 
+df  = pk_load("pturf_grouped_and_merged_cache_carac_2016-2019_OK", "data/")
 
 
 def main() : 

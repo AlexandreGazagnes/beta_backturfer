@@ -185,11 +185,28 @@ class App:
 
     def __build_dataframe(df, form) : 
 
+        # errors
+        errors = list()
+
+
         # dates
         df = df.loc[df.jour >= form["date_start"], :]
         df = df.loc[df.jour <= form["date_stop" ], :]
 
         # hippo
+        if form["hippo"] : 
+
+            form["hippo"]  = form["hippo"].strip().lower()
+            df["hippo"]    = df.hippo.apply(str.lower)
+            df["hippo"]    = df.hippo.apply(str.strip)
+
+            if form["hippo"] not in df.hippo.unique() : 
+                errors.append(f"Error : {form['hippo']} not in our hippo database")
+                candidates = [i for i in df.hippo.unique() if i[:5] == form["hippo"][:5]]
+                candidates = "\n".join(candidates)
+                errors.append(f"Error : maybe you should consider {candidates}")
+            else 
+                df = df.loc[df.hippo == form["hippo"], :]
 
 
         # quinte
@@ -216,15 +233,19 @@ class App:
 
 
         # typec
-        ser = df.typec.apply(lambda i : True if i in form["typec"])
+        ser = df.typec.apply(lambda i : i in form["typec"])
+        info(ser)
+        df = df.loc[ser, :]
 
+
+        return df, errors
 
     def run(df, form, verbose=True): 
 
         assert isinstance(df, pd.DataFrame)
         assert isinstance(form, dict)
 
-
+        df, errors  = App.__build_dataframe(df, form)
 
 
 
