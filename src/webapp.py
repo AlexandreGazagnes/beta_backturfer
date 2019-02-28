@@ -207,7 +207,7 @@ class App:
                 candidates = [i for i in df.hippo.unique() if i[:5] == form["hippo"][:5]]
                 candidates = "\n".join(candidates)
                 errors.append(f"Error : maybe you should consider {candidates}")
-            else 
+            else  : 
                 df = df.loc[df.hippo == form["hippo"], :]
         else : 
 
@@ -224,7 +224,7 @@ class App:
         elif form["quinte"] == "only_not_quinte" : 
             df = df.loc[df.quinte == 0, :]
         else : 
-            raise ValueError(f"unknown attribute for quite {form["quinte"]} ")
+            raise ValueError(f"unknown attribute for quite {form['quinte']} ")
 
         info(f" quinte unique : {df.quinte.unique()}")
 
@@ -234,7 +234,7 @@ class App:
         elif (form["euro_only"] == False) or (form["euro_only"] == "False") : 
             pass
         else : 
-            raise ValueError(f"unknown attribute for euro_only {form["euro_only"]} ")
+            raise ValueError(f"unknown attribute for euro_only {form['euro_only']} ")
 
         info(f"chque type : {df.cheque_type.unique()}")
 
