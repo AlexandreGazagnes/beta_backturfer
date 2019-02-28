@@ -105,7 +105,7 @@ venv.bak/
 
 
 # my gitinore
-utils/*.txt
+
 temp/*/*.pk
 temp/*/*.csv
 
