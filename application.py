@@ -13,9 +13,7 @@ t0 =time.time()
 
 
 # dataframe
-df  = pk_load("pturf_grouped_and_merged_cache_carac_2016-2019_OK", "data/")
-info(f"df, loaded : {round(time.time() - t0, 2)}")
-t0 =time.time()
+df  = pk_load("WITHOUT_RESULTS_pturf_grouped_and_merged_cache_carac_2016-2019_OK", "data/")
 
 # init
 app = Flask(__name__)
@@ -23,21 +21,19 @@ app = Flask(__name__)
 
 @app.route("/index")
 def index():
-    return render_template("index.html")
+
+    return render_template("index.html", today=web_today())
 
 
 @app.route("/turfing", methods=["POST"])
 def turfing():
-    form, errors = FormCheck.check(request.form, verbose=True)
-    
-    info(f"ERRRORS = {errors}")
 
-    if errors :
-        return render_template("index.html", errors=errors)
+    form, errors = FormCheck.check(request.form, verbose=True)
+    info(f"ERRRORS = {errors}")
+    if errors : return render_template("index.html", errors=errors, today=web_today())
   
     results, errors = App.run(df, form, verbose=True)
-
-    if errors : 
-        return render_template("index.html", errors=errors)
+    info(f"ERRRORS = {errors}")
+    if errors : return render_template("index.html", errors=errors, today=web_today())
 
     return render_template("turfing.html", results=results)

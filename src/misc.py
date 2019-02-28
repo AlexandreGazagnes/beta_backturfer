@@ -4,7 +4,7 @@
 
 # builtin
 # import sqlite3
-import os, sys, time, pickle, logging
+import os, sys, time, pickle, logging, string
 from logging import warning, info
 from itertools import product
 from multiprocessing import Process
@@ -130,4 +130,29 @@ def timestamp_to_str(t) :
 def reindex(df) : 
 
     return range(len(df.index))
+
+
+
+def web_today() : 
+    
+    t = pd.Timestamp.today()
+    y, m, d = str(t.year), str(t.month).rjust(2, "0") , str(t.day).rjust(2, "0")
+    t = f"{y}-{m}-{d}"
+
+    return t 
+
+
+def get_an_hash(l=20) : 
+
+    s = list(string.ascii_letters+string.digits)
+    h = np.random.choice(s, l)
+
+    return "".join(h)
+
+
+
+
+
+
+
 

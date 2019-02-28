@@ -164,7 +164,7 @@ class FormCheck :
         form["price_min"], form["price_max"], e = FormCheck.__check_price_comp(form["price_min"], form["price_max"])
         error_list.append(e)
 
-        race_types = ["monte", "attele", "plat", "haies", "steeple-chase", "steeple-chase cross-country"]
+        race_types = ["monté", "attelé", "plat", "haies", "steeple-chase", "steeple-chase cross-country"]
         race_types = [i for i in race_types if i in form.keys()]
         [form.pop(i) for i in race_types if i in form.keys()]
         form["typec"] = race_types
@@ -181,7 +181,8 @@ class FormCheck :
         return form, error_list
 
 
-class App: 
+class App:
+    """App class""" 
 
     def __build_dataframe(df, form) : 
 
@@ -245,8 +246,10 @@ class App:
         info(f" cheque min : {df.cheque_val.min()}")
         info(f" cheque max : {df.cheque_val.max()}")
 
+
+        info(f"typec : {form['typec']}")
         # typec
-        ser = df.typec.apply(lambda i : i in form["typec"])
+        ser = df.typec.apply(lambda i : str(i) in form["typec"])
         df = df.loc[ser, :]
 
         info(f"typec unique : {df.typec.unique()}")
@@ -263,11 +266,17 @@ class App:
         assert isinstance(form, dict)
 
         df, errors  = App.__build_dataframe(df, form)
+
         if errors : 
-            return -100, errors
+            return 0, errors
 
+        if verbose : 
+            info(f"len df {len(df)} ")
+            info(f"df cols {df.columns} ")
+            pk_save(df, get_an_hash(), "temp/web_df/")
+        
 
-        return -100, None
+        return "No errors in App.run", None
 
 
 

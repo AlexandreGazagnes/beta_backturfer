@@ -19,9 +19,9 @@
     <h2>database options</h2>
     <form action="{{url_for('turfing')}}" method="post">
       <label for="date_start">Start</label>
-      <input type="date" name="date_start">
+      <input type="date" name="date_start", value="2018-01-01">
       <label for="date_stop">Stop</label>
-      <input type="date" name="date_stop">
+      <input type="date" name="date_stop", value="{{today}}">
       <br>
       <label for="country">country</label>
       <select name="country">
@@ -56,9 +56,9 @@
       <input type="text" name="price_max" placeholder="50 000 000">
       <br>
       <label for="monté">monté</label>
-      <input type="checkbox" name="monte" checked>
-      <label for="monté">attelé</label>
-      <input type="checkbox" name="attele" checked>
+      <input type="checkbox" name="monté" checked>
+      <label for="attelé">attelé</label>
+      <input type="checkbox" name="attelé" checked>
       <label for="plat">plat</label>
       <input type="checkbox" name="plat" >
       <label for="haies">haies</label>
