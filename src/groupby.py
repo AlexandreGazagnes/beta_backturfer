@@ -237,7 +237,7 @@ class GroupBy :
         return df
 
 
-    def externalize_results(df, path) : 
+    def externalize_results(df, path="data/results/") : 
         """drop results and save it locally"""
 
         if  not "results" in df.columns : 
@@ -255,7 +255,7 @@ class GroupBy :
         return df
 
 
-    def internalize_results(df, path) : 
+    def internalize_results(df, path="data/results/") : 
         """load results from local path"""
 
         if "results" in df.columns : 
@@ -280,7 +280,7 @@ class GroupBy :
         cache = GroupBy._group_by_courses(cache, cores=6, dest="temp/grouped_races/", verbose=True, clear_temp=True)
         cache = GroupBy._recast_dataframe(cache)
         df    = GroupBy._merge_cache_carac(cache, carac)
-        df    = GroupBy.externalize_results(df, "data/results/")
+        df    = GroupBy.externalize_results(df)
 
         return df
 

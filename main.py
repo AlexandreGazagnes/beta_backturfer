@@ -18,11 +18,14 @@ from src.addcote        import CotePlaced, CoteDuo, CoteTierce
 from src.turfing        import BetRoom, TurfingRoom
 from strats.easy        import Strats
 
+t0 = time.time()
+df  = pk_load("WITHOUT_RESULTS_pturf_grouped_and_merged_cache_carac_2016-2019_OK", "data/")
+warning(f"timer load df : {round(time.time() - t0, 2)}")
 
 
-df  = pk_load("pturf_grouped_and_merged_cache_carac_2016-2019_OK", "data/")
-df  = GroupBy.externalize_results(df, "data/results/")
-df  = pk_save(df, "WITHOUT_RESULTS_pturf_grouped_and_merged_cache_carac_2016-2019_OK", "data/")
+t0 = time.time()
+_df = GroupBy.internalize_results(df)
+warning(f"timer load df : {round(time.time() - t0, 2)}")
 
 def main() : 
 
