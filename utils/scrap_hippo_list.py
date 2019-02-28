@@ -58,6 +58,10 @@ else :
     warning(s)
 
 
-
-
 cols = pd.read_html(str(table))[0].columns
+
+
+
+
+
+
