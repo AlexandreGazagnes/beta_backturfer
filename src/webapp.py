@@ -8,8 +8,8 @@ class FormCheck :
     """basic class of funct to manage and clean form"""
 
     # consts
-    price_min_max = 5000000
-    price_max_min = 1000
+    __price_min_max = 5000000
+    __price_max_min = 1000
 
 
     def __check_date_start(d) :
@@ -93,8 +93,8 @@ class FormCheck :
             return "", f"Error : invalid price_min recieved {d}, expected and number"
 
         if _d < 0 : _d = 0
-        if _d > FormCheck.price_min_max :
-            return 0, f"Error : invalid price_min, recieved {d}, expected max {FormCheck.price_min_max}"
+        if _d > FormCheck.__price_min_max :
+            return 0, f"Error : invalid price_min, recieved {d}, expected max {FormCheck.__price_min_max}"
 
         return _d, False
 
@@ -114,8 +114,8 @@ class FormCheck :
         if _d <= 0 :
             return 0, f"Error : invalid price_max, recieved {d}, expected max positive value"
 
-        if _d < FormCheck.price_max_min :
-            return 0, f"Error : invalid price_max, recieved {d}, expected min {FormCheck.price_max_min}"
+        if _d < FormCheck.__price_max_min :
+            return 0, f"Error : invalid price_max, recieved {d}, expected min {FormCheck.__price_max_min}"
 
         return _d, False
 
@@ -181,11 +181,58 @@ class FormCheck :
         return form, error_list
 
 
+class App: 
+
+    def __build_dataframe(df, form) : 
+
+        # dates
+        df = df.loc[df.jour >= form["date_start"], :]
+        df = df.loc[df.jour <= form["date_stop" ], :]
+
+        # hippo
+
+
+        # quinte
+        if form["quinte"] == 'all'  : 
+            pass
+        elif form["quinte"] == "only_quinte" : 
+            df = df.loc[df.quinte == 1, :]
+        elif form["quinte"] == "only_not_quinte" : 
+            df = df.loc[df.quinte == 0, :]
+        else : 
+            raise ValueError(f"unknown attribute for quite {form["quinte"]} ")
+
+        # currency
+        if (form["euro_only"] == True) or (form["euro_only"] == "True") : 
+            df = df.loc[df.cheque_type == "€", :]
+        elif (form["euro_only"] == False) or (form["euro_only"] == "False") : 
+            pass
+        else : 
+            raise ValueError(f"unknown attribute for euro_only {form["euro_only"]} ")
+
+        # price
+        df = df.loc[df.cheque_val >= form["price_min"], :]
+        df = df.loc[df.cheque_val <= form["price_max"], :]
+
+
+        # typec
+        ser = df.typec.apply(lambda i : True if i in form["typec"])
+
+
+    def run(df, form, verbose=True): 
+
+        assert isinstance(df, pd.DataFrame)
+        assert isinstance(form, dict)
 
 
 
-class AppBackTurf : 
 
-    def run(form): 
 
         return "You are Very Poor !!! "
+
+
+
+
+
+
+

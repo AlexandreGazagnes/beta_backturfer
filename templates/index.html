@@ -18,13 +18,11 @@
 
     <h2>database options</h2>
     <form action="{{url_for('turfing')}}" method="post">
-      <p>dates</p>
       <label for="date_start">Start</label>
       <input type="date" name="date_start">
       <label for="date_stop">Stop</label>
       <input type="date" name="date_stop">
-
-      <p>hippodrome</p>
+      <br>
       <label for="country">country</label>
       <select name="country">
         <option value="france">France</option>
@@ -38,22 +36,23 @@
       <br>
       <label for="hippo">specific hippodrome</label>
       <input type="text" name="hippo" placeholder="ex : Vincennes">
-
-      <p>race type</p>
+      <br>
+      <label for="quinte">race type</label>
       <select name="quinte">
         <option value="all" selected="selected">All</option>
-        <option value="quite">Only quinte</option>
-        <option value="not quinte">Only not quinte</option>
+        <option value="only_quinte">Only quinte</option>
+        <option value="only_not_quinte">Only not quinte</option>
       </select>
       <br>
+      <label for="euro_only">currency</label>
       <select name="euro_only">
         <option value="True" selected="selected">Euro only</option>
         <option value="False">All currencies</option>
       </select>
       <br>
-      <label for="price_min">min</label>
+      <label for="price_min">prix min</label>
       <input type="text" name="price_min" placeholder="0">
-      <label for="price_max">max</label>
+      <label for="price_max">prix max</label>
       <input type="text" name="price_max" placeholder="50 000 000">
       <br>
       <label for="monte">monté</label>
