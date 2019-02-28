@@ -36,6 +36,7 @@ def turfing():
         return render_template("index.html", errors=errors)
   
     results, errors = App.run(df, form, verbose=True)
+
     if errors : 
         return render_template("index.html", errors=errors)
 

@@ -188,10 +188,12 @@ class App:
         # errors
         errors = list()
 
-
         # dates
         df = df.loc[df.jour >= form["date_start"], :]
         df = df.loc[df.jour <= form["date_stop" ], :]
+
+        info(f" start : {int_to_timestamp(df.jour.min())}")
+        info(f" stop  : {int_to_timestamp(df.jour.max())}")
 
         # hippo
         if form["hippo"] : 
@@ -207,7 +209,12 @@ class App:
                 errors.append(f"Error : maybe you should consider {candidates}")
             else 
                 df = df.loc[df.hippo == form["hippo"], :]
+        else : 
 
+            warning("Error NOT IMPLEMENTED")
+            pass
+
+        info(f" hippo unique : {df.hippo.unique()}")
 
         # quinte
         if form["quinte"] == 'all'  : 
@@ -219,6 +226,8 @@ class App:
         else : 
             raise ValueError(f"unknown attribute for quite {form["quinte"]} ")
 
+        info(f" quinte unique : {df.quinte.unique()}")
+
         # currency
         if (form["euro_only"] == True) or (form["euro_only"] == "True") : 
             df = df.loc[df.cheque_type == "€", :]
@@ -227,18 +236,26 @@ class App:
         else : 
             raise ValueError(f"unknown attribute for euro_only {form["euro_only"]} ")
 
+        info(f"chque type : {df.cheque_type.unique()}")
+
         # price
         df = df.loc[df.cheque_val >= form["price_min"], :]
         df = df.loc[df.cheque_val <= form["price_max"], :]
 
+        info(f" cheque min : {df.cheque_val.min()}")
+        info(f" cheque max : {df.cheque_val.max()}")
 
         # typec
         ser = df.typec.apply(lambda i : i in form["typec"])
-        info(ser)
         df = df.loc[ser, :]
 
+        info(f"typec unique : {df.typec.unique()}")
+
+        if len(df) == 0 : 
+            errors.append("error len df = 0")
 
         return df, errors
+
 
     def run(df, form, verbose=True): 
 
@@ -246,10 +263,11 @@ class App:
         assert isinstance(form, dict)
 
         df, errors  = App.__build_dataframe(df, form)
+        if errors : 
+            return -100, errors
 
 
-
-        return "You are Very Poor !!! "
+        return -100, None
 
 
 

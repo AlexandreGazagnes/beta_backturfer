@@ -113,3 +113,4 @@ data/carac*.csv
 data/pturf*.pk
 data/cache*.pk
 data/carac*.pk
+data/results/*.pk
