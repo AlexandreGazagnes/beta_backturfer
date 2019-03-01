@@ -23,7 +23,6 @@ app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
 
-
 # routes
 @app.route("/index")
 def index():
