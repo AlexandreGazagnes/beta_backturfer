@@ -37,6 +37,19 @@
       <label for="hippo">specific hippodrome</label>
       <input type="text" name="hippo" placeholder="ex : Vincennes">
       <br>
+
+      <label for="choix_bieres">Indiquez votre bière préférée :</label>
+      <input list="hippo" type="text" id="choix_hippo">
+      <datalist id="hippo">
+        {% for hippo in hippo_list %}
+          <option value={{hippo}}>
+        {% endfor %}
+      </datalist>
+
+
+
+
+
       <label for="quinte">race type</label>
       <select name="quinte">
         <option value="all" selected="selected">All</option>
