@@ -85,7 +85,13 @@ info(f" df cols :  {df.columns}")
 
 # dataframe manipulation
 
-df = df.loc[:, ["Hippodrome", 
-df = df.sort_values('Classement nombre de courses', axis=1)
-df["Hippodrome"] = df.Hippodrome.apply(str.lower)
- 
+df = df.loc[:, ["Hippodrome", 'Nombre de courses']] 
+df = df.sort_values(by=['Nombre de courses'], ascending=False)
+df["Hippodrome"] = df.Hippodrome.apply(lambda i : normalize_hippo(str(i)))
+
+
+
+scrap_hippo = df.Hippodrome
+
+
+

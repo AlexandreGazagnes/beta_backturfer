@@ -187,7 +187,33 @@ def get_an_hash(l=20) :
 
 
 
+def force_pseudo_ascii(txt) : 
+
+    for char in list("àâ") : 
+        txt = txt.replace(char, "a")
+
+    for char in list("éèêë") : 
+        txt = txt.replace(char, "e")
+
+    for char in list("ïî") : 
+        txt = txt.replace(char, "i")
+    
+    for char in list("ôó") : 
+        txt = txt.replace(char, "o")
+
+    for char in list("ùü") : 
+        txt = txt.replace(char, "u") 
+
+    return txt
 
 
+def normalize_hippo(txt) : 
+    
+    txt = txt.lower()
+    txt = txt.replace("-", "")
+    txt = txt.replace("  ", " ")
+    txt = txt.replace("  ", " ")
+    txt = force_pseudo_ascii(txt)
+    txt = txt.strip()
 
-
+    return txt

@@ -70,7 +70,8 @@ class CotePlaced :
 
         return df.loc[:, ]
 
-
+    @time_it 
+    @get_size_of
     def _add_cotes(df, cores=6, dest="temp/scrap/", verbose=True, clear_temp=True, lazy=True) : 
         """for all lines of the dataframe, perform a multiporcess scrap of all urls"""
 
@@ -137,7 +138,8 @@ class CotePlaced :
 
         return new_df 
 
-
+    @time_it 
+    @get_size_of
     def _handle_cotepodium(df) :  
         """ from raw cotepodium, transform in a dict and integrate data in df.results."""
 
@@ -160,7 +162,8 @@ class CotePlaced :
 
         return df
 
-
+    @time_it 
+    @get_size_of
     def add(df) : 
         """ scrap and manage cotepodium info"""
     

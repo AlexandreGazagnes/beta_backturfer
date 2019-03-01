@@ -103,6 +103,7 @@ class Build :
         if "quinte" in df.columns :     df["quinte"]        = df.quinte.astype(bool)
         if "prix" in df.columns :       df["prix"]          = df.prix.astype(np.uint8)        
         
+        if "hippo" in df.columns :      df["hippo"]         = df.hippo.apply(lambda i : normalize_hippo(str(i)))
 
         # verbose   
         if verbose : 

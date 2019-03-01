@@ -24,6 +24,10 @@ def index():
 
     return render_template("index.html", today=web_today())
 
+@app.route("/fancy_index")
+def fancy_index():
+
+    return render_template("fancy_index.html", today=web_today())
 
 @app.route("/turfing", methods=["POST"])
 def turfing():
