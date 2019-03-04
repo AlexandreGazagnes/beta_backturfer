@@ -95,6 +95,7 @@ def gsf(i) :
     return f'{s} Mo'
 
 
+
 def pk_save(data, filename, path) : 
 
     filename = str(path+filename+".pk")
@@ -167,7 +168,6 @@ def reindex(df) :
     return range(len(df.index))
 
 
-
 def web_today() : 
     
     t = pd.Timestamp.today()
@@ -178,9 +178,9 @@ def web_today() :
 
 
 def get_an_hash(l=20) : 
+    """ return a very good random string"""
+
     return secrets.token_hex()
-
-
 
 
 def force_pseudo_ascii(txt) : 
@@ -206,10 +206,14 @@ def force_pseudo_ascii(txt) :
 def normalize_hippo(txt) : 
     
     txt = txt.lower()
-    txt = txt.replace("-", "")
+    # txt = txt.replace("-", "")
     txt = txt.replace("  ", " ")
     txt = txt.replace("  ", " ")
     txt = force_pseudo_ascii(txt)
     txt = txt.strip()
 
     return txt
+
+
+
+

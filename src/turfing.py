@@ -14,6 +14,9 @@ class BetRoom :
     BetRoom.ordered/unorder tierce : you bet 3 horse on the podium, ordered or not
     BetRoom.ordered/unorder quinte : you think you are Paco Rabanne, please stop drinking to much beers"""
 
+    bets = ["winning", "podium"]
+
+
     def __winner_num(results) : 
         """find the number of winner of the race"""
 
@@ -53,7 +56,7 @@ class BetRoom :
 
     @change_repr
     def winning(df, your_strat, N=None, verbose=True) : 
-        """ """
+        """winning bet"""
 
         assert isinstance(df, pd.DataFrame)
         assert isinstance(verbose, bool)
@@ -75,7 +78,7 @@ class BetRoom :
 
     @change_repr
     def podium(df, your_strat, N=None, verbose=True) : 
-        """ """
+        """pordium bet"""
 
         assert isinstance(df, pd.DataFrame)
         assert isinstance(verbose, int)

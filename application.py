@@ -28,42 +28,12 @@ Session(app)
 
 
 # routes
-@app.route("/home", methods=["POST", "GET"])
-@app.route("/index", methods=["POST", "GET"])
-@app.route("/",methods=["POST", "GET"])
+@app.route("/index", methods=["GET", "POST"])
+@app.route("/",methods=["GET", "POST"])
 def index():
     """index page"""
 
-    return render_template( "index.html", title="", index_data=index_data)
-
-
-@app.route("/register", methods=['GET', 'POST'])
-def register():
-    """register page"""
-
-    form = RegistrationForm()
-    if form.validate_on_submit():
-        flash(f'Account created for {form.username.data}!', 'success')
-        return redirect(url_for('home'))
-    
-    return render_template('register.html', title='Register', form=form)
-
-
-
-@app.route("/login", methods=['GET', 'POST'])
-def login():
-    """login page """
-
-    form = LoginForm()
-    if form.validate_on_submit():
-        if form.email.data == 'admin@blog.com' and form.password.data == 'password':
-            flash('You have been logged in!', 'success')
-            return redirect(url_for('home'))
-        else:
-            flash('Login Unsuccessful. Please check username and password', 'danger')
-    
-    return render_template('login.html', title='Login', form=form)
-
+    return render_template("index.html", index_data=index_data)
 
 
 
@@ -77,16 +47,50 @@ def turfing():
   
     results, errors = App.run(df, form, verbose=True)
     info(f"ERRRORS = {errors}")
-    if errors : return render_template("index.html", errors=errors, index_data=index_data)
+    if errors : return render_template( "index.html", 
+                                        title="results",
+                                        errors=errors, 
+                                        index_data=index_data)
 
     return render_template("turfing.html", results=results)
 
 
+@app.route("/register", methods=['GET', 'POST'])
+def register():
+    """register page"""
+
+    form = RegistrationForm()
+    if form.validate_on_submit():
+        flash(f'Account created for {form.username.data}!', 'success')
+        return redirect(url_for('index'))
+    
+    return render_template('register.html', title='Register', form=form)
+
+
+
+@app.route("/login", methods=['GET', 'POST'])
+def login():
+    """login page """
+
+    form = LoginForm()
+    if form.validate_on_submit():
+        if form.email.data == 'admin@blog.com' and form.password.data == 'azertyaz':
+            flash('You have been logged in!', 'success')
+            return redirect(url_for('index'))
+        else:
+            flash('Login Unsuccessful. Please check username and password', 'danger')
+    
+    return render_template('login.html', title='Login', form=form)
+
+
+# main
 def main() : 
     """main"""
 
     app.run(debug=True)
 
 
+
+# called as main
 if __name__ == '__main__':
     main()

@@ -94,6 +94,16 @@
           {% endif %}
         {% endwith %}
 
+        <!-- erros -->
+        {% if errors %} 
+            <p>sorry but some errors in your form</p>
+            <ul>
+              {% for error in errors %}
+                <li>{{error}}</li>
+              {% endfor %}
+            </ul>
+        {% endif %}
+
 
         <!-- content -->
         {% block content %}{% endblock %}

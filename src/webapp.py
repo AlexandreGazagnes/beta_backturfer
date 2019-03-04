@@ -317,5 +317,19 @@ class LoginForm(FlaskForm):
 
 
 
+class Turfing(FlaskForm): 
+    """form for turf"""
+
+    start               = None
+    stop                = None
+    country             = None 
+    specific_hippo      = None 
+    quinte              = None 
+    cheque_type         = None
+    cheque_val          = None
+    race_type           = None 
+
+
+
 
 
