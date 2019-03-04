@@ -4,17 +4,14 @@
 
 
 {% block body %}
-    <p>block body</p>
     {% if errors %}
         <p>sorry but some errors in your form</p>
         <ul>
-        {%for error in errors %}
+        {% for error in errors %}
             <li>{{error}}</li>
             {% endfor %}
         </ul>
         {% endif %}
-
-    <p>find here the form to backturf with</p>
 
     <h2>database options</h2>
     <form action="{{url_for('turfing')}}" method="post">
@@ -32,24 +29,23 @@
         <option value="france_100">France - top 100</option>
         <option value="europe">Europe</option>
         <option value="monde">Monde</option>
+        {% for hippo in hippo_list %}
+          <option value= "{{ hippo }}">{{ hippo }}</option>
+        {% endfor %}
       </select>
-      <br>
+      <!-- <br>
       <label for="hippo">specific hippodrome</label>
       <input type="text" name="hippo" placeholder="ex : Vincennes">
+      <br> -->
       <br>
-
-      <label for="choix_bieres">Indiquez votre bière préférée :</label>
-      <input list="hippo" type="text" id="choix_hippo">
-      <datalist id="hippo">
+      <label for="hippo2">specific hippodrome</label>
+      <input list="hippo2" type="text" id="choix_hippo">
+      <datalist id="hippo2">
         {% for hippo in hippo_list %}
-          <option value={{hippo}}>
+          <option value= {{ hippo }}>{{ hippo }}</option>
         {% endfor %}
       </datalist>
-
-
-
-
-
+      <br>
       <label for="quinte">race type</label>
       <select name="quinte">
         <option value="all" selected="selected">All</option>
@@ -68,6 +64,13 @@
       <label for="price_max">prix max</label>
       <input type="text" name="price_max" placeholder="50 000 000">
       <br>
+
+
+      {% for typec in typec_list %}
+        <label for="{{typec}}">{{typec}}</label>
+        <input type="checkbox" name="{{typec}}">
+        {% endfor %}
+      <!--
       <label for="monté">monté</label>
       <input type="checkbox" name="monté" checked>
       <label for="attelé">attelé</label>
@@ -79,7 +82,7 @@
       <label for="steeple-chase">steeple-chase</label>
       <input type="checkbox" name="steeple-chase" >
       <label for="steeple-chase cross-country">cross-country</label>
-      <input type="checkbox" name="steeple-chase cross-country" >
+      <input type="checkbox" name="steeple-chase cross-country" > -->
 
     <h2>bet options</h2>
       <label for="bet_type">bet type</label>
@@ -113,14 +116,18 @@
       <option value="placed">dynamic</option>
     </select>
 
-    <h2>ready for back turf</h2>
-    <input type="submit" value="Submit">
-
-
     <h2>other</h2>
     <p>dataset min size</p>
     <p>randomize</p>
     <p>randomize exp min</p>
+
+    <h2>ready for back turf</h2>
+    <button type="submit" class="btn btn-primary">submit</button>
+    <!-- old button
+    <input type="submit" value="Submit">
+    -->
+
+
 
   </form>
 
