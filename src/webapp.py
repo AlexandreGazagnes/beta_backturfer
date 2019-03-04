@@ -272,8 +272,39 @@ class App:
 
     def __bet(df, form, verbose=True) : 
 
-        return "not IMPLEMENTED"
+        bets_obj = {'simple_gagnant': BetRoom.simple_gagnant,
+                    'simple_place': BetRoom.simple_place,
+                    'couple_gagnant': BetRoom.couple_gagnant,
+                    'couple_place': BetRoom.couple_place,
+                    'couple_ordre': BetRoom.couple_ordre,
+                    'deux_sur_quatre': BetRoom.deux_sur_quatre,
+                    'trio_ordre': BetRoom.trio_ordre,
+                    'trio_desordre': BetRoom.trio_desordre,
+                    'tierce_ordre': BetRoom.tierce_ordre,
+                    'tierce_desordre': BetRoom.tierce_desordre,
+                    'quinte_ordre': BetRoom.quinte_ordre,
+                    'quinte_desordre': BetRoom.quinte_desordre}
 
+
+        strats_obj = {  'choix_de_la_meilleure_cote': Strats.choix_de_la_meilleure_cote,
+                        'choix_de_la__N__meilleure_cote': Strats.choix_de_la__N__meilleure_cote,
+                        'choix_aleatoire_parmi_les_inscrits': Strats.choix_aleatoire_parmi_les_inscrits,
+                        'choix_aleatoire_parmi_les_partants': Strats.choix_aleatoire_parmi_les_partants,
+                        'choix_aleatoire_parmi_les__N__meilleures_cotes': Strats.choix_aleatoire_parmi_les__N__meilleures_cotes,
+                        'choix_aleatoire_parmi_les_3_meilleures_cotes': Strats.choix_aleatoire_parmi_les_3_meilleures_cotes,
+                        'ne_jamais_parier': Strats.ne_jamais_parier,
+                        'pile_ne_pas_jouer_face_jouer_la_meilleure_cote': Strats.pile_ne_pas_jouer_face_jouer_la_meilleure_cote,
+                        'choisir_la_pire_cote_inscrite': Strats.choisir_la_pire_cote_inscrite,
+                        'choisir_la_pire_cote_partante': Strats.choisir_la_pire_cote_partante}
+
+        bet_key     = form['bet_type']
+        strat_key   = form['strategy']
+        _N          = int(form['strategy_n'])
+
+        df          = Groupy.internalize_results(df)
+        res         = bets_obj[bet_key](df, strats_obj[strat_key], N=_N, verbose=True)
+
+        return res
 
 
 

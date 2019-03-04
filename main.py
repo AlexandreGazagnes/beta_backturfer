@@ -21,6 +21,18 @@ from strats.easy        import Strats
 df  = pk_load("WITHOUT_RESULTS_pturf_grouped_and_merged_cache_carac_2016-2019_OK", "data/")
 
 
+
+# main dataframe
+df  = pk_load("WITHOUT_RESULTS_pturf_grouped_and_merged_cache_carac_2016-2019_OK", "data/")
+df  = df.loc[df.quinte == 1, :]
+df  = df.loc[df.jour >= timestamp_to_int(pd.Timestamp("2018-01-01")), :] 
+df  = df.loc[df.typec == "attelé", :]
+df  = df.loc[df.cheque_type == "€", :]
+info(f"len df : {len(df)}" )
+df = GroupBy.internalize_results(df)
+
+DF  = df.copy()
+
 def main() : 
 
     # # build dataframe    
@@ -32,16 +44,23 @@ def main() :
     # del caractrap, cachedate
 
     # main dataframe
-    df  = pk_load("pturf_grouped_and_merged_cache_carac_2016-2019_OK", "data/")
+    df  = pk_load("WITHOUT_RESULTS_pturf_grouped_and_merged_cache_carac_2016-2019_OK", "data/")
+    df  = df.loc[df.quinte == 1, :]
+    df  = df.loc[df.jour >= timestamp_to_int(pd.Timestamp("2018-01-01")), :] 
+    df  = df.loc[df.typec == "attelé", :]
+    df  = df.loc[df.cheque_type == "€", :]
+    info(f"len df : {len(df)}" )
+    df = GroupBy.internalize_results(df)
+
     DF  = df.copy()
 
 
-    # call
-    _df = BetRoom.winning(df, Strats.n_winning_cote, N=0)
-    r   = TurfingRoom.once(df, BetRoom.podium, Strats.n_winning_cote, N=0)
+    # # call
+    # _df = BetRoom.simple_gagnant(df, Strats.choix_de_la_meilleure_cote, N=0)
+    # #     r   = TurfingRoom.once(df, BetRoom.podium, Strats.n_winning_cote, N=0)
 
 
 
-# if __name__ == '__main__':
-#     main()
+if __name__ == '__main__':
+    main()
 
