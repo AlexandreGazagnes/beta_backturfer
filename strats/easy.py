@@ -103,7 +103,7 @@ class Strats :
     def choix_de_la_meilleure_cote(results, N=None, cote_type="direct") : 
         """chose the horse with best cote"""
 
-        return Strats.n_winning_cote(results, 0, cote_type)
+        return Strats.choix_de_la__N__meilleure_cote(results, 0, cote_type)
 
 
     @change_repr
@@ -118,7 +118,7 @@ class Strats :
         """go to the hippo, flip a coin and 1/2 decide to bet or not, if bet, use best_cote_strategy"""
 
         n = randint(0, 2)
-        if n : return Strats.best_winning_cote(results, cote_type=cote_type)
+        if n : return Strats.choix_de_la__N__meilleure_cote(results, 0, cote_type)
         else : return -1
 
 

@@ -259,15 +259,18 @@ class TurfingRoom :
         assert callable(bet_funct)
         assert callable(strategy)
 
-        df      = bet_funct(df, strategy, N, verbose)
-        df      = TurfingRoom.__gains_and_loss(df, bet_value, verbose)
+        _df         = bet_funct(df, strategy, N, verbose)
+        _df         = TurfingRoom.__gains_and_loss(df, bet_value, verbose)
 
-        delta   = TurfingRoom.__compute_delta(df)
+        delta       = TurfingRoom.__compute_delta(df)
 
-        if verbose : 
-            warning(delta)
+        bet_ratio   = round(100 * sum(df.good_bet)/len(df), 2) 
 
-        return delta
+        if verbose :
+            info(f"delta is {delta} %")
+            info(f"bet_ratio is {bet_ratio}%")
+
+        return delta, bet_ratio, _df
 
 
     def randomized(df, bet_funct, strategy, nb=30, N=None, bet_value=1, verbose=True) : 
@@ -275,13 +278,20 @@ class TurfingRoom :
         assert isinstance(nb, int)
         assert (nb>5 and nb<=100)
 
-        deltas = [TurfingRoom.once(df, bet_funct, strategy, N, bet_value, verbose) for _ in range(nb)]
-        deltas = pd.Series(deltas)
+        deltas, bet_ratios = list(), list()
+        for _ in range(nb) : 
+            delta, bet_ratio, _ = TurfingRoom.once(df, bet_funct, strategy, N, bet_value, verbose)
+            deltas.append(delta)
+            bet_ratios.append(bet_ratio)
+
+        deltas, bet_ratios = pd.Series(deltas), pd.Series(bet_ratios)
 
         if verbose : 
-            warning(deltas.describe())
-            warning(deltas.tail())
+            info(deltas.describe())
+            info(deltas.tail())
+            info(deltasbet_ratios.describe())
+            info(bet_ratios.tail())
 
-        return deltas
+        return deltas.describe(), bet_ratios.describe(), None 
 
 

@@ -2,14 +2,15 @@
 # coding: utf-8
 
 
-from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, IntegerField, BooleanField
+from flask_wtf          import FlaskForm
+from wtforms            import StringField, PasswordField, SubmitField, IntegerField, BooleanField
 from wtforms.validators import * 
 
 
-from src.misc import *
-from strats.easy import Strats 
-from src.turfing import BetRoom, TurfingRoom
+from src.misc           import *
+from strats.easy        import Strats 
+from src.turfing        import BetRoom, TurfingRoom
+from src.groupby        import GroupBy
 
 
 
@@ -301,10 +302,15 @@ class App:
         strat_key   = form['strategy']
         _N          = int(form['strategy_n'])
 
-        df          = Groupy.internalize_results(df)
+        df          = df = GroupBy.internalize_results(df)
         res         = bets_obj[bet_key](df, strats_obj[strat_key], N=_N, verbose=True)
 
-        return res
+        delta, bet_ratio, _df = delta, bet_ratio, __df  = TurfingRoom.once( df, 
+                                            bets_obj[bet_key], 
+                                            strats_obj[strat_key], 
+                                            N=N, verbose=True)
+
+        return delta, bet_ratio, _df 
 
 
 
@@ -341,9 +347,11 @@ class App:
         info (txt)
 
 
-        res = App.__bet(df, form, verbose=True)
-        txt.append(f"results: {res}")
-
+        delta, bet_ratio, _df  = App.__bet(df, form, verbose=True)
+        txt.append(f"delta: {delta}")
+        txt.append(f"bet_ratio: {bet_ratio}")
+        txt.append(_df.head())
+        
         return txt, None
 
 
