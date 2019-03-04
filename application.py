@@ -12,15 +12,11 @@ from tempfile       import mkdtemp
 from src.misc       import *
 from src.webapp     import FormCheck, App, RegistrationForm, LoginForm
 from src.turfing    import BetRoom, TurfingRoom
+from strats.easy    import Strats
 
 
 # dataframe
 df          = pk_load("WITHOUT_RESULTS_pturf_grouped_and_merged_cache_carac_2016-2019_OK", "data/")
-index_data  = { "hippo_list"    : sorted(df.hippo.unique()), 
-                "typec_list"    : df.typec.dropna().value_counts().index, 
-                "today"         : web_today(),
-                "date_start"    : "2016-01-01",
-                "bet_list"      : BetRoom.bets  }
 
 
 # init flask and Session
@@ -32,6 +28,15 @@ app.config["SECRET_KEY"]        = "10e5cc248f27ad663a6a19a424067b8ff9217916fe87a
 Session(app)
 
 
+# default values for index
+index_data  = { "hippo_list"    : sorted(df.hippo.unique()), 
+                "typec_list"    : df.typec.dropna().value_counts().index, 
+                "today"         : web_today(),
+                "date_start"    : "2017-01-01", # timestamp_to_str(int_to_timestamp(df.jour.min()))
+                "bet_list"      : BetRoom.bets,
+                "strat_list"    : Strats.strats  }
+
+
 # routes
 @app.route("/index", methods=["GET", "POST"])
 @app.route("/",methods=["GET", "POST"])
@@ -39,7 +44,6 @@ def index():
     """index page"""
 
     return render_template("index.html", index_data=index_data)
-
 
 
 @app.route("/turfing", methods=["POST"])

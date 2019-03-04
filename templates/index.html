@@ -11,7 +11,7 @@
 
     <!-- date -->
     <label for="date_start">Start</label>
-    <input type="date" name="date_start", value="2018-01-01">
+    <input type="date" name="date_start", value="{{index_data['date_start']}}">
     <label for="date_stop">Stop</label>
     <input type="date" name="date_stop", value="{{index_data['today']}}">
     <br>
@@ -98,8 +98,8 @@
 
     <label for="bet_type">Bet type</label>
     <select name="bet_type">
-    {% for bet in index_data['bet_list'] %}
-          <option value="{{bet}}">{{bet}}</option>
+    {% for key, val in index_data['bet_list'] %}
+          <option value="{{key}}">{{val}}</option>
     {% endfor %}
     </select>
     <br>
@@ -107,15 +107,14 @@
     <!-- strategy -->
     <label for="strategy">Strategy</label>
     <select name="strategy">
-      <option value="n_winning_cote">bet on the nth best winning cote</option>
-      <option value="random_1_on_n_best_winning_cote">bet randomly between the best an the nth best winning cote</option>
-      <option value="never_bet">no bets, just stalk ladies</option>
-      <option value="random_choice">just choose randomly</option>
+      {% for key, val in index_data['strat_list'] %}
+            <option value="{{key}}">{{val}}</option>
+      {% endfor %}
     </select>
     <br>
 
     <!-- param -->
-    <label for="strategy_n">n</label>
+    <label for="strategy_n">parametre - N -</label>
     <input type="number" name="strategy_n" min="0" max="100" placeholder="0" value="0">
 
     <!-- money management -->

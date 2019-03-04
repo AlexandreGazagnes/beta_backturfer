@@ -14,12 +14,18 @@ class BetRoom :
     BetRoom.ordered/unorder tierce : you bet 3 horse on the podium, ordered or not
     BetRoom.ordered/unorder quinte : you think you are Paco Rabanne, please stop drinking to much beers"""
 
-    bets = [    "simple_gagnant", "simple_place", 
-                "couple_gagnant", "couple_place", "couple_ordre",
-                "deux_sur_quatre", 
-                "trio_ordre", "trio_desordre", 
-                "tierce_ordre", "tierce_desordre", 
-                "quinte_ordre", "quinte_desordre"]
+    bets = [('simple_gagnant', 'simple gagnant'),
+            ('simple_place', 'simple placé'),
+            ('couple_gagnant', 'couple gagnant'),
+            ('couple_place', 'couple placé'),
+            ('couple_ordre', 'couple ordre'),
+            ('deux_sur_quatre', 'deux sur quatre'),
+            ('trio_ordre', 'trio ordre'),
+            ('trio_desordre', 'trio désordre'),
+            ('tierce_ordre', 'tiercé ordre'),
+            ('tierce_desordre', 'tiercé désordre'),
+            ('quinte_ordre', 'quinté ordre'),
+            ('quinte_desordre', 'quinté désordre')]
 
 
     def __winner_num(results) : 
