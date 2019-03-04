@@ -1,11 +1,15 @@
 #!/usr/bin/env python3
 # coding: utf-8
 
-from src.misc import *
 
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, IntegerField, BooleanField
 from wtforms.validators import * 
+
+
+from src.misc import *
+from strats.easy import Strats 
+from src.turfing import BetRoom, TurfingRoom
 
 
 
@@ -265,6 +269,14 @@ class App:
         return df, errors
 
 
+
+    def __bet(df, form, verbose=True) : 
+
+        return "not IMPLEMENTED"
+
+
+
+
     def run(df, form, verbose=True): 
 
         assert isinstance(df, pd.DataFrame)
@@ -282,7 +294,26 @@ class App:
             # pk_save(df, get_an_hash(), "temp/web_df/")
         
 
-        return "No errors in App.run", None
+        txt =list()
+        txt.append(f"len df : {len(df)}")
+        txt.append(f"start df : {int_to_timestamp(df.jour.min())}")
+        txt.append(f"stop df : {int_to_timestamp(df.jour.max())}")
+        txt.append(f"df.quinte : {df.quinte.unique()[:10]}")
+        txt.append(f"df.hippo : {df.hippo.unique()[:10]}")
+        txt.append(f"df.cheque_max : {df.cheque_val.max()}")
+        txt.append(f"df.cheque_min : {df.cheque_val.min()}")
+        txt.append(f"df.cheque_type : {df.cheque_type.unique()[:10]}")
+        txt.append(f"df.typec : {df.typec.unique()[:10]}")
+        txt.append(f"bet type : {form['bet_type']}")
+        txt.append(f"strategy : {form['strategy']}")
+        txt.append(f"n : {form['strategy_n']}")
+        info (txt)
+
+
+        res = App.__bet(df, form, verbose=True)
+        txt.append(f"results: {res}")
+
+        return txt, None
 
 
 

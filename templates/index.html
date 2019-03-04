@@ -7,7 +7,7 @@
   <form action="{{url_for('turfing')}}" method="post">
 
     <!-- database -->
-    <h2>database options</h2>
+    <h2>Selection des courses</h2>
 
     <!-- date -->
     <label for="date_start">Start</label>
@@ -83,10 +83,10 @@
     <input type="checkbox" name="steeple-chase cross-country" > -->
 
     <!-- bet options -->
-    <h2>bet options</h2>
+    <h2>Pari et stratégie</h2>
 
     <!-- bet type -->
-    <label for="bet_type">Bet type</label>
+    <!-- <label for="bet_type">Bet type</label>
     <select name="bet_type">
       <option value="winning">gagnant</option>
       <option value="placed">placé</option>
@@ -94,11 +94,19 @@
       <option value="ordered_tierce">tiercé ordre</option>
       <option value="unordered_tierce">tiercé désordre</option>
     </select>
+    <br> -->
+
+    <label for="bet_type">Bet type</label>
+    <select name="bet_type">
+    {% for bet in index_data['bet_list'] %}
+          <option value="{{bet}}">{{bet}}</option>
+    {% endfor %}
+    </select>
     <br>
 
     <!-- strategy -->
-    <label for="stratey_type">Strategy</label>
-    <select name="stratey_type">
+    <label for="strategy">Strategy</label>
+    <select name="strategy">
       <option value="n_winning_cote">bet on the nth best winning cote</option>
       <option value="random_1_on_n_best_winning_cote">bet randomly between the best an the nth best winning cote</option>
       <option value="never_bet">no bets, just stalk ladies</option>
@@ -107,11 +115,11 @@
     <br>
 
     <!-- param -->
-    <label for="stratey_param">n</label>
-    <input type="number" name="stratey_param" min="0" max="100" placeholder="0">
+    <label for="strategy_n">n</label>
+    <input type="number" name="strategy_n" min="0" max="100" placeholder="0" value="0">
 
     <!-- money management -->
-    <h2>money management options</h2>
+    <h2>Mises et gestion du cash</h2>
 
     <!-- bet value     -->
     <label for="bet_value">Bet_value</label>
@@ -126,7 +134,7 @@
     </select>
 
     <!-- other -->
-    <h2>other</h2>
+    <h2>Autres options</h2>
 
     <!-- not implemented -->
     <p>dataset min size</p>

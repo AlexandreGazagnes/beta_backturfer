@@ -14,7 +14,12 @@ class BetRoom :
     BetRoom.ordered/unorder tierce : you bet 3 horse on the podium, ordered or not
     BetRoom.ordered/unorder quinte : you think you are Paco Rabanne, please stop drinking to much beers"""
 
-    bets = ["winning", "podium"]
+    bets = [    "simple_gagnant", "simple_place", 
+                "couple_gagnant", "couple_place", "couple_ordre",
+                "deux_sur_quatre", 
+                "trio_ordre", "trio_desordre", 
+                "tierce_ordre", "tierce_desordre", 
+                "quinte_ordre", "quinte_desordre"]
 
 
     def __winner_num(results) : 
@@ -54,9 +59,14 @@ class BetRoom :
         return BetRoom.__n_first_nums(results, 3)
 
 
+    def __find_podium_cotes(results) : 
+        
+        return BetRoom.__n_first_cotes(results, 3)
+
+
     @change_repr
-    def winning(df, your_strat, N=None, verbose=True) : 
-        """winning bet"""
+    def simple_gagnant(df, your_strat, N=None, mise_min=1.5, verbose=True) : 
+        """miser sur un cheval gagnant"""
 
         assert isinstance(df, pd.DataFrame)
         assert isinstance(verbose, bool)
@@ -77,8 +87,10 @@ class BetRoom :
 
 
     @change_repr
-    def podium(df, your_strat, N=None, verbose=True) : 
-        """pordium bet"""
+    def simple_place(df, your_strat, N=None, mise_min=1.5, verbose=True) : 
+        """miser sur un cheavl sur le podium
+         - vous gagnez s'il arrive parmi les 3 premiers à l’arrivée dans une course comptant au minimum 8 chevaux inscrits au programme (*)
+         - vous gagnez s’il arrive à la première ou à la deuxième place dans une course comptant entre 4 et 7 chevaux inscrits au programme (*)"""
 
         assert isinstance(df, pd.DataFrame)
         assert isinstance(verbose, int)
@@ -123,28 +135,84 @@ class BetRoom :
         return df
 
 
-    def ordered_quinte(df, your_strat, N=None, verbose=True) : 
-        """raise NotImplementedError"""
+    @change_repr
+    def couple_gagnant(df, your_strat, N=None, mise_min=1.5,verbose=True): 
+        """trouver les 2 premiers dans le desordre
+            Pour les courses d'au moins 8 partants, au Couplé Gagnant, trouver les deux premiers chevaux de l'arrivée, quel que soit l'ordre."""
+        
+        raise NotImplementedError
+
+
+    @change_repr
+    def couple_place(df, your_strat, N=None, mise_min=1.5, verbose=True): 
+        """trouver les 2 des 3 premiers chevux  dans le desordre
+        Pour les courses d'au moins 8 partants, au Couplé Placé, trouver deux des trois premiers chevaux de l'arrivée, quel que soit l'ordre."""
 
         raise NotImplementedError
 
 
-    def unorder_quinte(df, your_strat, N=None, verbose=True) : 
-        """raise NotImplementedError"""
+    @change_repr
+    def couple_ordre(df, your_strat, N=None, mise_min=1.5, verbose=True): 
+        """ trouver dans l'ordre 1 et 2e cheval
+        Pour les courses de 4 à 7 partants, au Couplé Ordre, trouver les deux premiers chevaux dans l'ordre exact de l'arrivée."""
 
         raise NotImplementedError
 
 
-    def ordered_tierce(df, your_strat, N=None, verbose=True) : 
-        """raise NotImplementedError"""
+    @change_repr
+    def trio_desordre(df, your_strat, N=None, mise_min=1.5, verbose=True): 
+        """tiercé mais si pas quinte  ???? VERIFIER ???
+            Pour les courses d'au moins 8 partants (hors course Quinté+), trouvez les trois premiers chevaux de l'arrivée, quel que soit l'ordre."""
 
         raise NotImplementedError
 
 
-    def unorder_tierce(df, your_strat, N=None, verbose=True) : 
-        """raise NotImplementedError"""
+    @change_repr
+    def trio_ordre(df, your_strat, N=None, mise_min=1.5, verbose=True): 
+        """ tiercé mais si pas quinte ???? VERIFIER ???
+        Pour les courses des réunions nationales comportant de 4 à 7 partants maximum (hors courses exclusives internet et courses étrangères en masse commune), trouvez les trois premiers chevaux dans l’ordre exact d’arrivée. """
 
         raise NotImplementedError
+
+
+    @change_repr
+    def deux_sur_quatre(df, your_strat, N=None, mise_min=3, verbose=True): 
+        """2 sur les 4 dans le desordre
+        vous devez désigner deux chevaux d’une même course parmi les quatre premiers, quel que soit l’ordre d’arrivée. Votre pari est donc payable si les deux chevaux choisis occupent deux des quatre premières places de l’épreuve.
+        Le 2sur4 est proposé sur toutes les courses d’au moins 10 partants.²"""
+        
+        raise NotImplementedError
+
+
+    @change_repr
+    def tierce_ordre(df, your_strat, N=None, mise_min=1, verbose=True):
+        """tierce ordre
+        Si vos trois chevaux sont arrivés aux 3 premières places dans l'ordre indiqué, vous gagnez le rapport "Tiercé dans l'ordre"."""
+
+        raise NotImplementedError
+
+
+    @change_repr    
+    def tierce_desordre(df, your_strat, N=None, mise_min=1, verbose=True):
+        """tierce desordre
+        Si vous avez trouvé les 3 premiers chevaux de la course mais dans un ordre différent de celui de l'arrivée, vous gagnez le rapport "Tiercé dans le désordre"."""
+
+        raise NotImplementedError
+
+
+    @change_repr
+    def quinte_ordre(df, your_strat, N=None, mise_min=2, verbose=True):
+
+        raise NotImplementedError
+
+
+    @change_repr
+    def quinte_desordre(df, your_strat, N=None, mise_min=2, verbose=True):
+
+        raise NotImplementedError
+
+
+
 
 
 class TurfingRoom : 

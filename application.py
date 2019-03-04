@@ -3,19 +3,24 @@
 
 
 # import
-from src.misc       import *
-from src.webapp     import FormCheck, App, RegistrationForm, LoginForm
+
 from flask          import Flask, render_template, request, session, url_for, flash, redirect
 from flask_session  import Session
 from tempfile       import mkdtemp
 
 
+from src.misc       import *
+from src.webapp     import FormCheck, App, RegistrationForm, LoginForm
+from src.turfing    import BetRoom, TurfingRoom
+
 
 # dataframe
 df          = pk_load("WITHOUT_RESULTS_pturf_grouped_and_merged_cache_carac_2016-2019_OK", "data/")
-index_data  = { "hippo_list": sorted(df.hippo.unique()), 
-                "typec_list": df.typec.dropna().value_counts().index, 
-                "today"     : web_today()}
+index_data  = { "hippo_list"    : sorted(df.hippo.unique()), 
+                "typec_list"    : df.typec.dropna().value_counts().index, 
+                "today"         : web_today(),
+                "date_start"    : "2016-01-01",
+                "bet_list"      : BetRoom.bets  }
 
 
 # init flask and Session
@@ -48,11 +53,10 @@ def turfing():
     results, errors = App.run(df, form, verbose=True)
     info(f"ERRRORS = {errors}")
     if errors : return render_template( "index.html", 
-                                        title="results",
                                         errors=errors, 
                                         index_data=index_data)
 
-    return render_template("turfing.html", results=results)
+    return render_template("turfing.html", title="results", results=results)
 
 
 @app.route("/register", methods=['GET', 'POST'])
