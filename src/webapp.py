@@ -3,6 +3,11 @@
 
 from src.misc import *
 
+from flask_wtf import FlaskForm
+from wtforms import StringField, PasswordField, SubmitField, IntegerField, BooleanField
+from wtforms.validators import * 
+
+
 
 class FormCheck :
     """basic class of funct to manage and clean form"""
@@ -280,6 +285,35 @@ class App:
         return "No errors in App.run", None
 
 
+
+
+
+
+
+
+
+
+
+
+class RegistrationForm(FlaskForm): 
+    """form for registration"""
+
+    username        = StringField('username', validators=[DataRequired(), Length(min=2, max=20)])
+    email           = StringField('email', validators=[DataRequired(), Email()])
+    age             = IntegerField("age", validators=[DataRequired(), NumberRange(1, 135)])
+    password        = PasswordField('password', validators=[DataRequired(), Length(min=8, max=20)])
+    conf_password   = PasswordField('conf_password', validators=[DataRequired(), EqualTo("password")])
+    submit          = SubmitField("sign in")
+
+
+
+class LoginForm(FlaskForm): 
+    """form for login"""
+
+    email           = StringField('email', validators=[DataRequired(), Email()])
+    password        = PasswordField('password', validators=[DataRequired, Length(min=8, max=20)])
+    remember        = BooleanField("remember me")
+    submit          = SubmitField("log in")
 
 
 

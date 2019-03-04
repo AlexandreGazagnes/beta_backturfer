@@ -1,5 +1,6 @@
 body    {
-        background-color: lavender;
+        background-color: white;
+        color:#000080;
         /* background-color: grey; */
         }
 
@@ -8,11 +9,27 @@ header  {
         }
 
 nav     {
-        color: yellow;
+        color: black;
         font-weight: bold;
         font-style: italic;
         }
 
+.navbar {
+        color: black;
+        }
+
+.nav-link {
+          background-color:white ;
+          color:#000080;
+          }
+
+.nav-link active{
+          background-color:#000080 ;
+          color:white;
+          }
+
+
+}
 h1      {
         color: green;
         font-weight: bold;

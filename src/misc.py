@@ -4,7 +4,7 @@
 
 # builtin
 # import sqlite3
-import os, sys, time, pickle, logging, string
+import os, sys, time, pickle, logging, string, secrets
 from logging import warning, info
 from itertools import product
 from multiprocessing import Process
@@ -178,11 +178,7 @@ def web_today() :
 
 
 def get_an_hash(l=20) : 
-
-    s = list(string.ascii_letters+string.digits)
-    h = np.random.choice(s, l)
-
-    return "".join(h)
+    return secrets.token_hex()
 
 
 

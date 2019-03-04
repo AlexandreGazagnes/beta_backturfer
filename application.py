@@ -4,8 +4,8 @@
 
 # import
 from src.misc       import *
-from src.webapp     import FormCheck, App
-from flask          import Flask, render_template, request, session, url_for
+from src.webapp     import FormCheck, App, RegistrationForm, LoginForm
+from flask          import Flask, render_template, request, session, url_for, flash, redirect
 from flask_session  import Session
 from tempfile       import mkdtemp
 
@@ -23,25 +23,48 @@ app = Flask(__name__)
 app.config["SESSION_FILE_DIR"]  = mkdtemp()
 app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"]      = "filesystem"
+app.config["SECRET_KEY"]        = "10e5cc248f27ad663a6a19a424067b8ff9217916fe87a1a1209c7b1f2ef56cc8"
 Session(app)
 
 
 # routes
-@app.route("/home")
-@app.route("/index")
-@app.route("/")
+@app.route("/home", methods=["POST", "GET"])
+@app.route("/index", methods=["POST", "GET"])
+@app.route("/",methods=["POST", "GET"])
 def index():
     """index page"""
 
-    return render_template( "index.html", index_data=index_data)
+    return render_template( "index.html", title="", index_data=index_data)
 
 
-@app.route("/fancy_index")
-def fancy_index():
-    """andother index"""
+@app.route("/register", methods=['GET', 'POST'])
+def register():
+    """register page"""
+
+    form = RegistrationForm()
+    if form.validate_on_submit():
+        flash(f'Account created for {form.username.data}!', 'success')
+        return redirect(url_for('home'))
+    
+    return render_template('register.html', title='Register', form=form)
 
 
-    return render_template( "index.html", index_data=index_data)
+
+@app.route("/login", methods=['GET', 'POST'])
+def login():
+    """login page """
+
+    form = LoginForm()
+    if form.validate_on_submit():
+        if form.email.data == 'admin@blog.com' and form.password.data == 'password':
+            flash('You have been logged in!', 'success')
+            return redirect(url_for('home'))
+        else:
+            flash('Login Unsuccessful. Please check username and password', 'danger')
+    
+    return render_template('login.html', title='Login', form=form)
+
+
 
 
 @app.route("/turfing", methods=["POST"])
