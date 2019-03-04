@@ -18,7 +18,7 @@
       <label for="date_start">Start</label>
       <input type="date" name="date_start", value="2018-01-01">
       <label for="date_stop">Stop</label>
-      <input type="date" name="date_stop", value="{{today}}">
+      <input type="date" name="date_stop", value="{{index_data['today']}}">
       <br>
       <label for="country">country</label>
       <select name="country">
@@ -38,10 +38,10 @@
       <input type="text" name="hippo" placeholder="ex : Vincennes">
       <br> -->
       <br>
-      <label for="hippo2">specific hippodrome</label>
-      <input list="hippo2" type="text" id="choix_hippo">
+      <label for="hippo">specific hippodrome</label>
+      <input list="hippo2" type="text" name="hippo">
       <datalist id="hippo2">
-        {% for hippo in hippo_list %}
+        {% for hippo in index_data['hippo_list'] %}
           <option value= {{ hippo }}>{{ hippo }}</option>
         {% endfor %}
       </datalist>
@@ -66,7 +66,7 @@
       <br>
 
 
-      {% for typec in typec_list %}
+      {% for typec in index_data['typec_list'] %}
         <label for="{{typec}}">{{typec}}</label>
         <input type="checkbox" name="{{typec}}">
         {% endfor %}

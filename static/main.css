@@ -1,0 +1,30 @@
+body    {
+        background-color: lavender;
+        /* background-color: grey; */
+        }
+
+header  {
+        color:red ;
+        }
+
+nav     {
+        color: yellow;
+        font-weight: bold;
+        font-style: italic;
+        }
+
+h1      {
+        color: green;
+        font-weight: bold;
+        text-decoration: underline;
+        }
+
+form    {
+        border-style: solid;
+        padding: 3px;
+        margin: 3px;
+        }
+
+footer {
+        color = "green"
+        }

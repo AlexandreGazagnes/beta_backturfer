@@ -5,7 +5,7 @@
 # import
 from src.misc       import *
 from src.webapp     import FormCheck, App
-from flask          import Flask, render_template, request, session
+from flask          import Flask, render_template, request, session, url_for
 from flask_session  import Session
 from tempfile       import mkdtemp
 
@@ -13,13 +13,10 @@ from tempfile       import mkdtemp
 
 # dataframe
 df          = pk_load("WITHOUT_RESULTS_pturf_grouped_and_merged_cache_carac_2016-2019_OK", "data/")
-hippo_list  = sorted(df.hippo.unique())
-typec_list  = df.typec.dropna().value_counts().index
+index_data  = { "hippo_list": sorted(df.hippo.unique()), 
+                "typec_list": df.typec.dropna().value_counts().index, 
+                "today"     : web_today()}
 
-
-
-info(hippo_list)
-info(typec_list)
 
 # init flask and Session
 app = Flask(__name__)
@@ -30,15 +27,13 @@ Session(app)
 
 
 # routes
+@app.route("/home")
 @app.route("/index")
 @app.route("/")
 def index():
     """index page"""
 
-    return render_template( "index.html", 
-                            today=web_today(), 
-                            hippo_list=hippo_list,
-                            typec_list = typec_list)
+    return render_template( "index.html", index_data=index_data)
 
 
 @app.route("/fancy_index")
@@ -46,10 +41,7 @@ def fancy_index():
     """andother index"""
 
 
-    return render_template( "index.html", 
-                            today=web_today(), 
-                            hippo_list=hippo_list,
-                            typec_list = typec_list)
+    return render_template( "index.html", index_data=index_data)
 
 
 @app.route("/turfing", methods=["POST"])
@@ -58,15 +50,20 @@ def turfing():
 
     form, errors = FormCheck.check(request.form, verbose=True)
     info(f"ERRRORS = {errors}")
-    if errors : return render_template("index.html", errors=errors, today=web_today(), hippo_list=hippo_list)
+    if errors : return render_template("index.html", errors=errors, index_data=index_data)
   
     results, errors = App.run(df, form, verbose=True)
     info(f"ERRRORS = {errors}")
-    if errors : return render_template("index.html", errors=errors, today=web_today(), hippo_list=hippo_list)
+    if errors : return render_template("index.html", errors=errors, index_data=index_data)
 
     return render_template("turfing.html", results=results)
 
 
+def main() : 
+    """main"""
+
+    app.run(debug=True)
+
 
 if __name__ == '__main__':
-    app.run(debug=1)
+    main()
