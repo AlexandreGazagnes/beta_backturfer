@@ -234,11 +234,35 @@ class GroupBy :
                 else : 
                     pass
 
+        assert "comp" in cache.columns
+        assert "comp" in carac.columns
 
-        df = pd.merge(  cache, carac, how="left", on='comp', 
-                        suffixes=('_cache', '_carac'), validate="1:1")
+        cache.sort_values("comp", axis=0, ascending=True, inplace=True)
+        carac.sort_values("comp", axis=0, ascending=True, inplace=True)
 
-        return df
+        assert len(cache) == len(carac)
+        val = cache.comp.values == carac.comp.values
+        assert val.all()
+
+        _df = pd.concat([cache, carac], axis=1, ignore_index=True)
+
+        funct = lambda i : i if i!="comp" else "_comp"
+        _df.columns = list(cache.columns) + list(map(funct, carac.columns)) 
+
+        val = (_df.comp ==_df["_comp"])
+        assert val.all()                                          
+
+        _df.drop("_comp", axis=1, inplace=True)
+
+        # assert len(_df) == len(carac)
+        # assert len(_df) == len(cache)
+
+
+        # depreciated because to slow...
+        # df = pd.merge(  cache, carac, how="left", on='comp', 
+        #                 suffixes=('_cache', '_carac'), validate="1:1")
+
+        return _df
 
 
     @time_it 
@@ -370,10 +394,6 @@ class GroupBy :
 
 
 
-
-
-
-        return df
 
 
     @time_it 
