@@ -278,6 +278,27 @@ class GroupBy :
         
         return df
 
+
+    def dask_internalize_results(df, path="data/results") : 
+
+        if "results" in df.columns : 
+            raise ValueError ("results ALREADY in columns")
+
+        assert len(df.comp.unique()) == len(df)
+
+        process     = dask_client.map(lambda i : pk_load(i, path), df.comp)
+        r           = dask_client.submit(lambda i : i, process)
+        results     = r.results()
+
+        # funct = lambda comp : pk_load(str(comp), path)
+        # results = dd.from_pandas(df.comp, npartitions=N_CORES).map_partitions(
+        #   lambda __df : __df.apply(funct)).compute()
+
+        # df["results"] = results_list
+
+        return df
+
+
     @time_it 
     @get_size_of
     def create_merged_dataframe(cache, carac) : 

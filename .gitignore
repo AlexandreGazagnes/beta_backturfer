@@ -108,6 +108,8 @@ venv.bak/
 
 temp/*/*.pk
 temp/*/*.csv
+temp/*.csv
+temp/*.pk
 
 data/pturf*.csv
 data/cache*.csv
@@ -117,3 +119,5 @@ data/pturf*.pk
 data/cache*.pk
 data/carac*.pk
 data/results/*.pk
+
+dask-worker-space

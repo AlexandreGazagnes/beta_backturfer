@@ -271,7 +271,7 @@ class App:
 
 
 
-    def __bet(df, form, verbose=True) : 
+    def __bet(df, form, N=0, verbose=True) : 
 
         bets_obj = {'simple_gagnant': BetRoom.simple_gagnant,
                     'simple_place': BetRoom.simple_place,
@@ -350,8 +350,7 @@ class App:
         delta, bet_ratio, _df  = App.__bet(df, form, verbose=True)
         txt.append(f"delta: {delta}")
         txt.append(f"bet_ratio: {bet_ratio}")
-        txt.append(_df.head())
-        
+
         return txt, None
 
 

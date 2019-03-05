@@ -11,6 +11,15 @@ from multiprocessing import Process
 from collections import Iterable, OrderedDict
 from tqdm import tqdm
 
+import dask
+from dask import dataframe as dd
+from dask.distributed import Client
+from dask.multiprocessing import get
+from multiprocessing import cpu_count
+
+
+dask_client = Client()
+
 
 # data
 import numpy  as np
@@ -31,7 +40,7 @@ logger.setLevel(logging.INFO)
 
 # consts
 EPOCH_UNIX = pd.Timestamp('1970-01-01 00:00:00')
-
+N_CORES    = cpu_count()
 
 
 # decorators
