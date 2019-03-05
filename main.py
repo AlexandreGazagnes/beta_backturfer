@@ -23,21 +23,23 @@ from strats.easy        import Strats
 info("loading dataframe")
 df  = pk_load("WITHOUT_RESULTS_pturf_grouped_and_merged_cache_carac_2016-2019_OK", "data/")
 
+path="data/results/"
+temp="temp/internalize_results/" 
+cores=6
+
+# process     = dask_client.map(lambda i : pk_load(i, path), df.comp)
+# r           = dask_client.submit(lambda i : i, process)
+# results     = r.results()
 
 
-process     = dask_client.map(lambda i : pk_load(i, path), df.comp)
-r           = dask_client.submit(lambda i : i, process)
-results     = r.results()
 
-
-
-# info("selecting good dataframe")
-# df  = df.loc[df.quinte == 1, :]
-# df  = df.loc[df.jour >= timestamp_to_int(pd.Timestamp("2018-01-01")), :] 
-# my_typec = df.typec.apply(lambda i : str(i) in ["attelé", "monté", "plat"])
-# df  = df.loc[my_typec, :]
-# df  = df.loc[df.cheque_type == "€", :]
-# info(f"len df : {len(df)}" )
+info("selecting good dataframe")
+df  = df.loc[df.quinte == 1, :]
+df  = df.loc[df.jour >= timestamp_to_int(pd.Timestamp("2018-01-01")), :] 
+my_typec = df.typec.apply(lambda i : str(i) in ["attelé", "monté", "plat"])
+df  = df.loc[my_typec, :]
+df  = df.loc[df.cheque_type == "€", :]
+info(f"len df : {len(df)}" )
 
 # info("loading results")
 # df = GroupBy.internalize_results(df)

@@ -124,13 +124,14 @@ class GroupBy :
 
         # verbose
         if verbose : 
-            warning(f"df size in Mo : {sys.getsizeof(new_df) / 1000000}")
-            warning(f"timer load df : {round(time.time() - t0, 2)}")
-            warning(f"debut {new_df.jour.min()} fin {new_df.jour.max()}")
-            warning(new_df.shape)
-            warning(new_df.dtypes)
+            info(f"df size in Mo : {sys.getsizeof(new_df) / 1000000}")
+            info(f"timer load df : {round(time.time() - t0, 2)}")
+            info(f"debut {new_df.jour.min()} fin {new_df.jour.max()}")
+            info(new_df.shape)
+            info(new_df.dtypes)
 
         return new_df
+
 
     @time_it 
     @get_size_of
@@ -239,6 +240,7 @@ class GroupBy :
 
         return df
 
+
     @time_it 
     @get_size_of
     def externalize_results(df, path="data/results/") : 
@@ -249,18 +251,35 @@ class GroupBy :
 
         assert len(df.comp.unique()) == len(df)
 
-        for i in tqdm(df.index) : 
-            comp    = df.loc[i, "comp"]
-            results = df.loc[i, "results"]
-            pk_save(results, str(comp), path)
 
+        def funct(i0=0, i1=10000000) : 
+
+            for i in tqdm(df.index[i0:i1]) : 
+                comp    = df.loc[i, "comp"]
+                results = df.loc[i, "results"]
+                pk_save(results, str(comp), path)
+
+            return None
+
+
+        # multiporcessing
+        if cores < 2 : 
+                funct()
+        else : 
+            chks  = chunks(df.index, cores)
+            process_list = [Process(target=funct, args=chk) for chk in chks]
+            [i.start() for i in process_list]
+            [i.join()  for i in process_list]
+
+        # drop df
         df.drop("results", axis=1, inplace=True)
         
         return df
 
+
     @time_it 
     @get_size_of
-    def internalize_results(df, path="data/results/") : 
+    def __old_internalize_results(df, path="data/results/") : 
         """load results from local path"""
 
         if "results" in df.columns : 
@@ -279,22 +298,80 @@ class GroupBy :
         return df
 
 
-    def dask_internalize_results(df, path="data/results") : 
+    @get_size_of
+    @time_it 
+    def internalize_results(df, path="data/results/", temp="temp/internalize_results/" , cores=6) :
 
         if "results" in df.columns : 
             raise ValueError ("results ALREADY in columns")
 
         assert len(df.comp.unique()) == len(df)
 
-        process     = dask_client.map(lambda i : pk_load(i, path), df.comp)
-        r           = dask_client.submit(lambda i : i, process)
-        results     = r.results()
 
-        # funct = lambda comp : pk_load(str(comp), path)
-        # results = dd.from_pandas(df.comp, npartitions=N_CORES).map_partitions(
-        #   lambda __df : __df.apply(funct)).compute()
+        def funct(i0=0, i1=10000000) :                 
+                
+            results = []
+            for comp in tqdm(df.comp[i0: i1]) : 
+                results.append([comp, pk_load(str(comp), path)])
+            
+            results = pd.DataFrame(results, columns=["comp", "results"])
+            
+            pk_save(results, str(results.comp[0]), temp)
 
-        # df["results"] = results_list
+
+        def temp_merge() : 
+
+            sub_df = pd.DataFrame(columns=["comp", "results"])
+
+            for n in tqdm(os.listdir(temp)) :
+
+                if not ".pk" in n : continue
+                else : n = n.replace(".pk", "")
+
+                r  = pk_load(str(n), temp)
+                sub_df = sub_df.append(r, ignore_index=True)
+                os.remove(f"{temp}{n}.pk")
+
+            sub_df["comp"] = sub_df.comp.astype(np.uint32)
+
+            return sub_df
+
+
+        # multiporcessing
+        if cores < 2 : 
+                funct()
+        else : 
+            chks  = chunks(df.comp, cores)
+            process_list = [Process(target=funct, args=chk) for chk in chks]
+            [i.start() for i in process_list]
+            [i.join()  for i in process_list]
+
+        # merge
+        results = temp_merge()
+
+        df.sort_values("comp", axis=0, ascending=True, inplace=True)
+        results.sort_values("comp", axis=0, ascending=True, inplace=True)
+
+        assert len(df) == len(results)
+        val = df.comp.values == results.comp.values
+        assert val.all()
+
+        _df = pd.concat([df, results], axis=1, ignore_index=True)
+        _df.columns = list(df.columns) + ["_comp", "results"]   
+
+        val = (_df.comp ==_df["_comp"])
+        assert val.all()                                          
+
+        _df.drop("_comp", axis=1, inplace=True)
+
+        assert len(_df) == (len(df))
+
+        return _df
+
+
+
+
+
 
         return df
 
