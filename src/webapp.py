@@ -19,77 +19,77 @@ from src.turfing        import BetRoom, TurfingRoom
 class FormCheck :
     """basic class of funct to manage and clean form"""
 
-    # consts
-    __price_min_max = 5000000
-    __price_max_min = 1000
+    # # consts
+    # __price_min_max = 5000000
+    # __price_max_min = 1000
 
 
-    def __check_date_start(d) :
-        """check form input for date_start"""
+    # def __check_date_start(d) :
+    #     """check form input for date_start"""
 
-        if not d : 
-            return 0, False
-        try : 
-            d= pd.Timestamp(d)
-        except : 
-            return 0, "Error : date_start timestamp conversion, invalid format"
+    #     if not d : 
+    #         return 0, False
+    #     try : 
+    #         d= pd.Timestamp(d)
+    #     except : 
+    #         return 0, "Error : date_start timestamp conversion, invalid format"
     
-        if d >= pd.Timestamp.today()  : 
-            return 0, "Error : date_start > Today"
+    #     if d >= pd.Timestamp.today()  : 
+    #         return 0, "Error : date_start > Today"
 
-        d = timestamp_to_int(d)
+    #     d = timestamp_to_int(d)
 
-        return (d, False)
-
-
-    def __check_date_stop(d) :
-        """check form input for date_stop"""
-        if not d :
-            return 30000, False
-        try : 
-            d= pd.Timestamp(d)
-        except : 
-            return 0, "Error : date_start timestamp conversion, invalid format"
-
-        if d <= pd.Timestamp("2015-12-31") : 
-            return 0, "Error : date_stop to old, data start at 2016-01-01"
-
-        d = timestamp_to_int(d)
-
-        return d, False
+    #     return (d, False)
 
 
-    def __check_date_comp(date_start, date_stop) :
+    # def __check_date_stop(d) :
+    #     """check form input for date_stop"""
+    #     if not d :
+    #         return 30000, False
+    #     try : 
+    #         d= pd.Timestamp(d)
+    #     except : 
+    #         return 0, "Error : date_start timestamp conversion, invalid format"
+
+    #     if d <= pd.Timestamp("2015-12-31") : 
+    #         return 0, "Error : date_stop to old, data start at 2016-01-01"
+
+    #     d = timestamp_to_int(d)
+
+    #     return d, False
+
+
+    # def __check_date_comp(date_start, date_stop) :
         
-        if date_stop <= date_start : 
-            return 0, 0, "Error : Sorry date_start to close/before date_stop" 
+    #     if date_stop <= date_start : 
+    #         return 0, 0, "Error : Sorry date_start to close/before date_stop" 
 
-        return date_start, date_stop, False
-
-
-    def __check_country(d) :
-
-        return d, False
+    #     return date_start, date_stop, False
 
 
-    def __check_hippo(d) :
+    # def __check_country(d) :
 
-        d = d.strip().lower()
+    #     return d, False
+
+
+    # def __check_hippo(d) :
+
+    #     d = d.strip().lower()
         
-        return d, False
+    #     return d, False
 
 
-    def __check_hippo_comp(country, hippo) :
+    # def __check_hippo_comp(country, hippo) :
 
-        if hippo : 
-            country = "monde"
+    # #     if hippo : 
+    # #         country = "monde"
 
-        return country, hippo, False
+    # #     return country, hippo, False
 
 
-    def __check_quinte(d) :
+    # def __check_quinte(d) :
         
-        return d, False
+    #     return d, False
 
 
     def __check_price_min(d) :

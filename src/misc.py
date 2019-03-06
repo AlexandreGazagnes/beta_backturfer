@@ -186,6 +186,13 @@ def web_today() :
     return t 
 
 
+def int_today() : 
+    
+    t = pd.Timestamp.today()
+
+    return timestamp_to_int(t)
+
+
 def get_an_hash(l=20) : 
     """ return a very good random string"""
 

@@ -12,7 +12,8 @@
 
 # import 
 from src.misc           import * 
-from src.build          import Build, Selector
+from src.build          import Build
+from src.select         import Selector
 from src.groupby        import GroupBy
 from src.addcote        import CotePlaced, CoteDuo, CoteTierce
 from src.turfing        import BetRoom, TurfingRoom
@@ -27,18 +28,14 @@ df  = pk_load("WITHOUT_RESULTS_pturf_grouped_and_merged_cache_carac_2016-2019_OK
 # selection
 info("selecting good dataframe")
 
-selectors { 'date_start': 0,
-            'date_stop': 1000000,
-            'hippo': None,
-            'country': None,
-            'quinte': 'all',
-            'euro_only': False,
-            'price_min': 0,
-            'price_max': 500000000,
-            'typec': [  'steeple-chase cross-country', 'steeple-chase', 'haies',
-                        'plat', 'attelé', 'monté', np.nan]}
+selector = Selector({   'date_start': "2018-01-01",
+                        'quinte'    : 1,
+                        'euro_only' : True,
+                        'typec'     : [  'attelé', 'monté',]}) 
 
-df = Build.select(df, selector)
+
+
+df = selector.perform(df)
 
 
 # load results
