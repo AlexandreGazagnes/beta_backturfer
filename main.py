@@ -12,49 +12,51 @@
 
 # import 
 from src.misc           import * 
-from src.build          import Build
+from src.build          import Build, Selector
 from src.groupby        import GroupBy
 from src.addcote        import CotePlaced, CoteDuo, CoteTierce
 from src.turfing        import BetRoom, TurfingRoom
 from strats.easy        import Strats
 
-# main dataframe
 
+# main dataframe
 info("loading dataframe")
 df  = pk_load("WITHOUT_RESULTS_pturf_grouped_and_merged_cache_carac_2016-2019_OK", "data/")
 
-path="data/results/"
-temp="temp/internalize_results/" 
-cores=6
 
-# process     = dask_client.map(lambda i : pk_load(i, path), df.comp)
-# r           = dask_client.submit(lambda i : i, process)
-# results     = r.results()
-
-
-
+# selection
 info("selecting good dataframe")
-df  = df.loc[df.quinte == 1, :]
-df  = df.loc[df.jour >= timestamp_to_int(pd.Timestamp("2018-01-01")), :] 
-my_typec = df.typec.apply(lambda i : str(i) in ["attelé", "monté", "plat"])
-df  = df.loc[my_typec, :]
-df  = df.loc[df.cheque_type == "€", :]
-info(f"len df : {len(df)}" )
 
-# info("loading results")
-# df = GroupBy.internalize_results(df)
+selectors { 'date_start': 0,
+            'date_stop': 1000000,
+            'hippo': None,
+            'country': None,
+            'quinte': 'all',
+            'euro_only': False,
+            'price_min': 0,
+            'price_max': 500000000,
+            'typec': [  'steeple-chase cross-country', 'steeple-chase', 'haies',
+                        'plat', 'attelé', 'monté', np.nan]}
+
+df = Build.select(df, selector)
 
 
-# info("just BetRoom")
-# _df = BetRoom.simple_gagnant(   df, 
-#                                 Strats.choix_de_la_meilleure_cote, 
-#                                 N=0)
+# load results
+info("loading results")
+df = GroupBy.internalize_results(df)
 
-# info("Trurfing Room Once")
-# delta, bet_ratio, __df  = TurfingRoom.once( df, 
-#                                             BetRoom.simple_gagnant, 
-#                                             Strats.choix_de_la_meilleure_cote, 
-#                                             N=0)
+
+# bets and turf
+info("just BetRoom")
+_df = BetRoom.simple_gagnant(   df, 
+                                Strats.choix_de_la_meilleure_cote, 
+                                N=0)
+
+info("Trurfing Room Once")
+delta, bet_ratio, __df  = TurfingRoom.once( df, 
+                                            BetRoom.simple_gagnant, 
+                                            Strats.choix_de_la_meilleure_cote, 
+                                            N=0)
 
 
 

@@ -137,19 +137,21 @@ class GroupBy :
     @get_size_of
     def _recast_dataframe(df) :
 
-        if "jour" in df.columns:        df["jour"]          = df.jour.astype(np.uint16)
-        if "id" in df.columns :         df["id"]            = df.id.astype(np.uint64)
-        if "comp" in df.columns :       df["comp"]          = df.comp.astype(np.uint32)
-        if "hippo" in df.columns :      df["hippo"]         = df.hippo.apply(lambda i : str(i)[:18].lower().strip())
-        if "numcourse" in df.columns :  df["numcourse"]     = df.numcourse.astype(np.uint32)
-        if "dist" in df.columns :       df["dist"]          = df.dist.astype(np.uint16)
-        if "partant" in df.columns :    df["partant"]       = df.partant.astype(np.uint8)
-        if "typec" in df.columns :      df["typec"]         = df.typec.apply(lambda i : str(i).lower().strip())
-        if "typec" in df.columns :      df["typec"]         = df.typec.apply(lambda i : str(i) if str(i) in ['steeple-chase', 'haies', 'plat', 'steeple-chase cross-country', 'attelé', 'monté'] else np.nan)
-        if "quinte" in df.columns :     df["quinte"]        = df.quinte.astype(bool)
-        if "prix" in df.columns :       df["prix"]          = df.prix.astype(np.uint8)        
+        _df = df.copy()
+
+        if "jour" in _df.columns:        _df["jour"]          = _df.jour.astype(np.uint16)
+        if "id" in _df.columns :         _df["id"]            = _df.id.astype(np.uint64)
+        if "comp" in _df.columns :       _df["comp"]          = _df.comp.astype(np.uint32)
+        if "hippo" in _df.columns :      _df["hippo"]         = _df.hippo.apply(lambda i : str(i)[:18].lower().strip())
+        if "numcourse" in _df.columns :  _df["numcourse"]     = _df.numcourse.astype(np.uint32)
+        if "dist" in _df.columns :       _df["dist"]          = _df.dist.astype(np.uint16)
+        if "partant" in _df.columns :    _df["partant"]       = _df.partant.astype(np.uint8)
+        if "typec" in _df.columns :      _df["typec"]         = _df.typec.apply(lambda i : str(i).lower().strip())
+        if "typec" in _df.columns :      _df["typec"]         = _df.typec.apply(lambda i : str(i) if str(i) in ['steeple-chase', 'haies', 'plat', 'steeple-chase cross-country', 'attelé', 'monté'] else np.nan)
+        if "quinte" in _df.columns :     _df["quinte"]        = _df.quinte.astype(bool)
+        if "prix" in _df.columns :       _df["prix"]          = _df.prix.astype(np.uint8)        
  
-        return df 
+        return _df 
 
 
     def __cote_score(results, cote_type) :
@@ -164,12 +166,14 @@ class GroupBy :
         """compute and add cotedirect/coteprob score based on the .isna() rate. 
         ie 1 : very good, 0 : very bad"""
 
+        _df = df.copy()
+
         assert isinstance(cote_type, str)
         assert cote_type in ["prob", "direct"]
 
-        df[f"cote{cote_type}_score"] = df.results.apply(lambda i : GroupBy.__cote_score(i,  cote_type))
+        _df[f"cote{cote_type}_score"] = _df.results.apply(lambda i : GroupBy.__cote_score(i,  cote_type))
 
-        return df
+        return _df
 
 
     def __sort_by_cl(results) :
@@ -180,31 +184,41 @@ class GroupBy :
     def _compute_sort_by_cl(df) : 
         """sort by cl on a df"""
 
-        results = df.results
-        sorted_results = results.apply(lambda i : GroupBy.__sort_by_cl(i))
-        df["results"] = sorted_results 
+        _df = df.copy()
 
-        return df
+        results = _df.results
+        sorted_results = results.apply(lambda i : GroupBy.__sort_by_cl(i))
+        _df["results"] = sorted_results 
+
+        return _df
 
 
     def _select_only_valuable_races(df, n=0.99) : 
         """based on on a grouped by df, compute and select only good races, with coteprob and cotedirect >= n"""
 
-        df = df.loc[df.hippo == "vincennes"]
-        df = GroupBy.compute_cote_score(df, "prob")
-        df = GroupBy.compute_cote_score(df, "direct")
-        df = df.loc[df.cotedirect_score >n, :]
-        df = df.loc[df.coteprob_score >n, :]
-        df.index = reindex(df)
+        _df = df.copy()
 
-        return df
+        _df = _df.loc[_df.hippo == "vincennes"]
+        _df = GroupBy.compute_cote_score(_df, "prob")
+        _df = GroupBy.compute_cote_score(_df, "direct")
+        _df = _df.loc[_df.cotedirect_score >n, :]
+        _df = _df.loc[_df.coteprob_score >n, :]
+        _df.index = reindex(_df)
+
+        return _df
 
     @time_it 
     @get_size_of
     def _merge_cache_carac(cache, carac) : 
 
-        comp_cache = cache.comp
-        comp_carac = carac.comp
+        assert isinstance(cache, pd.DataFrame)
+        assert isinstance(carac, pd.DataFrame)
+
+        _cache = cache.copy()
+        _carac = carac.copy()
+
+        comp_cache = _cache.comp
+        comp_carac = _carac.comp
 
         if comp_cache.shape[0] != comp_cache.unique().shape[0] : 
             info("error mismatch len cache key")
@@ -216,7 +230,7 @@ class GroupBy :
                 idx_drop = comp_cache[comp_cache == i].index
                 if len(idx_drop)>1 : 
                     idx_drop = idx_drop[1:]
-                    cache = cache.drop(idx_drop, axis=0, inplace=False)
+                    _cache = _cache.drop(idx_drop, axis=0, inplace=False)
                 else : 
                     pass
 
@@ -230,24 +244,24 @@ class GroupBy :
                 idx_drop = comp_carac[comp_carac == i].index
                 if len(idx_drop)>1 : 
                     idx_drop = idx_drop[1:]
-                    carac = carac.drop(idx_drop, axis=0, inplace=False)
+                    _carac = _carac.drop(idx_drop, axis=0, inplace=False)
                 else : 
                     pass
 
-        assert "comp" in cache.columns
-        assert "comp" in carac.columns
+        assert "comp" in _cache.columns
+        assert "comp" in _carac.columns
 
-        cache.sort_values("comp", axis=0, ascending=True, inplace=True)
-        carac.sort_values("comp", axis=0, ascending=True, inplace=True)
+        _cache.sort_values("comp", axis=0, ascending=True, inplace=True)
+        _carac.sort_values("comp", axis=0, ascending=True, inplace=True)
 
-        assert len(cache) == len(carac)
-        val = cache.comp.values == carac.comp.values
+        assert len(_cache) == len(_carac)
+        val = _cache.comp.values == _carac.comp.values
         assert val.all()
 
-        _df = pd.concat([cache, carac], axis=1, ignore_index=True)
+        _df = pd.concat([_cache, _carac], axis=1, ignore_index=True)
 
         funct = lambda i : i if i!="comp" else "_comp"
-        _df.columns = list(cache.columns) + list(map(funct, carac.columns)) 
+        _df.columns = list(_cache.columns) + list(map(funct, _carac.columns)) 
 
         val = (_df.comp ==_df["_comp"])
         assert val.all()                                          
@@ -256,7 +270,6 @@ class GroupBy :
 
         # assert len(_df) == len(carac)
         # assert len(_df) == len(cache)
-
 
         # depreciated because to slow...
         # df = pd.merge(  cache, carac, how="left", on='comp', 
@@ -295,10 +308,11 @@ class GroupBy :
             [i.start() for i in process_list]
             [i.join()  for i in process_list]
 
+
         # drop df
-        df.drop("results", axis=1, inplace=True)
+        _df = df.drop("results", axis=1, inplace=False)
         
-        return df
+        return _df
 
 
     @time_it 
@@ -311,15 +325,17 @@ class GroupBy :
 
         assert len(df.comp.unique()) == len(df)
 
+        _df = df.copy()
+
         results_list = list()
-        for i in tqdm(df.index) : 
-            comp    = df.loc[i, "comp"]
+        for i in tqdm(_df.index) : 
+            comp    = _df.loc[i, "comp"]
             results = pk_load(str(comp), path)
             results_list.append(results)
 
-        df["results"] = results_list
+        _df["results"] = results_list
         
-        return df
+        return _df
 
 
     @get_size_of
@@ -331,14 +347,18 @@ class GroupBy :
 
         assert len(df.comp.unique()) == len(df)
 
+        _df = df.copy()
 
         def funct(i0=0, i1=10000000) :                 
                 
             results = []
-            for comp in tqdm(df.comp[i0: i1]) : 
+            for comp in tqdm(_df.comp[i0: i1]) : 
                 results.append([comp, pk_load(str(comp), path)])
             
             results = pd.DataFrame(results, columns=["comp", "results"])
+
+            info(results.columns)
+            info(results.head())
             
             pk_save(results, str(results.comp[0]), temp)
 
@@ -365,7 +385,7 @@ class GroupBy :
         if cores < 2 : 
                 funct()
         else : 
-            chks  = chunks(df.comp, cores)
+            chks  = chunks(_df.comp, cores)
             process_list = [Process(target=funct, args=chk) for chk in chks]
             [i.start() for i in process_list]
             [i.join()  for i in process_list]
@@ -373,24 +393,42 @@ class GroupBy :
         # merge
         results = temp_merge()
 
-        df.sort_values("comp", axis=0, ascending=True, inplace=True)
-        results.sort_values("comp", axis=0, ascending=True, inplace=True)
+        _df = _df.sort_values("comp", axis=0, ascending=True, inplace=False)
+        _df.index = reindex(_df)
 
-        assert len(df) == len(results)
-        val = df.comp.values == results.comp.values
+        results = results.sort_values("comp", axis=0, ascending=True, inplace=False)
+        results.index = reindex(results)
+
+
+        assert len(_df) == len(results)
+        val = _df.comp.values == results.comp.values
         assert val.all()
 
-        _df = pd.concat([df, results], axis=1, ignore_index=True)
-        _df.columns = list(df.columns) + ["_comp", "results"]   
 
-        val = (_df.comp ==_df["_comp"])
+        val = _df.index.values == results.index.values
+        assert val.all()
+
+
+        info(_df.columns)
+        info(results.columns)
+
+        results.columns = ["_comp", "results"]
+        final_df = pd.concat([_df, results], axis=1, ignore_index=False)
+        # final_df.columns = list(_df.columns) + list(results.columns) 
+
+        info(final_df.loc[:, ["comp", "_comp"]].head())
+
+        val = (final_df.comp.values ==final_df["_comp"].values)
         assert val.all()                                          
 
-        _df.drop("_comp", axis=1, inplace=True)
+        final_df.drop("_comp", axis=1, inplace=True)
 
-        assert len(_df) == (len(df))
+        assert len(final_df) == len(_df)
+        assert len(final_df) == len(results)
 
-        return _df
+        pk_clean(temp)
+
+        return final_df
 
 
 

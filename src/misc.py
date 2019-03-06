@@ -224,5 +224,12 @@ def normalize_hippo(txt) :
     return txt
 
 
+def random_df(l=10, c=["a", "b", "c"]) : 
+
+    arr = np.random.randint(0, 100, (l, len(c)))
+
+    return pd.DataFrame(arr, columns=c)
+
+
 
 

@@ -8,9 +8,11 @@ from wtforms.validators import *
 
 
 from src.misc           import *
+from src.build          import Build
+from src.groupby        import GroupBy
 from strats.easy        import Strats 
 from src.turfing        import BetRoom, TurfingRoom
-from src.groupby        import GroupBy
+
 
 
 
@@ -194,82 +196,6 @@ class FormCheck :
 class App:
     """App class""" 
 
-    def __build_dataframe(df, form) : 
-
-        # errors
-        errors = list()
-
-        # dates
-        df = df.loc[df.jour >= form["date_start"], :]
-        df = df.loc[df.jour <= form["date_stop" ], :]
-
-        info(f" start : {int_to_timestamp(df.jour.min())}")
-        info(f" stop  : {int_to_timestamp(df.jour.max())}")
-
-        # hippo
-        if form["hippo"] : 
-
-            form["hippo"]  = form["hippo"].strip().lower()
-            df["hippo"]    = df.hippo.apply(str.lower)
-            df["hippo"]    = df.hippo.apply(str.strip)
-
-            if form["hippo"] not in df.hippo.unique() : 
-                errors.append(f"Error : {form['hippo']} not in our hippo database")
-                candidates = [i for i in df.hippo.unique() if i[:5] == form["hippo"][:5]]
-                candidates = "\n".join(candidates)
-                errors.append(f"Error : maybe you should consider {candidates}")
-            else  : 
-                df = df.loc[df.hippo == form["hippo"], :]
-        else : 
-
-            warning("Error NOT IMPLEMENTED")
-            pass
-
-        info(f" hippo unique : {df.hippo.unique()}")
-
-        # quinte
-        if form["quinte"] == 'all'  : 
-            pass
-        elif form["quinte"] == "only_quinte" : 
-            df = df.loc[df.quinte == 1, :]
-        elif form["quinte"] == "only_not_quinte" : 
-            df = df.loc[df.quinte == 0, :]
-        else : 
-            raise ValueError(f"unknown attribute for quite {form['quinte']} ")
-
-        info(f" quinte unique : {df.quinte.unique()}")
-
-        # currency
-        if (form["euro_only"] == True) or (form["euro_only"] == "True") : 
-            df = df.loc[df.cheque_type == "€", :]
-        elif (form["euro_only"] == False) or (form["euro_only"] == "False") : 
-            pass
-        else : 
-            raise ValueError(f"unknown attribute for euro_only {form['euro_only']} ")
-
-        info(f"chque type : {df.cheque_type.unique()}")
-
-        # price
-        df = df.loc[df.cheque_val >= form["price_min"], :]
-        df = df.loc[df.cheque_val <= form["price_max"], :]
-
-        info(f" cheque min : {df.cheque_val.min()}")
-        info(f" cheque max : {df.cheque_val.max()}")
-
-
-        info(f"typec : {form['typec']}")
-        # typec
-        ser = df.typec.apply(lambda i : str(i) in form["typec"])
-        df = df.loc[ser, :]
-
-        info(f"typec unique : {df.typec.unique()}")
-
-        if len(df) == 0 : 
-            errors.append("error len df = 0")
-
-        return df, errors
-
-
 
     def __bet(df, form, N=0, verbose=True) : 
 
@@ -319,32 +245,28 @@ class App:
         assert isinstance(df, pd.DataFrame)
         assert isinstance(form, dict)
 
-        df, errors  = App.__build_dataframe(df, form)
+        df, errors  = Build.select(df, form)
 
         if errors : 
             return 0, errors
 
-        if verbose : 
-            info(f"len df {len(df)} ")
-            info(f"df cols {df.columns} ")
-            df.to_csv(f"temp/web_df/{get_an_hash()}.csv", index=False)
-            # pk_save(df, get_an_hash(), "temp/web_df/")
-        
-
         txt =list()
-        txt.append(f"len df : {len(df)}")
-        txt.append(f"start df : {int_to_timestamp(df.jour.min())}")
-        txt.append(f"stop df : {int_to_timestamp(df.jour.max())}")
-        txt.append(f"df.quinte : {df.quinte.unique()[:10]}")
-        txt.append(f"df.hippo : {df.hippo.unique()[:10]}")
-        txt.append(f"df.cheque_max : {df.cheque_val.max()}")
-        txt.append(f"df.cheque_min : {df.cheque_val.min()}")
+        txt.append(f"len df         : {len(df)}")
+        txt.append(f"start df       : {int_to_timestamp(df.jour.min())}")
+        txt.append(f"stop df        : {int_to_timestamp(df.jour.max())}")
+        txt.append(f"df.quinte      : {df.quinte.unique()[:10]}")
+        txt.append(f"df.hippo       : {df.hippo.unique()[:10]}")
+        txt.append(f"df.cheque_max  : {df.cheque_val.max()}")
+        txt.append(f"df.cheque_min  : {df.cheque_val.min()}")
         txt.append(f"df.cheque_type : {df.cheque_type.unique()[:10]}")
-        txt.append(f"df.typec : {df.typec.unique()[:10]}")
-        txt.append(f"bet type : {form['bet_type']}")
-        txt.append(f"strategy : {form['strategy']}")
-        txt.append(f"n : {form['strategy_n']}")
-        info (txt)
+        txt.append(f"df.typec       : {df.typec.unique()[:10]}")
+        txt.append(f"bet type       : {form['bet_type']}")
+        txt.append(f"strategy       : {form['strategy']}")
+        txt.append(f"n              : {form['strategy_n']}")
+
+        if verbose : 
+            df.to_csv(f"temp/web_df/{get_an_hash()}.csv", index=False)    
+            info (txt)
 
 
         delta, bet_ratio, _df  = App.__bet(df, form, verbose=True)
