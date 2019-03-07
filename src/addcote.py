@@ -13,7 +13,10 @@ USER_AGENT = {'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKi
 
 
 # class
-class CotePlaced :
+
+
+
+class CoteSimplePlace :
     """functions used to scrap and integrade cotepodium in the main dataframe"""
 
     def __extract_cotes_from_url(url) : 
@@ -130,11 +133,11 @@ class CotePlaced :
 
         # verbose
         if verbose : 
-            warning(f"df size in Mo : {sys.getsizeof(new_df) / 1000000}")
-            warning(f"timer load df : {round(time.time() - t0, 2)}")
-            warning(f"debut {new_df.jour.min()} fin {new_df.jour.max()}")
-            warning(new_df.shape)
-            warning(new_df.dtypes)
+            info(f"df size in Mo : {sys.getsizeof(new_df) / 1000000}")
+            info(f"timer load df : {round(time.time() - t0, 2)}")
+            info(f"debut {new_df.jour.min()} fin {new_df.jour.max()}")
+            info(new_df.shape)
+            info(new_df.dtypes)
 
         return new_df 
 
@@ -174,12 +177,32 @@ class CotePlaced :
 
 
 
+class CoteSimpleGagnant :
+
+    pass
 
 
-class CoteDuo : 
+class CoteCouple : 
+    
+    pass
+
+
+class CoteDeuxSurQuatre : 
+    
+    pass
+
+
+class CoteTrio : 
+    
     pass
 
 
 
 class CoteTierce : 
+    
+    pass
+
+
+class CoteQuinte : 
+    
     pass

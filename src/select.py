@@ -17,8 +17,8 @@ class RaceSelector(dict) :
     __valid_keys = ['date_start', 'date_stop', 'hippo', 'country', 'quinte', 'euro_only', 'price_min', 'price_max', 'typec']
 
     def __init__(self, form=dict(), hard_check=1, verbose=True) : 
-        
-        form = {i: j for i, j in form.items() if i in Selector.__valid_keys}
+
+        form = {i: j for i, j in form.items() if i in RaceSelector.__valid_keys}
 
         if not 'date_start' in form.keys() : form['date_start'] = 0
         if not 'date_stop'  in form.keys() : form['date_stop']  = 1000000
@@ -32,18 +32,22 @@ class RaceSelector(dict) :
 
         super().__init__(form)
 
-        _ = self.__check_date_start(hard_check=hard_check)
-        _ = self.__check_date_stop(hard_check=hard_check)
-        _ = self.__check_country(hard_check=hard_check)
-        _ = self.__check_hippo(hard_check=hard_check)
-        _ = self.__check_quinte(hard_check=hard_check)
-        _ = self.__check_euro_only(hard_check=hard_check)
-        _ = self.__check_price_min(hard_check=hard_check)
-        _ = self.__check_price_max(hard_check=hard_check)
-        _ = self.__check_typec(hard_check=hard_check)
+        errors = list()
+        errors.append(self.__check_date_start(hard_check=hard_check))
+        errors.append(self.__check_date_stop(hard_check=hard_check))
+        errors.append(self.__check_country(hard_check=hard_check))
+        errors.append(self.__check_hippo(hard_check=hard_check))
+        errors.append(self.__check_quinte(hard_check=hard_check))
+        errors.append(self.__check_euro_only(hard_check=hard_check))
+        errors.append(self.__check_price_min(hard_check=hard_check))
+        errors.append(self.__check_price_max(hard_check=hard_check))
+        errors.append(self.__check_typec(hard_check=hard_check))
+
+        self.errors = [i for i in errors if i]
 
         if  verbose : 
             info("RaceSelector done ! ")
+
 
 
     def __check_date_start(self, hard_check=0) :
@@ -373,9 +377,9 @@ class RaceSelector(dict) :
 
     @get_size_of
     @time_it 
-    def __perform(self, df, force_consistancy=True, verbose=True) : 
+    def run(self, df, force_consistancy=True, verbose=True) : 
         """ 
-        force_consistancy : return Error if  selector lead to a null dataframe
+        force_consistancy : return Error if  Raceselector lead to a null dataframe
         ie force to have a not null dataframe
         verbose : print various info"""
 
@@ -458,14 +462,8 @@ class RaceSelector(dict) :
         if force_consistancy and not len(_df) :  
             raise ValueError("len df == 0")
 
-        _df = reindex(df)
+        _df.index = reindex(_df)
 
         return _df
         
-
-
-
-s = Selector({  "a": 12, 
-                'hippo' : "vincennes"})
-
 

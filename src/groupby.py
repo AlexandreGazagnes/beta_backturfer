@@ -432,8 +432,6 @@ class GroupBy :
 
 
 
-
-
     @time_it 
     @get_size_of
     def create_merged_dataframe(cache, carac) : 

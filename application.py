@@ -9,10 +9,7 @@ from flask_session  import Session
 from tempfile       import mkdtemp
 
 
-from src.misc       import *
-from src.webapp     import FormCheck, App, RegistrationForm, LoginForm
-from src.turfing    import BetRoom, TurfingRoom
-from strats.easy    import Strats
+from src import *
 
 
 # dataframe

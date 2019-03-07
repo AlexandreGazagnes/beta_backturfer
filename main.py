@@ -11,13 +11,7 @@
 
 
 # import 
-from src.misc           import * 
-from src.build          import Build
-from src.select         import Selector
-from src.groupby        import GroupBy
-from src.addcote        import CotePlaced, CoteDuo, CoteTierce
-from src.turfing        import BetRoom, TurfingRoom
-from strats.easy        import Strats
+from src import *
 
 
 # main dataframe
@@ -25,27 +19,19 @@ info("loading dataframe")
 df  = pk_load("WITHOUT_RESULTS_pturf_grouped_and_merged_cache_carac_2016-2019_OK", "data/")
 
 
-# selection
+# dataframe selection
 info("selecting good dataframe")
-
-selector = Selector({   'date_start': "2018-01-01",
-                        'quinte'    : 1,
-                        'euro_only' : True,
-                        'typec'     : [  'attelé', 'monté',]}) 
+form = {    'date_start': "2018-01-01", 'quinte' : 1, 
+            'euro_only' : True, 'typec': [  'attelé', 'monté',]}
+df = RaceSelector(form).run(df)
 
 
-
-df = selector.perform(df)
-
-
-# load results
-info("loading results")
+# load needed results
 df = GroupBy.internalize_results(df)
 
-
 # bets and turf
-info("just BetRoom")
-_df = BetRoom.simple_gagnant(   df, 
+info("just Bet")
+_df = Bet.simple_gagnant(       df, 
                                 Strats.choix_de_la_meilleure_cote, 
                                 N=0)
 
@@ -88,4 +74,19 @@ def main() :
 
 if __name__ == '__main__':
     main()
+
+
+
+
+def blockchain_AI(x) : 
+    """ultimate Blockchain IA function"""
+
+    try         : x = float(x)
+    except      : raise TypeError("numerical attribute expected")
+
+    if   x > 0  : return "positif"
+    elif x < 0  : return "negatif"
+
+    return "nul"
+
 

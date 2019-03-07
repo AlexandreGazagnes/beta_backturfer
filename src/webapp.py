@@ -7,16 +7,10 @@ from wtforms            import StringField, PasswordField, SubmitField, IntegerF
 from wtforms.validators import * 
 
 
-from src.misc           import *
-from src.build          import Build
-from src.groupby        import GroupBy
-from strats.easy        import Strats 
-from src.turfing        import BetRoom, TurfingRoom
 
 
 
-
-class FormCheck :
+# class FormCheck :
     """basic class of funct to manage and clean form"""
 
     # # consts
@@ -92,105 +86,105 @@ class FormCheck :
     #     return d, False
 
 
-    def __check_price_min(d) :
+    # def __check_price_min(d) :
 
-        _d = d.strip().replace(" ", "").replace("-", "").replace("€", "").strip()
+    #     _d = d.strip().replace(" ", "").replace("-", "").replace("€", "").strip()
 
-        if not _d :
-            return 0, False
+    #     if not _d :
+    #         return 0, False
 
-        try :
-            _d = int(_d)
-        except :
-            return "", f"Error : invalid price_min recieved {d}, expected and number"
+    #     try :
+    #         _d = int(_d)
+    #     except :
+    #         return "", f"Error : invalid price_min recieved {d}, expected and number"
 
-        if _d < 0 : _d = 0
-        if _d > FormCheck.__price_min_max :
-            return 0, f"Error : invalid price_min, recieved {d}, expected max {FormCheck.__price_min_max}"
+    #     if _d < 0 : _d = 0
+    #     if _d > FormCheck.__price_min_max :
+    #         return 0, f"Error : invalid price_min, recieved {d}, expected max {FormCheck.__price_min_max}"
 
-        return _d, False
-
-
-    def __check_price_max(d) :
-
-        _d = d.strip().replace(" ", "").replace("-", "").replace("€", "").strip()
-
-        if not _d :
-            return 50000000, False
-
-        try :
-            _d = int(_d)
-        except :
-            return 0, f"Error : invalid price_max recieved {d}, expected and number"
-
-        if _d <= 0 :
-            return 0, f"Error : invalid price_max, recieved {d}, expected max positive value"
-
-        if _d < FormCheck.__price_max_min :
-            return 0, f"Error : invalid price_max, recieved {d}, expected min {FormCheck.__price_max_min}"
-
-        return _d, False
+    #     return _d, False
 
 
-    def __check_price_comp(price_min, price_max) : 
+    # def __check_price_max(d) :
 
-        if price_min >= price_max : 
-            return 0, 0, f"Error : price min {price_min} >= price_max {price_max}"
+    #     _d = d.strip().replace(" ", "").replace("-", "").replace("€", "").strip()
 
-        return price_min, price_max , False
+    #     if not _d :
+    #         return 50000000, False
 
+    #     try :
+    #         _d = int(_d)
+    #     except :
+    #         return 0, f"Error : invalid price_max recieved {d}, expected and number"
 
-    def check(form, verbose=False) :
+    #     if _d <= 0 :
+    #         return 0, f"Error : invalid price_max, recieved {d}, expected max positive value"
 
-        # transform form in normal dict
-        form = {i:j for i,j in form.items()}
+    #     if _d < FormCheck.__price_max_min :
+    #         return 0, f"Error : invalid price_max, recieved {d}, expected min {FormCheck.__price_max_min}"
 
-        if verbose : 
-            li = [f"{i}:{j}" for i,j in form.items()]
-            info("INIT FORM" + "\n".join(li) + "\n\n")
-
-        # error list
-        error_list = list()
-
-        # dates
-        form["date_start"], e = FormCheck.__check_date_start(form["date_start"])
-        error_list.append(e)
-        form["date_stop"], e = FormCheck.__check_date_stop(form["date_stop"])
-        error_list.append(e)
-        form["date_start"], form["date_stop"], e = FormCheck.__check_date_comp(form["date_start"], form["date_stop"])
-        error_list.append(e)
-
-        # hippodrome
-        form["country"], e = FormCheck.__check_country(form["country"])
-        error_list.append(e)
-        form["hippo"], e = FormCheck.__check_hippo(form["hippo"])
-        error_list.append(e)
-        form["country"], form["hippo"], e = FormCheck.__check_hippo_comp(form["country"], form["hippo"]) 
-        error_list.append(e)
-
-        # race type
-        form["price_min"], e = FormCheck.__check_price_min(form["price_min"])
-        error_list.append(e)
-        form["price_max"], e = FormCheck.__check_price_max(form["price_max"])
-        error_list.append(e)
-        form["price_min"], form["price_max"], e = FormCheck.__check_price_comp(form["price_min"], form["price_max"])
-        error_list.append(e)
-
-        race_types = ["monté", "attelé", "plat", "haies", "steeple-chase", "steeple-chase cross-country"]
-        race_types = [i for i in race_types if i in form.keys()]
-        [form.pop(i) for i in race_types if i in form.keys()]
-        form["typec"] = race_types
+    #     return _d, False
 
 
-        if verbose : 
-            li = [f"{i}:{j}" for i,j in form.items()]
-            info("END FORM" + "\n".join(li) + "\n\n")
+    # def __check_price_comp(price_min, price_max) : 
 
-        # clean error list
-        assert len(error_list) == 9
-        error_list = [i for i in error_list if i]
+    #     if price_min >= price_max : 
+    #         return 0, 0, f"Error : price min {price_min} >= price_max {price_max}"
 
-        return form, error_list
+    #     return price_min, price_max , False
+
+
+    # def check(form, verbose=False) :
+
+    #     # transform form in normal dict
+    #     form = {i:j for i,j in form.items()}
+
+    #     if verbose : 
+    #         li = [f"{i}:{j}" for i,j in form.items()]
+    #         info("INIT FORM" + "\n".join(li) + "\n\n")
+
+    #     # error list
+    #     error_list = list()
+
+    #     # dates
+    #     form["date_start"], e = FormCheck.__check_date_start(form["date_start"])
+    #     error_list.append(e)
+    #     form["date_stop"], e = FormCheck.__check_date_stop(form["date_stop"])
+    #     error_list.append(e)
+    #     form["date_start"], form["date_stop"], e = FormCheck.__check_date_comp(form["date_start"], form["date_stop"])
+    #     error_list.append(e)
+
+    #     # hippodrome
+    #     form["country"], e = FormCheck.__check_country(form["country"])
+    #     error_list.append(e)
+    #     form["hippo"], e = FormCheck.__check_hippo(form["hippo"])
+    #     error_list.append(e)
+    #     form["country"], form["hippo"], e = FormCheck.__check_hippo_comp(form["country"], form["hippo"]) 
+    #     error_list.append(e)
+
+    #     # race type
+    #     form["price_min"], e = FormCheck.__check_price_min(form["price_min"])
+    #     error_list.append(e)
+    #     form["price_max"], e = FormCheck.__check_price_max(form["price_max"])
+    #     error_list.append(e)
+    #     form["price_min"], form["price_max"], e = FormCheck.__check_price_comp(form["price_min"], form["price_max"])
+    #     error_list.append(e)
+
+    #     race_types = ["monté", "attelé", "plat", "haies", "steeple-chase", "steeple-chase cross-country"]
+    #     race_types = [i for i in race_types if i in form.keys()]
+    #     [form.pop(i) for i in race_types if i in form.keys()]
+    #     form["typec"] = race_types
+
+
+    #     if verbose : 
+    #         li = [f"{i}:{j}" for i,j in form.items()]
+    #         info("END FORM" + "\n".join(li) + "\n\n")
+
+    #     # clean error list
+    #     assert len(error_list) == 9
+    #     error_list = [i for i in error_list if i]
+
+    #     return form, error_list
 
 
 class App:
@@ -245,10 +239,12 @@ class App:
         assert isinstance(df, pd.DataFrame)
         assert isinstance(form, dict)
 
-        df, errors  = Build.select(df, form)
+        race_sel = RaceSelector(form, hard_check=False)
 
-        if errors : 
-            return 0, errors
+        if race_sel.errors : 
+            return errors
+        else :
+            df = race_sel.perform(df, hard_check=True, force_consistancy=True)
 
         txt =list()
         txt.append(f"len df         : {len(df)}")

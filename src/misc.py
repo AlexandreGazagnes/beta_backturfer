@@ -11,14 +11,14 @@ from multiprocessing import Process
 from collections import Iterable, OrderedDict
 from tqdm import tqdm
 
-import dask
-from dask import dataframe as dd
-from dask.distributed import Client
-from dask.multiprocessing import get
+# import dask
+# from dask import dataframe as dd
+# from dask.distributed import Client
+# from dask.multiprocessing import get
 from multiprocessing import cpu_count
 
 
-dask_client = Client()
+# dask_client = Client()
 
 
 # data
@@ -35,7 +35,7 @@ sns.set()
 
 # logger 
 logger = logging.getLogger()
-logger.setLevel(logging.INFO)
+logger.setLevel(logging.DEBUG)
 
 
 # consts
@@ -49,17 +49,41 @@ class change_repr(object):
     """just a decorator to help repr"""
     
     def __init__(self, functor):
-        self.functor = functor
 
-        #  lets copy some key attributes from the original function
-        self.__name__ = functor.__name__
-        self.__doc__ = functor.__doc__
+        self.functor     = functor
+        self.__name__    = functor.__name__
+        self.__doc__     = functor.__doc__
+        self.Class     = str(functor).split(" ")[1].split(".")[0]
 
     def __call__(self, *args, **kwargs):
         return self.functor(*args, **kwargs)
 
     def __repr__(self):
         return self.functor.__name__
+
+    def __str__(self):
+        return self.functor.__name__
+
+
+def time_size(funct) : 
+
+    def timer_sizer(*param, **params) :  
+        """internal funct of time it decorator"""
+        
+        t0  = time.time() 
+        d   = funct(*param, **params) 
+        t1  = round(time.time() - t0, 2)
+        s   = str(funct)
+        s   = s.split("at")
+        s   = s[0].strip()
+        
+        info(f"{s} done in {t1} secondes")
+        s   = round(sys.getsizeof(d) / 1000000, 4)
+        info(f"data {s} Mo")
+
+        return d 
+
+    return timer_sizer
 
 
 def time_it(funct) :  
@@ -93,8 +117,6 @@ def get_size_of(funct) :
 
     return get_size
     
-
-
 
 # functs
 def gsf(i) : 

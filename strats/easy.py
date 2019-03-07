@@ -130,6 +130,7 @@ class Strats :
 
         return r.numero.iloc[-1]
 
+
     @change_repr
     def choisir_la_pire_cote_partante(results, N=None, cote_type="direct") : 
         """chose the horse with best cote)"""
