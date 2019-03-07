@@ -121,7 +121,7 @@ class Bet :
         assert isinstance(df, pd.DataFrame)
         assert isinstance(verbose, int)
         assert callable(strat)
-         assert strat.Class == "Strats"
+        assert strat.Class == "Strats"
         if N : assert isinstance(N, int)
 
         df["bet_horse"]         = df.results.apply(lambda i : strat(i, N) )
