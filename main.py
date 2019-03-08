@@ -32,7 +32,7 @@ df = GroupBy.internalize_results(df)
 
 
 # bet
-bet = Bet("simple_gagnant", Strats.choix_de_la_meilleure_cote)
+bet = Bet("simple_place", Strats.choix_de_la_meilleure_cote)
 info(bet)
 info(bet.__dict__)
 

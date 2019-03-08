@@ -159,6 +159,8 @@ class Bet :
         df["bet_horse"]         = df.results.apply(lambda i : strat(i, N) )
         df["win_horses"]        = df.results.apply(Bet.__podium_nums)
 
+        df["good_bet"] = df.apply(lambda i : i.bet_horse in i. win_horses, axis=1)
+        
         # split podium nums and iterate in cols to find if numero in win_horses
         # s = len(df.win_horses.iloc[0])
         # for i in range(s) : 
@@ -170,7 +172,7 @@ class Bet :
 
         # df["good_bet"] =  df.loc[:, good_cols].sum(axis=1)
         # df = df.drop(good_cols, axis=1, inplace=False)
-        raise NotImplementedError("use df.apply")
+        
         
         df["bet_or_not"]    = df.bet_horse.apply(lambda i : 1 if i>=1 else 0)
 
