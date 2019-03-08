@@ -15,22 +15,24 @@ class Bet :
     Bet.ordered/unorder tierce : you bet 3 horse on the podium, ordered or not
     Bet.ordered/unorder quinte : you think you are Paco Rabanne, please stop drinking to much beers"""
 
-    #               name             str                min bet 
-    bets_str = {'simple_gagnant':   ('simple gagnant',  1.5, ),
-                'simple_place':     ('simple placé',    1.5, ),
-                'couple_gagnant':   ('couple gagnant',  1.5,),
-                'couple_place':     ('couple placé',    1.5, ),
-                'couple_ordre':     ('couple ordre',    1.5,),
-                'deux_sur_quatre':  ('2 sur 4',         3, ),
-                'trio_ordre':       ('trio ordre',      1.5),
-                'trio_desordre':    ('trio désordre',   1.5),
-                'tierce_ordre':     ('tiercé ordre',    1),
-                'tierce_desordre':  ('tiercé désordre', 1),
-                'quinte_ordre':     ('quinté ordre',    2),
-                'quinte_desordre':  ('quinté désordre', 2)}
+        #               name             str                min bet 
+    bets_str    = {'simple_gagnant':   ('simple gagnant',  1.5, ),
+                    'simple_place':     ('simple placé',    1.5, ),
+                    'couple_gagnant':   ('couple gagnant',  1.5,),
+                    'couple_place':     ('couple placé',    1.5, ),
+                    'couple_ordre':     ('couple ordre',    1.5,),
+                    'deux_sur_quatre':  ('2 sur 4',         3, ),
+                    'trio_ordre':       ('trio ordre',      1.5),
+                    'trio_desordre':    ('trio désordre',   1.5),
+                    'tierce_ordre':     ('tiercé ordre',    1),
+                    'tierce_desordre':  ('tiercé désordre', 1),
+                    'quinte_ordre':     ('quinté ordre',    2),
+                    'quinte_desordre':  ('quinté désordre', 2)      }
 
 
-    plateforms = ['hippodrome', 'web', 'indifferent', 'random']
+    plateforms  = ['hippodrome', 'web', 'indifferent', 'random']
+
+    strat_comp  = list()
 
 
     def give_me_bets() : 
@@ -155,20 +157,21 @@ class Bet :
         if N : assert isinstance(N, int)
 
         df["bet_horse"]         = df.results.apply(lambda i : strat(i, N) )
-        df["win_horses"]        = df.results.apply(Bet.__find_podium_nums)
+        df["win_horses"]        = df.results.apply(Bet.__podium_nums)
 
         # split podium nums and iterate in cols to find if numero in win_horses
-        s = len(df.win_horses.iloc[0])
-        for i in range(s) : 
-            df[f"_win_horses_{i}"] = df.win_horses.apply(lambda j : j[i]) 
-        good_cols = [i for i in df.columns if "_win_horses" in i]
+        # s = len(df.win_horses.iloc[0])
+        # for i in range(s) : 
+        #     df[f"_win_horses_{i}"] = df.win_horses.apply(lambda j : j[i]) 
+        # good_cols = [i for i in df.columns if "_win_horses" in i]
 
-        for i in good_cols :  
-            df[i] = df[i] == df.bet_horse
+        # for i in good_cols :  
+        #     df[i] = df[i] == df.bet_horse
 
-        df["good_bet"] =  df.loc[:, good_cols].sum(axis=1)
-        df = df.drop(good_cols, axis=1, inplace=False)
-
+        # df["good_bet"] =  df.loc[:, good_cols].sum(axis=1)
+        # df = df.drop(good_cols, axis=1, inplace=False)
+        raise NotImplementedError("use df.apply")
+        
         df["bet_or_not"]    = df.bet_horse.apply(lambda i : 1 if i>=1 else 0)
 
         # find podiumcote of bet_horse
