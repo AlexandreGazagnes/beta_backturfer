@@ -30,22 +30,28 @@ df          = race_sel(df)
 # load needed results
 df = GroupBy.internalize_results(df)
 
-# bets and turf
-info("just Bet")
-_df = Bet.simple_gagnant(       df, 
-                                Strats.choix_de_la_meilleure_cote)
 
-info("Trurfing Room Once")
-delta, bet_ratio, __df  = TurfingRoom.once( df, 
-                                            BetRoom.simple_gagnant, 
-                                            Strats.choix_de_la_meilleure_cote, 
-                                            N=0)
+# bet
+bet = Bet("simple_gagnant", Strats.choix_de_la_meilleure_cote)
+info(bet)
+info(bet.__dict__)
+
+# # bets and turf
+# info("just Bet")
+# _df = Bet.simple_gagnant(       df, 
+#                                 Strats.choix_de_la_meilleure_cote)
+
+# info("Trurfing Room Once")
+# delta, bet_ratio, __df  = TurfingRoom.once( df, 
+#                                             BetRoom.simple_gagnant, 
+#                                             Strats.choix_de_la_meilleure_cote, 
+#                                             N=0)
 
 
 
 
 
-DF  = df.copy()
+# DF  = df.copy()
 
 def main() : 
 
