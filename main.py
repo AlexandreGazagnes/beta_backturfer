@@ -19,30 +19,6 @@ info("loading dataframe")
 df  = pk_load("WITHOUT_RESULTS_pturf_grouped_and_merged_cache_carac_2016-2019_OK", "data/")
 
 
-def f(url) : 
-    if isinstance(url, str) : 
-        if not "https://www.paris-turf.com/" in url :
-            if url[0] != "/" : 
-                url ="https://www.paris-turf.com/" + url
-            else : 
-                url = "https://www.paris-turf.com" + url
-        url = url.replace("partants-pronostics", "resultats-rapports")
-
-        info(url)
-
-        return url
-
-    return url
-
-
-df["url"] = df.url.apply(f)
-
-
-  
-
-
-
-
 
 # dataframe selection
 info("selecting good dataframe")
@@ -50,6 +26,23 @@ form        = { 'date_start': "2018-01-01", 'quinte' : 1,
                 'euro_only' : True, 'typec': [  'attelé', 'monté',]}
 race_sel    = RaceSelector(form)
 df          = race_sel(df)
+
+
+url = np.random.choice(df.url)
+info(url)
+
+cotes_df = AddCote.run(url)
+info(cotes_df)
+
+cotes ="all"
+html = AddCote._AddCote__extract_html(url)
+result_block = AddCote._AddCote__extract_soup(html, soup_class="table reports")
+
+
+
+
+
+
 
 
 # load needed results
@@ -106,19 +99,5 @@ def main() :
 
 if __name__ == '__main__':
     main()
-
-
-
-
-def blockchain_AI(x) : 
-    """ultimate Blockchain IA function"""
-
-    try         : x = float(x)
-    except      : raise TypeError("numerical attribute expected")
-
-    if   x > 0  : return "positif"
-    elif x < 0  : return "negatif"
-
-    return "nul"
 
 
