@@ -36,10 +36,10 @@ bet = Bet("simple_place", Strats.choix_de_la_meilleure_cote)
 info(bet)
 info(bet.__dict__)
 
-# # bets and turf
-# info("just Bet")
-# _df = Bet.simple_gagnant(       df, 
-#                                 Strats.choix_de_la_meilleure_cote)
+# bets and turf
+info("just Bet")
+_df = Bet.simple_gagnant(       df, 
+                                Strats.choix_de_la_meilleure_cote)
 
 # info("Trurfing Room Once")
 # delta, bet_ratio, __df  = TurfingRoom.once( df, 

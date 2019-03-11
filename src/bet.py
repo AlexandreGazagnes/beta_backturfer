@@ -139,7 +139,7 @@ class Bet :
         df["gains"]             = df.good_bet * df.win_cote  * df.bet_or_not * df.bet_autorized
 
         if verbose : 
-            warning(df["gains"].describe())
+            info(df["gains"].describe())
 
         return df
 
@@ -156,28 +156,16 @@ class Bet :
         assert strat.Class == "Strats"
         if N : assert isinstance(N, int)
 
+        df["bet_autorized"]     = 1
         df["bet_horse"]         = df.results.apply(lambda i : strat(i, N) )
         df["win_horses"]        = df.results.apply(Bet.__podium_nums)
 
-        df["good_bet"] = df.apply(lambda i : i.bet_horse in i. win_horses, axis=1)
+        df["good_bet"]          = df.apply(lambda i : i.bet_horse in i. win_horses, axis=1)        
         
-        # split podium nums and iterate in cols to find if numero in win_horses
-        # s = len(df.win_horses.iloc[0])
-        # for i in range(s) : 
-        #     df[f"_win_horses_{i}"] = df.win_horses.apply(lambda j : j[i]) 
-        # good_cols = [i for i in df.columns if "_win_horses" in i]
-
-        # for i in good_cols :  
-        #     df[i] = df[i] == df.bet_horse
-
-        # df["good_bet"] =  df.loc[:, good_cols].sum(axis=1)
-        # df = df.drop(good_cols, axis=1, inplace=False)
-        
-        
-        df["bet_or_not"]    = df.bet_horse.apply(lambda i : 1 if i>=1 else 0)
+        df["bet_or_not"]        = df.bet_horse.apply(lambda i : 1 if i>=1 else 0)
 
         # find podiumcote of bet_horse
-        df["horse_cote"]   = -1.0
+        df["horse_cote"]        = -1.0
 
         for i in df.index : 
             horse = df.loc[i, "bet_horse"]
@@ -189,10 +177,10 @@ class Bet :
                 df.loc[i, "horse_cote"] = -1
 
         
-        df["gains"]             = df.good_bet * df.horse_cote * df.bet_or_not
+        df["gains"]             = df.good_bet * df.horse_cote * df.bet_or_not * df.bet_autorized 
 
         if verbose : 
-            warning(df["gains"].describe())
+            info(df["gains"].describe())
 
         return df
 
