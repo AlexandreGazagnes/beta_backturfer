@@ -404,6 +404,40 @@ class AddCote :
 
 
 
+    def __extract_2_sur_4(table) : 
+
+        # build a good df
+        df = pd.read_html(str(table))[0] 
+        
+        if not len(df.columns) == 4 : 
+            warning("wrong shape for 2 sur 4 table reports first / len columns")
+            return np.nan
+
+        df.columns = ["numero", "pmu", "pmu.fr", "leturf.fr"]
+
+        if not len(df) == 1 : 
+            warning("wrong shape for 2 sur 4 table reports first / len df")
+            return np.nan
+
+        deux_sur_4 = df.copy()
+        deux_sur_4.index = deux_sur_4.numero.apply(lambda i : i.strip().lower().strip())
+        deux_sur_4.drop("numero", axis=1, inplace=True)
+        deux_sur_4.index_name="numero"
+
+        def f(i) : 
+            if isinstance(i, str) : 
+                return np.float16(str(i).replace("€", "").replace(" ", "").replace(",", ".").strip())
+            else :
+                return i
+        for i in deux_sur_4.columns :   
+            deux_sur_4[i] = deux_sur_4[i].apply(f)
+
+        return deux_sur_4
+
+
+
+
+
 
     def __extract_cotes(url)
 
@@ -450,7 +484,11 @@ class AddCote :
             if ("Couplé" or "couple" or "Couple" or "couplé") in r :  
                     couple.append(r) 
 
-        if len(couple) == 2 :
+
+        if len(couple) > 2 :    
+            warning("Errors????")
+        
+        elif len(couple) == 2 :
             if ("Gagnant" or "gagnant") in couple[0] : 
                 cotes_dict["couple_gagnant"]  = AddCote.__extract_couple_gagnant(couple[0])
                 cotes_dict['couple_place']    = AddCote.__extract_couple_couple_place(couple[0])
@@ -467,16 +505,30 @@ class AddCote :
             else : 
                 warning("error in couple")
 
-        if len(couple) > 2 :    
-            warning("Errors????")
-
-        if len(couple) == 1 : 
+        elif len(couple) == 1 : 
             couple = couple[0]
             if ("ordre" or "Ordre") in couple : 
                 cotes_dict['couple_ordre']    = AddCote.__extract_couple_ordre(couple)
             else : 
                 cotes_dict["couple_gagnant"]  = AddCote.__extract_couple_gagnant(couple)
                 cotes_dict['couple_place']    = AddCote.__extract_couple_couple_place(couple)
+
+
+
+        # 2_sur_4
+
+        deux_sur_4 = list()
+        for i, j in enumerate(result_block) :  
+            r = str(result_block[i]) 
+            if "2sur4" in r :  
+                    deux_sur_4.append(r) 
+
+        if len(deux_sur_4) > 1  :   
+            warning("Errors????")
+
+        elif len(deux_sur_4) == 1 : 
+            deux_sur_4 = deux_sur_4[0]
+            cotes_dict["2_sur_4"] = AddCote.__extract_2_sur_4(deux_sur_4)
 
 
 
