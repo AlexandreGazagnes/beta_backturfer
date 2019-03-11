@@ -31,8 +31,8 @@ df          = race_sel(df)
 url = np.random.choice(df.url)
 info(url)
 
-cotes_dict = AddCote.run(url)
-info(cotes_dict)
+cotes_df = AddCote.run(url)
+info(cotes_df)
 
 cotes ="all"
 html = AddCote._AddCote__extract_html(url)
