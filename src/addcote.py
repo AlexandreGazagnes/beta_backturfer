@@ -473,29 +473,10 @@ class AddCote :
         if len(couple) == 1 : 
             couple = couple[0]
             if ("ordre" or "Ordre") in couple : 
-                cotes_dict['couple_ordre']    = AddCote.__extract_couple_ordre(couple[1])
+                cotes_dict['couple_ordre']    = AddCote.__extract_couple_ordre(couple)
             else : 
-                cotes_dict["couple_gagnant"]  = AddCote.__extract_couple_gagnant(couple[0])
-                cotes_dict['couple_place']    = AddCote.__extract_couple_couple_place(couple[0])
+                cotes_dict["couple_gagnant"]  = AddCote.__extract_couple_gagnant(couple)
+                cotes_dict['couple_place']    = AddCote.__extract_couple_couple_place(couple)
 
 
 
-# class CoteDeuxSurQuatre : 
-    
-#     pass
-
-
-# class CoteTrio : 
-    
-#     pass
-
-
-
-# class CoteTierce : 
-    
-#     pass
-
-
-# class CoteQuinte : 
-    
-#     pass
