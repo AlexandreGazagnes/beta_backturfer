@@ -33,9 +33,12 @@ class CoteSimplePlace :
             else : 
                 url = "https://www.paris-turf.com" + url
 
+
+        url = url.replace("partants-pronostics", "resultats-rapports")
+
         if  not "resultats-rapports" in url : 
             warning("not resultats-rapports in url")
-            warning(f"url")
+            warning(f"{url}")
             return np.nan
 
 
@@ -197,8 +200,57 @@ class CoteSimpleGagnant :
 
 
 class CoteCouple : 
-    
-    pass
+
+
+    def __extract_cotes_from_url(url) : 
+        """from an url scrap and manage the htm table"""
+
+        # if url is null
+        if not url : 
+            warning("NO URL !!!")
+            return np.nan
+
+        if not "https://www.paris-turf.com/" in url :
+            if url[0] != "/" : 
+                url ="https://www.paris-turf.com/" + url
+            else : 
+                url = "https://www.paris-turf.com" + url
+
+        if  not "resultats-rapports" in url : 
+            warning("not resultats-rapports in url")
+            warning(f"url")
+            return np.nan
+
+
+        # get http response, then html
+        try : 
+            response = requests.get(url, headers=USER_AGENT)
+            response.raise_for_status()
+            html = response.text
+        except Exception as e :
+            s = f"error request {e} for url {url}"
+            warning(s)
+            return np.nan
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            
+
+
+
 
 
 class CoteDeuxSurQuatre : 
