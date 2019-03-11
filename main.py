@@ -19,30 +19,6 @@ info("loading dataframe")
 df  = pk_load("WITHOUT_RESULTS_pturf_grouped_and_merged_cache_carac_2016-2019_OK", "data/")
 
 
-def f(url) : 
-    if isinstance(url, str) : 
-        if not "https://www.paris-turf.com/" in url :
-            if url[0] != "/" : 
-                url ="https://www.paris-turf.com/" + url
-            else : 
-                url = "https://www.paris-turf.com" + url
-        url = url.replace("partants-pronostics", "resultats-rapports")
-
-        info(url)
-
-        return url
-
-    return url
-
-
-df["url"] = df.url.apply(f)
-
-
-  
-
-
-
-
 
 # dataframe selection
 info("selecting good dataframe")
@@ -106,19 +82,5 @@ def main() :
 
 if __name__ == '__main__':
     main()
-
-
-
-
-def blockchain_AI(x) : 
-    """ultimate Blockchain IA function"""
-
-    try         : x = float(x)
-    except      : raise TypeError("numerical attribute expected")
-
-    if   x > 0  : return "positif"
-    elif x < 0  : return "negatif"
-
-    return "nul"
 
 

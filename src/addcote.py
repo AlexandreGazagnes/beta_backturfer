@@ -373,7 +373,6 @@ class AddCote :
         return place
 
 
-
     def __extract_couple_ordre(table) : 
 
         # build a good df
@@ -403,7 +402,6 @@ class AddCote :
             ordre[i] = ordre[i].apply(f)
 
         return ordre
-
 
 
     def __extract_deux_sur_quatre(table) : 
@@ -436,6 +434,76 @@ class AddCote :
 
         return deux_sur_4
 
+
+    def __extract_tierce_ordre(table) : 
+
+        df = pd.read_html(str(table))[0] 
+
+        if not len(df.columns) == 4 : 
+            warning("wrong shape for Tierce table reports first / len columns")
+            return np.nan
+
+        df.columns = ["numero", "pmu", "pmu.fr", "leturf.fr"]
+
+        if not len(df) == 2 : 
+            warning("wrong shape for Tierce table reports first / len df")
+            return np.nan
+
+        tierce = df.copy()
+        
+        f = lambda i : ("desordre" not in str(i).lower()) and ("désordre" not in str(i).lower())
+        tierce = tierce.loc[tierce.numero.apply(f), :]
+
+        tierce.index = tierce.numero.apply(lambda i : i.strip().lower().strip())
+        tierce.drop("numero", axis=1, inplace=True)
+        tierce.index_name="numero"
+
+
+        def f(i) : 
+            if isinstance(i, str) : 
+                return np.float16(str(i).replace("€", "").replace(" ", "").replace(",", ".").strip())
+            else :
+                return i
+        for i in tierce.columns :   
+            tierce[i] = tierce[i].apply(f)
+
+        return tierce
+
+
+
+    def __extract_tierce_desordre(table) : 
+
+        df = pd.read_html(str(table))[0] 
+
+        if not len(df.columns) == 4 : 
+            warning("wrong shape for Tierce table reports first / len columns")
+            return np.nan
+
+        df.columns = ["numero", "pmu", "pmu.fr", "leturf.fr"]
+
+        if not len(df) == 2 : 
+            warning("wrong shape for Tierce table reports first / len df")
+            return np.nan
+
+        tierce = df.copy()
+        
+        f = lambda i : ("desordre" in str(i).lower()) or ("désordre" in str(i).lower())
+        tierce = tierce.loc[tierce.numero.apply(f), :]
+
+        tierce.index = tierce.numero.apply(lambda i : i.strip().lower().strip())
+        tierce.drop("numero", axis=1, inplace=True)
+        tierce.index_name="numero"
+
+
+        def f(i) : 
+            if isinstance(i, str) : 
+                return np.float16(str(i).replace("€", "").replace(" ", "").replace(",", ".").strip())
+            else :
+                return i
+        for i in tierce.columns :   
+            tierce[i] = tierce[i].apply(f)
+
+        return tierce
 
 
 
@@ -542,6 +610,23 @@ class AddCote :
             elif len(deux_sur_4) == 1 : 
                 deux_sur_4 = deux_sur_4[0]
                 cotes_dict["deux_sur_quatre"] = AddCote.__extract_deux_sur_quatre(deux_sur_4)
+
+        # tierce
+        if (("tierce" or "Tiercé" or "tiercé" or "Tiercé") in cotes) or (cotes =="all") :
+    
+            tierce = list()
+            for i, j in enumerate(result_block) :  
+                r = str(result_block[i]) 
+                if "Tiercé" in r :  
+                        tierce.append(r) 
+
+            if len(tierce) > 1  :   
+                warning("Errors????")
+
+            elif len(tierce) == 1 : 
+                tierce = tierce[0]
+                cotes_dict["tierce_ordre"] = AddCote.__extract_tierce_ordre(tierce)
+                cotes_dict["tierce_desordre"] = AddCote.__extract_tierce_desordre(tierce)
 
 
 
