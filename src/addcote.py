@@ -245,6 +245,22 @@ class AddCote :
         return html
 
 
+
+    def __extract_soup(html, soup_class) : 
+
+        # create and parse our soup obj
+        try : 
+            soup = BeautifulSoup(html, 'html.parser') 
+            result_block = soup.find_all('table', attrs={'class': soup_class})
+        except Exception as e :
+            s = f"error request {e} for url {url}"
+            warning(s)
+            return np.nan
+
+        return result_block
+
+
+
     def __extract_simple_gagnant(table) : 
 
 
@@ -389,8 +405,10 @@ class AddCote :
 
 
 
-    def __extract_cotes(html)
+    def __extract_cotes(url)
 
+
+        html = AddCote.__extract_html(url)
 
         cotes_dict = {  'simple_gagnant' : np.nan,
                         'simple_place'   : np.nan,
@@ -404,18 +422,9 @@ class AddCote :
                         'quinte_desordre': np.nan   }       
 
 
-
         # table reports first AKA simple
         # ------------------------------
-
-        # create and parse our soup obj
-        try : 
-            soup = BeautifulSoup(html, 'html.parser') 
-            result_block = soup.find_all('table', attrs={'class': "table reports first"})
-        except Exception as e :
-            s = f"error request {e} for url {url}"
-            warning(s)
-            return np.nan
+        result_block = AddCote.__extract_soup(html, soup_class="table reports first")
 
         # look for just 1 table
         if len(result_block) == 1  : 
@@ -432,33 +441,42 @@ class AddCote :
         # Others 
         # ----------------------------------
 
-        # create and parse our soup obj
-        try : 
-            soup = BeautifulSoup(html, 'html.parser') 
-            result_block = soup.find_all('table', attrs={'class': "table reports"})
-        except Exception as e :
-            s = f"error request {e} for url {url}"
-            warning(s)
-            return np.nan
-
-
+        result_block = AddCote.__extract_soup(html, soup_class="table reports")
 
         # couple
-
         couple = list()
         for i, j in enumerate(result_block) :  
             r = str(result_block[i]) 
             if ("Couplé" or "couple" or "Couple" or "couplé") in r :  
                     couple.append(r) 
 
-
         if len(couple) == 2 :
             if ("Gagnant" or "gagnant") in couple[0] : 
                 cotes_dict["couple_gagnant"]  = AddCote.__extract_couple_gagnant(couple[0])
                 cotes_dict['couple_place']    = AddCote.__extract_couple_couple_place(couple[0])
+            elif ("Gagnant" or "gagnant") in couple[1] : 
+                cotes_dict["couple_gagnant"]  = AddCote.__extract_couple_gagnant(couple[1])
+                cotes_dict['couple_place']    = AddCote.__extract_couple_couple_place(couple[1])
+            else : 
+                warning("error in couple")
 
             if ("ordre" or "Ordre") in couple[1] : 
                 cotes_dict['couple_ordre']    = AddCote.__extract_couple_ordre(couple[1])
+            elif ("ordre" or "Ordre") in couple[0] : 
+                cotes_dict['couple_ordre']    = AddCote.__extract_couple_ordre(couple[0])
+            else : 
+                warning("error in couple")
+
+        if len(couple) > 2 :    
+            warning("Errors????")
+
+        if len(couple) == 1 : 
+            couple = couple[0]
+            if ("ordre" or "Ordre") in couple : 
+                cotes_dict['couple_ordre']    = AddCote.__extract_couple_ordre(couple[1])
+            else : 
+                cotes_dict["couple_gagnant"]  = AddCote.__extract_couple_gagnant(couple[0])
+                cotes_dict['couple_place']    = AddCote.__extract_couple_couple_place(couple[0])
 
 
 
