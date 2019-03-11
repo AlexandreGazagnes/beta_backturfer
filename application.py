@@ -25,12 +25,12 @@ Session(app)
 
 
 # default values for index
-index_data  = { "hippo_list"    : sorted(df.hippo.unique()), 
-                "typec_list"    : df.typec.dropna().value_counts().index, 
+index_data  = { "hippo_list"    : sorted(df.hippo.dropna().unique()), 
+                "typec_list"    : df.typec.dropna().unique(), 
                 "today"         : web_today(),
                 "date_start"    : "2017-01-01", # timestamp_to_str(int_to_timestamp(df.jour.min()))
-                "bet_list"      : BetRoom.bets_str,
-                "strat_list"    : Strats.strats  }
+                "bet_list"      : Bet.bets_str,
+                "strat_list"    : Strats.strats_str  }
 
 
 # routes
