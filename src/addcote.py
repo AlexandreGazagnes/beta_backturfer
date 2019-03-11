@@ -17,13 +17,27 @@ USER_AGENT = {'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKi
 
 
 class CoteSimplePlace :
-    """functions used to scrap and integrade cotepodium in the main dataframe"""
+    """functions used to scrap and integrade coteplace in the main dataframe"""
 
     def __extract_cotes_from_url(url) : 
         """from an url scrap and manage the htm table"""
 
         # if url is null
-        if not url : return np.nan
+        if not url : 
+            warning("NO URL !!!")
+            return np.nan
+
+        if not "https://www.paris-turf.com/" in url :
+            if url[0] != "/" : 
+                url ="https://www.paris-turf.com/" + url
+            else : 
+                url = "https://www.paris-turf.com" + url
+
+        if  not "resultats-rapports" in url : 
+            warning("not resultats-rapports in url")
+            warning(f"url")
+            return np.nan
+
 
         # get http response, then html
         try : 
@@ -88,14 +102,14 @@ class CoteSimplePlace :
 
         t0 = time.time()
 
-        def scrap_cotepodium(i0=0, i1=10000000) : 
+        def scrap_coteplace(i0=0, i1=10000000) : 
 
             for n in list_of_comp[i0:i1] :
                 if lazy : 
                     if f"comp-{n}.pk" in os.listdir(dest) : 
                         continue
                 _df = df.loc[df.comp == n, ["comp", "url"]]
-                _df["cotepodium"] = _df.url.apply(CotePodium.__extract_cotes_from_url)
+                _df["coteplace"] = _df.url.apply(CoteSimplePlace.__extract_cotes_from_url)
                 _df.drop("url", axis=1, inplace=True)
                 _df = _df.iloc[0, : ]
                 pk_save(_df, f"comp-{n}", dest)
@@ -107,7 +121,7 @@ class CoteSimplePlace :
             filenames = [f for f in filenames if (os.path.isfile(dest + f) and (".pk" in f))]
             filenames = [f.replace(".pk", "") for f in filenames]
             sub_df    = [pk_load(f, dest) for f in filenames]
-            sub_df    = pd.DataFrame(sub_df, columns = ["comp", "cotepodium"])
+            sub_df    = pd.DataFrame(sub_df, columns = ["comp", "coteplace"])
             if clear_temp : 
                 pk_clean(dest)
 
@@ -116,10 +130,10 @@ class CoteSimplePlace :
         # multiprocessing
         list_of_comp = df.comp.unique()
         if cores < 2 : 
-            scrap_cotepodium(i0=0, i1=10000000)
+            scrap_coteplace(i0=0, i1=10000000)
         else : 
             chks  = chunks(list_of_comp, cores)
-            process_list = [Process(target=scrap_cotepodium, args=chk) for chk in chks]
+            process_list = [Process(target=scrap_coteplace, args=chk) for chk in chks]
             [i.start() for i in process_list]
             [i.join()  for i in process_list]
 
@@ -143,35 +157,35 @@ class CoteSimplePlace :
 
     @time_it 
     @get_size_of
-    def _handle_cotepodium(df) :  
-        """ from raw cotepodium, transform in a dict and integrate data in df.results."""
+    def _handle_coteplace(df) :  
+        """ from raw coteplace, transform in a dict and integrate data in df.results."""
 
         def f(v) : 
             try :       return {i: j for i,j in zip([np.int8(i)  for i in  v.index] , [np.float32(i)  for i in  v.pmu.values])} 
             except :    return np.nan
-        df["cotepodium"] = df.cotepodium.apply(f)
+        df["coteplace"] = df.coteplace.apply(f)
 
 
         for i in df.index : 
             r = df.loc[i, "results"]
-            r["cotepodium"] = -1.0
+            r["coteplace"] = -1.0
 
-            cote_dict = df.loc[i, "cotepodium"]
+            cote_dict = df.loc[i, "coteplace"]
 
             if not isinstance(cote_dict, dict) : continue
 
             for n, val in cote_dict.items() : 
-                r.loc[r.numero == n, "cotepodium"] = val 
+                r.loc[r.numero == n, "coteplace"] = val 
 
         return df
 
     @time_it 
     @get_size_of
     def add(df) : 
-        """ scrap and manage cotepodium info"""
+        """ scrap and manage coteplace info"""
     
-        df = CotePodium._add_cotes(df, cores=6, dest="temp/scrap/", verbose=True, clear_temp=True, lazy=True) 
-        df = CotePodium._handle_cotepodium(df)
+        df = CoteSimplePlace._add_cotes(df, cores=6, dest="temp/scrap/", verbose=True, clear_temp=True, lazy=True) 
+        df = CoteSimplePlace._handle_coteplace(df)
 
         return df
 
