@@ -198,18 +198,6 @@ USER_AGENT = {'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKi
 
 #     pass
 
-    bets_str    = {'simple_gagnant':   ('simple gagnant',  1.5, ),
-                    'simple_place':     ('simple placé',    1.5, ),
-                    'couple_gagnant':   ('couple gagnant',  1.5,),
-                    'couple_place':     ('couple placé',    1.5, ),
-                    'couple_ordre':     ('couple ordre',    1.5,),
-                    'deux_sur_quatre':  ('2 sur 4',         3, ),
-                    'trio_ordre':       ('trio ordre',      1.5),
-                    'trio_desordre':    ('trio désordre',   1.5),
-                    'tierce_ordre':     ('tiercé ordre',    1),
-                    'tierce_desordre':  ('tiercé désordre', 1),
-                    'quinte_ordre':     ('quinté ordre',    2),
-                    'quinte_desordre':  ('quinté désordre', 2)      }
 
 class AddCote : 
 
@@ -261,7 +249,6 @@ class AddCote :
         return html
 
 
-
     def __extract_soup(html, soup_class) : 
 
         # create and parse our soup obj
@@ -274,7 +261,6 @@ class AddCote :
             return np.nan
 
         return result_block
-
 
 
     def __extract_simple_gagnant(table) : 
