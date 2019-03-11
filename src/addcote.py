@@ -199,10 +199,10 @@ class CoteSimpleGagnant :
     pass
 
 
-class CoteCouple : 
+class AddCote : 
 
 
-    def __extract_cotes_from_url(url) : 
+    def __extract_html(url) : 
         """from an url scrap and manage the htm table"""
 
         # if url is null
@@ -210,15 +210,24 @@ class CoteCouple :
             warning("NO URL !!!")
             return np.nan
 
+        if not isinstance(url, str) : 
+            warning('url is not a string')
+            warning(url)
+            warning(type(url))
+
+
         if not "https://www.paris-turf.com/" in url :
             if url[0] != "/" : 
                 url ="https://www.paris-turf.com/" + url
             else : 
                 url = "https://www.paris-turf.com" + url
 
+
+        url = url.replace("partants-pronostics", "resultats-rapports")
+
         if  not "resultats-rapports" in url : 
             warning("not resultats-rapports in url")
-            warning(f"url")
+            warning(f"{url}")
             return np.nan
 
 
@@ -233,6 +242,110 @@ class CoteCouple :
             return np.nan
 
 
+        return html
+
+
+
+
+    def __extract_simple_gagnant(df) : 
+
+        if not len(df.columns) == 4 : 
+            warning("wrong shape for table reports first")
+            return np.nan
+
+        df.columns = ["numero", "pmu", "pmu.fr", "leturf.fr"]
+
+        if not len(df) == 4 : 
+            warning("wrong shape for table reports first")
+            return np.nan
+
+        gagnant = df.apply(lambda i : ("Gagnant" or "gagnant") in i.numero, axis=1)  
+        gagnant = df.loc[gagnant, :] 
+        gagnant.index = gagnant.numero.apply(lambda i : int(i.strip().lower().replace(" > gagnant", "").strip()))
+        gagnant.drop("numero", axis=1, inplace=True)
+        gagnant.index_name="numero"
+
+        for i in gagnant.columns :   
+            gagnant[i] = gagnant[i].apply(lambda i : np.float16(str(i).replace("€", "").replace(" ", "").replace(",", ".").strip())) 
+
+        return gagnant
+
+
+    def __extract_simple_place(df) : 
+
+
+        if not len(df.columns) == 4 : 
+            warning("wrong shape for table reports first")
+            return np.nan
+
+        df.columns = ["numero", "pmu", "pmu.fr", "leturf.fr"]
+
+        if not len(df) == 4 : 
+            warning("wrong shape for table reports first")
+            return np.nan
+
+        place = df.apply(lambda i : ("Placé" or "place" or "Place" or "place") in i.numero, axis=1)  
+        place = df.loc[place, :] 
+        place.index = place.numero.apply(lambda i : int(i.strip().lower().replace(" > place", "").replace(" > placé", "").strip()))
+        place.drop("numero", axis=1, inplace=True)
+        place.index_name="numero"
+
+        for i in place.columns :   
+            place[i] = place[i].apply(lambda i : np.float16(str(i).replace("€", "").replace(" ", "").replace(",", ".").strip())) 
+
+        return place
+
+
+    def __extract_cotes(html)
+
+
+        cotes_dict = {  'simple_gagnant' : np.nan,
+                        'simple_place'   : np.nan,
+                        'couple_gagnant' : np.nan,
+                        'couple_place'   : np.nan,
+                        '2_sur_4'        : np.nan,
+                        'tierce_ordre'   : np.nan,
+                        'tierce_desordre': np.nan,
+                        'quinte_ordre'   : np.nan,
+                        'quinte_desordre': np.nan   }       
+
+
+
+        # table reports first AKA simple
+
+        # create and parse our soup obj
+        try : 
+            soup = BeautifulSoup(html, 'html.parser') 
+            result_block = soup.find_all('table', attrs={'class': "table reports first"})
+        except Exception as e :
+            s = f"error request {e} for url {url}"
+            warning(s)
+            return np.nan
+
+        # look for just 1 table
+        if len(result_block) == 1  : 
+            table = result_block[0]
+        else : 
+            s = f"error  BS4 len {len(result_block)} for url {url}"
+            warning(s)
+            return np.nan
+
+        # build a good df
+        df = pd.read_html(str(table))[0] 
+
+        cotes_dict['simple_gagnant'] = AddCote.__extract_simple_gagnant(df)
+        cotes_dict['simple_place'] = AddCote.__extract_simple_place(df)
+
+
+
+        # create and parse our soup obj
+        try : 
+            soup = BeautifulSoup(html, 'html.parser') 
+            result_block = soup.find_all('table', attrs={'class': "table reports"})
+        except Exception as e :
+            s = f"error request {e} for url {url}"
+            warning(s)
+            return np.nan
 
 
 
@@ -241,34 +354,22 @@ class CoteCouple :
 
 
 
-
-
-
-
-
-
-            
-
-
-
-
-
-class CoteDeuxSurQuatre : 
+# class CoteDeuxSurQuatre : 
     
-    pass
+#     pass
 
 
-class CoteTrio : 
+# class CoteTrio : 
     
-    pass
+#     pass
 
 
 
-class CoteTierce : 
+# class CoteTierce : 
     
-    pass
+#     pass
 
 
-class CoteQuinte : 
+# class CoteQuinte : 
     
-    pass
+#     pass

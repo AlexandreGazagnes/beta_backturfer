@@ -19,6 +19,21 @@ info("loading dataframe")
 df  = pk_load("WITHOUT_RESULTS_pturf_grouped_and_merged_cache_carac_2016-2019_OK", "data/")
 
 
+def f(url) : 
+    if isinstance(url, str) : 
+        if not "https://www.paris-turf.com/" in url :
+            if url[0] != "/" : 
+                url ="https://www.paris-turf.com/" + url
+            else : 
+                url = "https://www.paris-turf.com" + url
+        url = url.replace("partants-pronostics", "resultats-rapports")
+
+        info(url)
+
+        return url
+
+    return url
+
 # dataframe selection
 info("selecting good dataframe")
 form        = { 'date_start': "2018-01-01", 'quinte' : 1, 
