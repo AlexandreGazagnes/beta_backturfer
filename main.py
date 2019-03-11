@@ -34,6 +34,16 @@ def f(url) :
 
     return url
 
+
+df["url"] = df.url.apply(f)
+
+
+  
+
+
+
+
+
 # dataframe selection
 info("selecting good dataframe")
 form        = { 'date_start': "2018-01-01", 'quinte' : 1, 

@@ -245,18 +245,20 @@ class AddCote :
         return html
 
 
+    def __extract_simple_gagnant(table) : 
 
 
-    def __extract_simple_gagnant(df) : 
+        # build a good df
+        df = pd.read_html(str(table))[0] 
 
         if not len(df.columns) == 4 : 
-            warning("wrong shape for table reports first")
+            warning("wrong shape for SIMPLE table reports first / len columns")
             return np.nan
 
         df.columns = ["numero", "pmu", "pmu.fr", "leturf.fr"]
 
         if not len(df) == 4 : 
-            warning("wrong shape for table reports first")
+            warning("wrong shape for SIMPLE table reports first / len df")
             return np.nan
 
         gagnant = df.apply(lambda i : ("Gagnant" or "gagnant") in i.numero, axis=1)  
@@ -271,17 +273,19 @@ class AddCote :
         return gagnant
 
 
-    def __extract_simple_place(df) : 
+    def __extract_simple_place(table) : 
 
+        # build a good df
+        df = pd.read_html(str(table))[0] 
 
         if not len(df.columns) == 4 : 
-            warning("wrong shape for table reports first")
+            warning("wrong shape for SIMPLE table reports first / len columns")
             return np.nan
 
         df.columns = ["numero", "pmu", "pmu.fr", "leturf.fr"]
 
         if not len(df) == 4 : 
-            warning("wrong shape for table reports first")
+            warning("wrong shape for SIMPLE table reports first / len df")
             return np.nan
 
         place = df.apply(lambda i : ("Placé" or "place" or "Place" or "place") in i.numero, axis=1)  
@@ -296,6 +300,95 @@ class AddCote :
         return place
 
 
+    def __extract_couple_gagnant(table) : 
+
+        # build a good df
+        df = pd.read_html(str(table))[0] 
+        
+        if not len(df.columns) == 4 : 
+            warning("wrong shape for COUPLE table reports first / len columns")
+            return np.nan
+
+        df.columns = ["numero", "pmu", "pmu.fr", "leturf.fr"]
+
+        if not len(df) == 4 : 
+            warning("wrong shape for COUPLE table reports first / len df")
+            return np.nan
+
+        gagnant = df.apply(lambda i : ("Gagnant" or "gagnant") in i.numero, axis=1)  
+        gagnant = df.loc[gagnant, :] 
+        gagnant.index = gagnant.numero.apply(lambda i : i.strip().lower().replace(" > gagnant", "").strip())
+        gagnant.drop("numero", axis=1, inplace=True)
+        gagnant.index_name="numero"
+
+        for i in gagnant.columns :   
+            gagnant[i] = gagnant[i].apply(lambda i : np.float16(str(i).replace("€", "").replace(" ", "").replace(",", ".").strip())) 
+
+
+        return gagnant
+
+
+    def __extract_couple_couple_place(table) : 
+
+        # build a good df
+        df = pd.read_html(str(table))[0] 
+        
+        if not len(df.columns) == 4 : 
+            warning("wrong shape for COUPLE table reports first / len columns")
+            return np.nan
+
+        df.columns = ["numero", "pmu", "pmu.fr", "leturf.fr"]
+
+        if not len(df) == 4 : 
+            warning("wrong shape for COUPLE table reports first / len df")
+            return np.nan
+
+        place = df.apply(lambda i : ("Placé" or "place" or "Place" or "place") in i.numero, axis=1)  
+        place = df.loc[place, :] 
+        place.index = place.numero.apply(lambda i : i.strip().lower().replace(" > place", "").replace(" > placé", "").strip())
+        place.drop("numero", axis=1, inplace=True)
+        place.index_name="numero"
+
+        for i in place.columns :   
+            place[i] = place[i].apply(lambda i : np.float16(str(i).replace("€", "").replace(" ", "").replace(",", ".").strip())) 
+
+        return place
+
+
+
+    def __extract_couple_ordre(table) : 
+
+        # build a good df
+        df = pd.read_html(str(table))[0] 
+        
+        if not len(df.columns) == 4 : 
+            warning("wrong shape for COUPLE table reports first / len columns")
+            return np.nan
+
+        df.columns = ["numero", "pmu", "pmu.fr", "leturf.fr"]
+
+        if not len(df) == 1 : 
+            warning("wrong shape for COUPLE table reports first / len df")
+            return np.nan
+
+        ordre = df.copy()
+        ordre.index = ordre.numero.apply(lambda i : i.strip().lower().strip())
+        ordre.drop("numero", axis=1, inplace=True)
+        ordre.index_name="numero"
+
+        def f(i) : 
+            if isinstance(i, str) : 
+                return np.float16(str(i).replace("€", "").replace(" ", "").replace(",", ".").strip())
+            else :
+                return i
+        for i in ordre.columns :   
+            ordre[i] = ordre[i].apply(f)
+
+        return ordre
+
+
+
+
     def __extract_cotes(html)
 
 
@@ -303,6 +396,7 @@ class AddCote :
                         'simple_place'   : np.nan,
                         'couple_gagnant' : np.nan,
                         'couple_place'   : np.nan,
+                        'couple_ordre'   : np.nan, 
                         '2_sur_4'        : np.nan,
                         'tierce_ordre'   : np.nan,
                         'tierce_desordre': np.nan,
@@ -312,6 +406,7 @@ class AddCote :
 
 
         # table reports first AKA simple
+        # ------------------------------
 
         # create and parse our soup obj
         try : 
@@ -330,13 +425,12 @@ class AddCote :
             warning(s)
             return np.nan
 
-        # build a good df
-        df = pd.read_html(str(table))[0] 
-
-        cotes_dict['simple_gagnant'] = AddCote.__extract_simple_gagnant(df)
-        cotes_dict['simple_place'] = AddCote.__extract_simple_place(df)
+        cotes_dict['simple_gagnant']    =  AddCote.__extract_simple_gagnant(table)
+        cotes_dict['simple_place']      =  AddCote.__extract_simple_place(table)
 
 
+        # Others 
+        # ----------------------------------
 
         # create and parse our soup obj
         try : 
@@ -349,8 +443,22 @@ class AddCote :
 
 
 
+        # couple
+
+        couple = list()
+        for i, j in enumerate(result_block) :  
+            r = str(result_block[i]) 
+            if ("Couplé" or "couple" or "Couple" or "couplé") in r :  
+                    couple.append(r) 
 
 
+        if len(couple) == 2 :
+            if ("Gagnant" or "gagnant") in couple[0] : 
+                cotes_dict["couple_gagnant"]  = AddCote.__extract_couple_gagnant(couple[0])
+                cotes_dict['couple_place']    = AddCote.__extract_couple_couple_place(couple[0])
+
+            if ("ordre" or "Ordre") in couple[1] : 
+                cotes_dict['couple_ordre']    = AddCote.__extract_couple_ordre(couple[1])
 
 
 
