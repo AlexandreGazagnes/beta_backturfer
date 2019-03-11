@@ -28,6 +28,23 @@ race_sel    = RaceSelector(form)
 df          = race_sel(df)
 
 
+url = np.random.choice(df.url)
+info(url)
+
+cotes_dict = AddCote.run(url)
+info(cotes_dict)
+
+cotes ="all"
+html = AddCote._AddCote__extract_html(url)
+result_block = AddCote._AddCote__extract_soup(html, soup_class="table reports")
+
+
+
+
+
+
+
+
 # load needed results
 df = GroupBy.internalize_results(df)
 
