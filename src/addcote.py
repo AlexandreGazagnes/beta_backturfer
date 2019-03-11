@@ -454,12 +454,21 @@ class AddCote :
             if ("Gagnant" or "gagnant") in couple[0] : 
                 cotes_dict["couple_gagnant"]  = AddCote.__extract_couple_gagnant(couple[0])
                 cotes_dict['couple_place']    = AddCote.__extract_couple_couple_place(couple[0])
+            elif ("Gagnant" or "gagnant") in couple[1] : 
+                cotes_dict["couple_gagnant"]  = AddCote.__extract_couple_gagnant(couple[1])
+                cotes_dict['couple_place']    = AddCote.__extract_couple_couple_place(couple[1])
+            else : 
+                warning("error in couple")
 
             if ("ordre" or "Ordre") in couple[1] : 
                 cotes_dict['couple_ordre']    = AddCote.__extract_couple_ordre(couple[1])
+            elif ("ordre" or "Ordre") in couple[0] : 
+                cotes_dict['couple_ordre']    = AddCote.__extract_couple_ordre(couple[0])
+            else : 
+                warning("error in couple")
 
         if len(couple) > 2 :    
-            warning("Errors???? ")
+            warning("Errors????")
 
         if len(couple) == 1 : 
             couple = couple[0]
