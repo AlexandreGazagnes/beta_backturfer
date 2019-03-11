@@ -506,6 +506,77 @@ class AddCote :
         return tierce
 
 
+    def __extract_quinte_ordre(table) : 
+
+        df = pd.read_html(str(table))[0] 
+
+        if not len(df.columns) == 4 : 
+            warning("wrong shape for QUinte table reports first / len columns")
+            return np.nan
+
+        df.columns = ["numero", "pmu", "pmu.fr", "leturf.fr"]
+
+        if not len(df) >= 2 : 
+            warning("wrong shape for QUinte table reports first / len df")
+            return np.nan
+
+        quinte = df.copy()
+        
+        f = lambda i : ("desordre" not in str(i).lower()) and ("désordre" not in str(i).lower()) and ("bonus" not in str(i).lower())
+        quinte = quinte.loc[quinte.numero.apply(f), :]
+
+        quinte.index = quinte.numero.apply(lambda i : i.strip().lower().strip())
+        quinte.drop("numero", axis=1, inplace=True)
+        quinte.index_name="numero"
+
+
+        def f(i) : 
+            if isinstance(i, str) : 
+                return np.float16(str(i).replace("€", "").replace(" ", "").replace(",", ".").strip())
+            else :
+                return i
+        for i in quinte.columns :   
+            quinte[i] = quinte[i].apply(f)
+
+        return quinte
+
+
+
+    def __extract_quinte_desordre(table) : 
+
+        df = pd.read_html(str(table))[0] 
+
+        if not len(df.columns) == 4 : 
+            warning("wrong shape for quinte table reports first / len columns")
+            return np.nan
+
+        df.columns = ["numero", "pmu", "pmu.fr", "leturf.fr"]
+
+        if not len(df) >= 2 : 
+            warning("wrong shape for quinte table reports first / len df")
+            return np.nan
+
+        quinte = df.copy()
+        
+        f = lambda i : ("desordre" in str(i).lower()) or ("désordre" in str(i).lower())
+        quinte = quinte.loc[quinte.numero.apply(f), :]
+
+        quinte.index = quinte.numero.apply(lambda i : i.strip().lower().strip())
+        quinte.drop("numero", axis=1, inplace=True)
+        quinte.index_name="numero"
+
+
+        def f(i) : 
+            if isinstance(i, str) : 
+                return np.float16(str(i).replace("€", "").replace(" ", "").replace(",", ".").strip())
+            else :
+                return i
+        for i in quinte.columns :   
+            quinte[i] = quinte[i].apply(f)
+
+        return quinte
+
+
 
     def run(url, cotes="all") :
 
@@ -627,6 +698,22 @@ class AddCote :
                 tierce = tierce[0]
                 cotes_dict["tierce_ordre"] = AddCote.__extract_tierce_ordre(tierce)
                 cotes_dict["tierce_desordre"] = AddCote.__extract_tierce_desordre(tierce)
+
+        # quinte
+        if (("quinte" or "quinté" or "Quinté" or "quinté") in cotes) or (cotes =="all") :
+            quinte = list()
+            for i, j in enumerate(result_block) :  
+                r = str(result_block[i]) 
+                if "Quinté+" in r :  
+                        quinte.append(r) 
+
+            if len(tierce) > 1  :   
+                warning("Errors????")
+
+            elif len(tierce) == 1 : 
+                quinte = quinte[0]
+                cotes_dict["quinte_ordre"] = AddCote.__extract_quinte_ordre(quinte)
+                cotes_dict["quinte_desordre"] = AddCote.__extract_quinte_desordre(quinte)
 
 
 
