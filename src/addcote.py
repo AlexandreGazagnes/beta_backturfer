@@ -443,7 +443,7 @@ class AddCote :
 
 
 
-    def run(url, cotes="all")
+    def run(url, cotes="all"):
 
         cotes_dict = {  'simple_gagnant' : np.nan,
                         'simple_place'   : np.nan,
