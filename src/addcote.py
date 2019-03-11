@@ -329,12 +329,16 @@ class AddCote :
 
         df.columns = ["numero", "pmu", "pmu.fr", "leturf.fr"]
 
-        if not len(df) == 4 : 
+        if not len(df) >= 4 : 
             warning("wrong shape for COUPLE table reports first / len df")
             return np.nan
 
         gagnant = df.apply(lambda i : ("Gagnant" or "gagnant") in i.numero, axis=1)  
         gagnant = df.loc[gagnant, :] 
+
+        f = lambda i : "-" in i
+        gagnant = gagnant.loc[gagnant.numero.apply(f), :]
+
         gagnant.index = gagnant.numero.apply(lambda i : i.strip().lower().replace(" > gagnant", "").strip())
         gagnant.drop("numero", axis=1, inplace=True)
         gagnant.index_name="numero"
@@ -357,12 +361,16 @@ class AddCote :
 
         df.columns = ["numero", "pmu", "pmu.fr", "leturf.fr"]
 
-        if not len(df) == 4 : 
+        if not len(df) >= 4 : 
             warning("wrong shape for COUPLE table reports first / len df")
             return np.nan
 
         place = df.apply(lambda i : ("Placé" or "place" or "Place" or "place") in i.numero, axis=1)  
         place = df.loc[place, :] 
+
+        f = lambda i : "-" in i
+        place = place.loc[place.numero.apply(f), :]
+
         place.index = place.numero.apply(lambda i : i.strip().lower().replace(" > place", "").replace(" > placé", "").strip())
         place.drop("numero", axis=1, inplace=True)
         place.index_name="numero"
@@ -419,20 +427,20 @@ class AddCote :
             warning("wrong shape for 2 sur 4 table reports first / len df")
             return np.nan
 
-        deux_sur_4 = df.copy()
-        deux_sur_4.index = deux_sur_4.numero.apply(lambda i : i.strip().lower().strip())
-        deux_sur_4.drop("numero", axis=1, inplace=True)
-        deux_sur_4.index_name="numero"
+        deux_sur_quatre = df.copy()
+        deux_sur_quatre.index = deux_sur_quatre.numero.apply(lambda i : i.strip().lower().strip())
+        deux_sur_quatre.drop("numero", axis=1, inplace=True)
+        deux_sur_quatre.index_name="numero"
 
         def f(i) : 
             if isinstance(i, str) : 
                 return np.float16(str(i).replace("€", "").replace(" ", "").replace(",", ".").strip())
             else :
                 return i
-        for i in deux_sur_4.columns :   
-            deux_sur_4[i] = deux_sur_4[i].apply(f)
+        for i in deux_sur_quatre.columns :   
+            deux_sur_quatre[i] = deux_sur_quatre[i].apply(f)
 
-        return deux_sur_4
+        return deux_sur_quatre
 
 
     def __extract_tierce_ordre(table) : 
@@ -667,20 +675,20 @@ class AddCote :
 
 
         # deux_sur_quatre
-        if (("deux_sur_4" or "deux_sur_quatre") in cotes) or (cotes =="all") :
+        if (("2_sur_4" or "deux_sur_quatre") in cotes) or (cotes =="all") :
     
-            deux_sur_4 = list()
+            deux_sur_quatre = list()
             for i, j in enumerate(result_block) :  
                 r = str(result_block[i]) 
                 if "2sur4" in r :  
-                        deux_sur_4.append(r) 
+                        deux_sur_quatre.append(r) 
 
-            if len(deux_sur_4) > 1  :   
+            if len(deux_sur_quatre) > 1  :   
                 warning("Errors????")
 
-            elif len(deux_sur_4) == 1 : 
-                deux_sur_4 = deux_sur_4[0]
-                cotes_dict["deux_sur_quatre"] = AddCote.__extract_deux_sur_quatre(deux_sur_4)
+            elif len(deux_sur_quatre) == 1 : 
+                deux_sur_quatre = deux_sur_quatre[0]
+                cotes_dict["deux_sur_quatre"] = AddCote.__extract_deux_sur_quatre(deux_sur_quatre)
 
         # tierce
         if (("tierce" or "Tiercé" or "tiercé" or "Tiercé") in cotes) or (cotes =="all") :
@@ -699,6 +707,9 @@ class AddCote :
                 cotes_dict["tierce_ordre"] = AddCote.__extract_tierce_ordre(tierce)
                 cotes_dict["tierce_desordre"] = AddCote.__extract_tierce_desordre(tierce)
 
+        del tierce
+
+
         # quinte
         if (("quinte" or "quinté" or "Quinté" or "quinté") in cotes) or (cotes =="all") :
             quinte = list()
@@ -707,16 +718,23 @@ class AddCote :
                 if "Quinté+" in r :  
                         quinte.append(r) 
 
-            if len(tierce) > 1  :   
+            if len(quinte) > 1  :   
                 warning("Errors????")
 
-            elif len(tierce) == 1 : 
+            elif len(quinte) == 1 : 
                 quinte = quinte[0]
                 cotes_dict["quinte_ordre"] = AddCote.__extract_quinte_ordre(quinte)
                 cotes_dict["quinte_desordre"] = AddCote.__extract_quinte_desordre(quinte)
 
+        cotes_df = pd.DataFrame(columns = ["numero", "type", "pmu", "pmu.fr", "leturf.fr"])
 
 
-        return cotes_dict
+        for k,v in cotes_dict.items() : 
+            df = v
+            df["type"] = k
+            df["numero"] = df.index.values
+            cotes_df = cote_df.append(df, axis=0, ignore_index=True)
+
+        return cotes_df
 
 
