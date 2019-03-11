@@ -275,7 +275,7 @@ class AddCote :
 
         df.columns = ["numero", "pmu", "pmu.fr", "leturf.fr"]
 
-        if not len(df) == 4 : 
+        if not len(df) >= 4 : 
             warning("wrong shape for SIMPLE table reports first / len df")
             return np.nan
 
@@ -302,7 +302,7 @@ class AddCote :
 
         df.columns = ["numero", "pmu", "pmu.fr", "leturf.fr"]
 
-        if not len(df) == 4 : 
+        if not len(df) >= 4 : 
             warning("wrong shape for SIMPLE table reports first / len df")
             return np.nan
 
@@ -392,9 +392,13 @@ class AddCote :
 
         df.columns = ["numero", "pmu", "pmu.fr", "leturf.fr"]
 
-        if not len(df) == 1 : 
+        if not len(df) >= 1 : 
             warning("wrong shape for COUPLE table reports first / len df")
             return np.nan
+
+        f = lambda i : "-" in i
+        ordre = ordre.loc[ordre.numero.apply(f), :]
+
 
         ordre = df.copy()
         ordre.index = ordre.numero.apply(lambda i : i.strip().lower().strip())
@@ -530,7 +534,8 @@ class AddCote :
 
         quinte = df.copy()
         
-        f = lambda i : ("desordre" not in str(i).lower()) and ("désordre" not in str(i).lower()) and ("bonus" not in str(i).lower())
+        f = lambda i : ("desordre" not in str(i).lower()) and ("désordre" not in str(i).lower()) \
+                            and ("bonus" not in str(i).lower()) and ("tirelire" not in str(i).lower())
         quinte = quinte.loc[quinte.numero.apply(f), :]
 
         quinte.index = quinte.numero.apply(lambda i : i.strip().lower().strip())
@@ -588,16 +593,16 @@ class AddCote :
 
     def run(url, cotes="all") :
 
-        cotes_dict = {  'simple_gagnant' : np.nan,
-                        'simple_place'   : np.nan,
-                        'couple_gagnant' : np.nan,
-                        'couple_place'   : np.nan,
-                        'couple_ordre'   : np.nan, 
-                        'deux_sur_quatre'        : np.nan,
-                        'tierce_ordre'   : np.nan,
-                        'tierce_desordre': np.nan,
-                        'quinte_ordre'   : np.nan,
-                        'quinte_desordre': np.nan   }       
+        cotes_dict = {  'simple_gagnant' : None,
+                        'simple_place'   : None,
+                        'couple_gagnant' : None,
+                        'couple_place'   : None,
+                        'couple_ordre'   : None, 
+                        'deux_sur_quatre': None,
+                        'tierce_ordre'   : None,
+                        'tierce_desordre': None,
+                        'quinte_ordre'   : None,
+                        'quinte_desordre': None   }       
 
 
         if cotes == "all" : 
@@ -728,12 +733,14 @@ class AddCote :
 
         cotes_df = pd.DataFrame(columns = ["numero", "type", "pmu", "pmu.fr", "leturf.fr"])
 
-
         for k,v in cotes_dict.items() : 
-            df = v
-            df["type"] = k
-            df["numero"] = df.index.values
-            cotes_df = cote_df.append(df, axis=0, ignore_index=True)
+            if isinstance(v, pd.DataFrame) : 
+                df = v.copy()
+                df["type"] = str(k)
+                df["numero"] = df.index.values
+                cotes_df = cotes_df.append(df, ignore_index=True)
+
+        cotes_df = cotes_df[["type", "numero", "pmu", "pmu.fr", "leturf.fr"]]
 
         return cotes_df
 
