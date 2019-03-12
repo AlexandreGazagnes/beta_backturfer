@@ -903,8 +903,8 @@ class AddCote :
 
 
 
-    @time_it 
-    @get_size_of
+    # @time_it 
+    # @get_size_of
     def add_cotes(df, cotes="all", cores=6, dest="data/cotes/", verbose=True, clear_temp=True, lazy=True) : 
         """for all lines of the dataframe, perform a multiporcess scrap of all urls"""
 
@@ -925,8 +925,12 @@ class AddCote :
                 if lazy : 
                     if f"comp-{n}.pk" in os.listdir(dest) : 
                         continue
-                url = df.loc[df.comp == n, "url"]
+                url = df.loc[df.comp == n, "url"].values
+                assert len(url) == 1
+                url = url[0]
+                info(url)
                 _df = AddCote.scrap(url, cotes)
+                info(_df)
                 pk_save(_df, f"comp-{n}", dest)
 
 
@@ -942,38 +946,38 @@ class AddCote :
 
         # verbose
         if verbose : 
-            info(f"df size in Mo : {sys.getsizeof(new_df) / 1000000}")
+            # info(f"df size in Mo : {sys.getsizeof(new_df) / 1000000}")
             info(f"timer load df : {round(time.time() - t0, 2)}")
-            info(f"debut {new_df.jour.min()} fin {new_df.jour.max()}")
-            info(new_df.shape)
-            info(new_df.dtypes)
+            # info(f"debut {new_df.jour.min()} fin {new_df.jour.max()}")
+            # info(new_df.shape)
+            # info(new_df.dtypes)
 
 
 
 
-    # @get_size_of
-    # @time_it 
-    # def internalize_results(df, path="data/results/", temp="temp/internalize_results/" , cores=6) :
+    @get_size_of
+    @time_it 
+    def internalize_cotes(df, cotes="all",  path="data/results/", temp="temp/internalize_cotes/" , cores=6) :
 
-    #     if "results" in df.columns : 
-    #         raise ValueError ("results ALREADY in columns")
+        if "cotes" in df.columns : 
+            raise ValueError ("results ALREADY in columns")
 
-    #     assert len(df.comp.unique()) == len(df)
+        assert len(df.comp.unique()) == len(df)
 
-    #     _df = df.copy()
+        _df = df.copy()
 
-    #     def funct(i0=0, i1=10000000) :                 
+        def funct(i0=0, i1=10000000) :                 
                 
-    #         results = []
-    #         for comp in tqdm(_df.comp[i0: i1]) : 
-    #             results.append([comp, pk_load(str(comp), path)])
+            cotes = []
+            for comp in tqdm(_df.comp[i0: i1]) : 
+                cotes.append([comp, pk_load(str(comp), path)])
             
-    #         results = pd.DataFrame(results, columns=["comp", "results"])
+            cotes = pd.DataFrame(cotes, columns=["comp", "cotes"])
 
-    #         info(results.columns)
-    #         info(results.head())
+            info(cotes.columns)
+            info(cotes.head())
             
-    #         pk_save(results, str(results.comp[0]), temp)
+            pk_save(cotes, str(cotes.comp[0]), temp)
 
 
     #     def temp_merge() : 
