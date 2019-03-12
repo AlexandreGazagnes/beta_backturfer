@@ -119,7 +119,5 @@ data/pturf*.pk
 data/cache*.pk
 data/carac*.pk
 data/results/*.pk
-data/cotes/*.pk
-data/TEMP*.pk
 
 dask-worker-space

@@ -377,7 +377,7 @@ class RaceSelector(dict) :
 
     @get_size_of
     @time_it 
-    def __call__(self, df, force_consistancy=True, verbose=True) : 
+    def run(self, df, force_consistancy=True, verbose=True) : 
         """ 
         force_consistancy : return Error if  Raceselector lead to a null dataframe
         ie force to have a not null dataframe
