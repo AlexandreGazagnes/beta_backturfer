@@ -951,7 +951,97 @@ class AddCote :
 
 
 
+    # @get_size_of
+    # @time_it 
+    # def internalize_results(df, path="data/results/", temp="temp/internalize_results/" , cores=6) :
 
+    #     if "results" in df.columns : 
+    #         raise ValueError ("results ALREADY in columns")
+
+    #     assert len(df.comp.unique()) == len(df)
+
+    #     _df = df.copy()
+
+    #     def funct(i0=0, i1=10000000) :                 
+                
+    #         results = []
+    #         for comp in tqdm(_df.comp[i0: i1]) : 
+    #             results.append([comp, pk_load(str(comp), path)])
+            
+    #         results = pd.DataFrame(results, columns=["comp", "results"])
+
+    #         info(results.columns)
+    #         info(results.head())
+            
+    #         pk_save(results, str(results.comp[0]), temp)
+
+
+    #     def temp_merge() : 
+
+    #         sub_df = pd.DataFrame(columns=["comp", "results"])
+
+    #         for n in tqdm(os.listdir(temp)) :
+
+    #             if not ".pk" in n : continue
+    #             else : n = n.replace(".pk", "")
+
+    #             r  = pk_load(str(n), temp)
+    #             sub_df = sub_df.append(r, ignore_index=True)
+    #             os.remove(f"{temp}{n}.pk")
+
+    #         sub_df["comp"] = sub_df.comp.astype(np.uint32)
+
+    #         return sub_df
+
+
+    #     # multiporcessing
+    #     if cores < 2 : 
+    #             funct()
+    #     else : 
+    #         chks  = chunks(_df.comp, cores)
+    #         process_list = [Process(target=funct, args=chk) for chk in chks]
+    #         [i.start() for i in process_list]
+    #         [i.join()  for i in process_list]
+
+    #     # merge
+    #     results = temp_merge()
+
+    #     _df = _df.sort_values("comp", axis=0, ascending=True, inplace=False)
+    #     _df.index = reindex(_df)
+
+    #     results = results.sort_values("comp", axis=0, ascending=True, inplace=False)
+    #     results.index = reindex(results)
+
+
+    #     assert len(_df) == len(results)
+    #     val = _df.comp.values == results.comp.values
+    #     assert val.all()
+
+
+    #     val = _df.index.values == results.index.values
+    #     assert val.all()
+
+
+    #     info(_df.columns)
+    #     info(results.columns)
+
+    #     results.columns = ["_comp", "results"]
+    #     final_df = pd.concat([_df, results], axis=1, ignore_index=False)
+    #     # final_df.columns = list(_df.columns) + list(results.columns) 
+
+    #     info(final_df.loc[:, ["comp", "_comp"]].head())
+
+    #     val = (final_df.comp.values ==final_df["_comp"].values)
+    #     assert val.all()                                          
+
+    #     final_df.drop("_comp", axis=1, inplace=True)
+
+    #     assert len(final_df) == len(_df)
+    #     assert len(final_df) == len(results)
+
+    #     pk_clean(temp)
+
+    #     return final_df
 
 
 
