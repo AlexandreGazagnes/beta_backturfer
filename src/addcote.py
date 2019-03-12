@@ -452,7 +452,7 @@ class AddCote :
 
         deux_sur_quatre = df.copy()
 
-        f = lambda i : str(i).count("-") == 4
+        f = lambda i : str(i).count("-") == 3
         deux_sur_quatre = deux_sur_quatre.loc[deux_sur_quatre.numero.apply(f), :]
 
         deux_sur_quatre.index = deux_sur_quatre.numero.apply(lambda i : i.strip().lower().strip())
@@ -574,7 +574,7 @@ class AddCote :
         f = lambda i : str(i).count("-") == 4
         quinte = quinte.loc[quinte.numero.apply(f), :]
 
-        quinte.index = quinte.numero.apply(lambda i : i.strip().lower().strip())
+        quinte.index = quinte.numero.apply(lambda i : str(i).strip().lower().strip())
         quinte.drop("numero", axis=1, inplace=True)
         quinte.index_name="numero"
 
@@ -611,7 +611,7 @@ class AddCote :
         f = lambda i : ("desordre" in str(i).lower()) or ("désordre" in str(i).lower())
         quinte = quinte.loc[quinte.numero.apply(f), :]
 
-        quinte.index = quinte.numero.apply(lambda i : i.strip().lower().strip())
+        quinte.index = quinte.numero.apply(lambda i : str(i).strip().lower().strip())
         quinte.drop("numero", axis=1, inplace=True)
         quinte.index_name="numero"
 
@@ -629,7 +629,7 @@ class AddCote :
         return quinte
 
 
-    def __extract_trio(table) : 
+    def __extract_trio_desordre(table) : 
 
         df = pd.read_html(str(table))[0] 
 
@@ -648,7 +648,7 @@ class AddCote :
         f = lambda i : str(i).count("-") == 2
         trio = trio.loc[trio.numero.apply(f), :]
 
-        trio.index = trio.numero.apply(lambda i : i.strip().lower().strip())
+        trio.index = trio.numero.apply(lambda i : str(i).strip().lower().strip())
         trio.drop("numero", axis=1, inplace=True)
         trio.index_name="numero"
 
@@ -664,6 +664,42 @@ class AddCote :
         trio = trio.iloc[:1, :] 
 
         return trio
+
+
+    def __extract_trio_ordre(table) : 
+
+        df = pd.read_html(str(table))[0] 
+
+        if not len(df.columns) == 4 : 
+            warning("wrong shape for Trio table reports first / len columns")
+            return np.nan
+
+        df.columns = ["numero", "pmu", "pmu.fr", "leturf.fr"]
+
+        if not len(df) >= 1 : 
+            warning("wrong shape for Trio table reports first / len df")
+            return np.nan
+
+        trio = df.copy()
+
+        trio.index = trio.numero.apply(lambda i : str(i).strip().lower().strip())
+        trio.drop("numero", axis=1, inplace=True)
+        trio.index_name="numero"
+
+
+        def f(i) : 
+            if isinstance(i, str) : 
+                return np.float16(str(i).replace("€", "").replace(" ", "").replace(",", ".").strip())
+            else :
+                return i
+        for i in trio.columns :   
+            trio[i] = trio[i].apply(f)
+
+        trio = trio.iloc[:1, :] 
+
+        return trio
+
+
 
 
 
@@ -737,14 +773,14 @@ class AddCote :
                     cotes_dict["couple_gagnant"]  = AddCote.__extract_couple_gagnant(couple[1])
                     cotes_dict['couple_place']    = AddCote.__extract_couple_couple_place(couple[1])
                 else : 
-                    warning("error in couple Gagnant")
+                    warning("error  0 couple gagnant in result block")
 
                 if "Ordre" in couple[1] : 
                     cotes_dict['couple_ordre']    = AddCote.__extract_couple_ordre(couple[1])
                 elif "Ordre" in couple[0] : 
                     cotes_dict['couple_ordre']    = AddCote.__extract_couple_ordre(couple[0])
                 else : 
-                    warning("error in couple Ordre")
+                    warning("error  0 couple ordre in result block")
 
             elif len(couple) == 1 : 
                 couple = couple[0]
@@ -822,12 +858,25 @@ class AddCote :
                 if "Trio" in r :  
                         trio.append(r) 
 
-            if len(trio) > 1  :   
-                warning("Errors Trio in result_block")
 
-            elif len(trio) == 1 : 
+            if len(trio) == 2 : 
+                if 'ordre' in trio[0] : 
+                    cotes_dict["trio_ordre"] =  AddCote.__extract_trio_ordre(trio[0] )
+                    cotes_dict["trio_desordre"]   =  AddCote.__extract_trio_desordre(trio[1])
+                elif 'ordre' in trio[1] : 
+                    cotes_dict["trio_ordre"] =  AddCote.__extract_trio_ordre(trio[1] )
+                    cotes_dict["trio_desordre"]   =  AddCote.__extract_trio_desordre(trio[0])
+                else : 
+                    warning("error 0 in trio /result_block")
+
+            elif len(trio) == 1  :   
                 trio = trio[0]
-                cotes_dict["trio_ordre"] = AddCote.__extract_trio(trio)
+                if 'ordre' in trio : 
+                    cotes_dict["trio_ordre"]        = AddCote.__extract_trio_ordre(trio)
+                else : 
+                    cotes_dict["trio_desordre"]   =  AddCote.__extract_trio_desordre(trio)
+            else :
+                    warning("error 1 in trio /result_block")
 
         del trio
 
