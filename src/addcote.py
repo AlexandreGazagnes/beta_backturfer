@@ -385,7 +385,7 @@ class AddCote :
         f = lambda i : "-" in i
         place = place.loc[place.numero.apply(f), :]
 
-        place.index = place.numero.apply(lambda i : i.strip().lower().replace(" > place", "").replace(" > placé", "").strip())
+        place.index = place.numero.apply(lambda i : str(i).strip().lower().replace(" > place", "").replace(" > placé", "").strip())
         place.drop("numero", axis=1, inplace=True)
         place.index_name="numero"
 
@@ -418,7 +418,7 @@ class AddCote :
 
 
         ordre = df.copy()
-        ordre.index = ordre.numero.apply(lambda i : i.strip().lower().strip())
+        ordre.index = ordre.numero.apply(lambda i : str(i).strip().lower().strip())
         ordre.drop("numero", axis=1, inplace=True)
         ordre.index_name="numero"
 
@@ -446,7 +446,7 @@ class AddCote :
 
         df.columns = ["numero", "pmu", "pmu.fr", "leturf.fr"]
 
-        if not len(df) == 1 : 
+        if not len(df) >= 1 : 
             warning("wrong shape for 2 sur 4 table reports first / len df")
             return np.nan
 
@@ -455,7 +455,7 @@ class AddCote :
         f = lambda i : str(i).count("-") == 3
         deux_sur_quatre = deux_sur_quatre.loc[deux_sur_quatre.numero.apply(f), :]
 
-        deux_sur_quatre.index = deux_sur_quatre.numero.apply(lambda i : i.strip().lower().strip())
+        deux_sur_quatre.index = deux_sur_quatre.numero.apply(lambda i : str(i).strip().lower().strip())
         deux_sur_quatre.drop("numero", axis=1, inplace=True)
         deux_sur_quatre.index_name="numero"
 
@@ -494,7 +494,7 @@ class AddCote :
         f = lambda i : str(i).count("-") == 2
         tierce = tierce.loc[tierce.numero.apply(f), :]
 
-        tierce.index = tierce.numero.apply(lambda i : i.strip().lower().strip())
+        tierce.index = tierce.numero.apply(lambda i : str(i).strip().lower().strip())
         tierce.drop("numero", axis=1, inplace=True)
         tierce.index_name="numero"
 
@@ -532,7 +532,7 @@ class AddCote :
         f = lambda i : ("desordre" in str(i).lower()) or ("désordre" in str(i).lower())
         tierce = tierce.loc[tierce.numero.apply(f), :]
 
-        tierce.index = tierce.numero.apply(lambda i : i.strip().lower().strip())
+        tierce.index = tierce.numero.apply(lambda i : str(i).strip().lower().strip())
         tierce.drop("numero", axis=1, inplace=True)
         tierce.index_name="numero"
 
@@ -710,8 +710,9 @@ class AddCote :
                         'couple_gagnant' : None,
                         'couple_place'   : None,
                         'couple_ordre'   : None, 
+                        'trio_desordre'  : None,
+                        'trio_ordre'     : None,
                         'deux_sur_quatre': None,
-                        'trio'           : None,
                         'tierce_ordre'   : None,
                         'tierce_desordre': None,
                         'quinte_ordre'   : None,
@@ -793,6 +794,37 @@ class AddCote :
         del couple
 
 
+        # trio
+        if (("Trio" or "trio") in cotes) or (cotes =="all") :
+            trio = list()
+            for i, j in enumerate(result_block) :  
+                r = str(result_block[i]) 
+                if "Trio" in r :  
+                        trio.append(r) 
+
+
+            if len(trio) == 2 : 
+                if 'ordre' in trio[0] : 
+                    cotes_dict["trio_ordre"] =  AddCote.__extract_trio_ordre(trio[0] )
+                    cotes_dict["trio_desordre"]   =  AddCote.__extract_trio_desordre(trio[1])
+                elif 'ordre' in trio[1] : 
+                    cotes_dict["trio_ordre"] =  AddCote.__extract_trio_ordre(trio[1] )
+                    cotes_dict["trio_desordre"]   =  AddCote.__extract_trio_desordre(trio[0])
+                else : 
+                    warning("error 0 in trio /result_block")
+
+            elif len(trio) == 1  :   
+                trio = trio[0]
+                if 'ordre' in trio : 
+                    cotes_dict["trio_ordre"]        = AddCote.__extract_trio_ordre(trio)
+                else : 
+                    cotes_dict["trio_desordre"]   =  AddCote.__extract_trio_desordre(trio)
+            else :
+                    warning("error 1 in trio /result_block")
+
+        del trio
+
+
         # deux_sur_quatre
         if (("2_sur_4" or "deux_sur_quatre") in cotes) or (cotes =="all") :
     
@@ -850,35 +882,7 @@ class AddCote :
         del quinte
 
 
-        # trio
-        if (("Trio" or "trio") in cotes) or (cotes =="all") :
-            trio = list()
-            for i, j in enumerate(result_block) :  
-                r = str(result_block[i]) 
-                if "Trio" in r :  
-                        trio.append(r) 
 
-
-            if len(trio) == 2 : 
-                if 'ordre' in trio[0] : 
-                    cotes_dict["trio_ordre"] =  AddCote.__extract_trio_ordre(trio[0] )
-                    cotes_dict["trio_desordre"]   =  AddCote.__extract_trio_desordre(trio[1])
-                elif 'ordre' in trio[1] : 
-                    cotes_dict["trio_ordre"] =  AddCote.__extract_trio_ordre(trio[1] )
-                    cotes_dict["trio_desordre"]   =  AddCote.__extract_trio_desordre(trio[0])
-                else : 
-                    warning("error 0 in trio /result_block")
-
-            elif len(trio) == 1  :   
-                trio = trio[0]
-                if 'ordre' in trio : 
-                    cotes_dict["trio_ordre"]        = AddCote.__extract_trio_ordre(trio)
-                else : 
-                    cotes_dict["trio_desordre"]   =  AddCote.__extract_trio_desordre(trio)
-            else :
-                    warning("error 1 in trio /result_block")
-
-        del trio
 
 
         # handle cotes df /cote dict
