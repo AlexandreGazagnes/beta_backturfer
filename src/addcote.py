@@ -297,6 +297,8 @@ class AddCote :
         for i in gagnant.columns :   
             gagnant[i] = gagnant[i].apply(lambda i : np.float16(str(i).replace("€", "").replace(" ", "").replace(",", ".").strip())) 
 
+        gagnant = gagnant.iloc[:1, :]
+
         return gagnant
 
 
@@ -323,6 +325,8 @@ class AddCote :
 
         for i in place.columns :   
             place[i] = place[i].apply(lambda i : np.float16(str(i).replace("€", "").replace(" ", "").replace(",", ".").strip())) 
+        
+        place = place.iloc[:3, :]
 
         return place
 
@@ -355,6 +359,7 @@ class AddCote :
         for i in gagnant.columns :   
             gagnant[i] = gagnant[i].apply(lambda i : np.float16(str(i).replace("€", "").replace(" ", "").replace(",", ".").strip())) 
 
+        gagnant = gagnant.iloc[:1, :]
 
         return gagnant
 
@@ -386,6 +391,8 @@ class AddCote :
 
         for i in place.columns :   
             place[i] = place[i].apply(lambda i : np.float16(str(i).replace("€", "").replace(" ", "").replace(",", ".").strip())) 
+
+        place = place.iloc[:3, :]
 
         return place
 
@@ -423,6 +430,8 @@ class AddCote :
         for i in ordre.columns :   
             ordre[i] = ordre[i].apply(f)
 
+        ordre = ordre.iloc[:1, :]
+
         return ordre
 
 
@@ -443,7 +452,7 @@ class AddCote :
 
         deux_sur_quatre = df.copy()
 
-        f = lambda i : "-" in i
+        f = lambda i : str(i).count("-") == 4
         deux_sur_quatre = deux_sur_quatre.loc[deux_sur_quatre.numero.apply(f), :]
 
         deux_sur_quatre.index = deux_sur_quatre.numero.apply(lambda i : i.strip().lower().strip())
@@ -457,6 +466,8 @@ class AddCote :
                 return i
         for i in deux_sur_quatre.columns :   
             deux_sur_quatre[i] = deux_sur_quatre[i].apply(f)
+
+        deux_sur_quatre = deux_sur_quatre.iloc[:1, :] 
 
         return deux_sur_quatre
 
@@ -476,11 +487,11 @@ class AddCote :
             return np.nan
 
         tierce = df.copy()
-
-        f = lambda i : str(i).count("-") == 2
-        tierce = tierce.loc[tierce.numero.apply(f), :]
         
         f = lambda i : ("desordre" not in str(i).lower()) and ("désordre" not in str(i).lower())
+        tierce = tierce.loc[tierce.numero.apply(f), :]
+
+        f = lambda i : str(i).count("-") == 2
         tierce = tierce.loc[tierce.numero.apply(f), :]
 
         tierce.index = tierce.numero.apply(lambda i : i.strip().lower().strip())
@@ -495,6 +506,8 @@ class AddCote :
                 return i
         for i in tierce.columns :   
             tierce[i] = tierce[i].apply(f)
+
+        tierce = tierce.iloc[:1, :] 
 
         return tierce
 
@@ -515,8 +528,6 @@ class AddCote :
             return np.nan
 
         tierce = df.copy()
-        f = lambda i : str(i).count("-") == 2
-        tierce = tierce.loc[tierce.numero.apply(f), :]
         
         f = lambda i : ("desordre" in str(i).lower()) or ("désordre" in str(i).lower())
         tierce = tierce.loc[tierce.numero.apply(f), :]
@@ -533,6 +544,8 @@ class AddCote :
                 return i
         for i in tierce.columns :   
             tierce[i] = tierce[i].apply(f)
+
+        tierce = tierce.iloc[:1, :] 
 
         return tierce
 
@@ -573,6 +586,8 @@ class AddCote :
                 return i
         for i in quinte.columns :   
             quinte[i] = quinte[i].apply(f)
+
+        quinte = quinte.iloc[:1, :] 
 
         return quinte
 
