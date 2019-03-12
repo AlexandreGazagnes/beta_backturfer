@@ -19,58 +19,33 @@ info("loading dataframe")
 df  = pk_load("WITHOUT_RESULTS_pturf_grouped_and_merged_cache_carac_2016-2019_OK", "data/")
 
 
-
 # dataframe selection
 info("selecting good dataframe")
-form        = { 'date_start': "2018-01-01", 'quinte' : 1, 
-                'euro_only' : True, 'typec': [  'attelé', 'monté',]}
-race_sel    = RaceSelector(form)
-df          = race_sel(df)
-
-
-url = np.random.choice(df.url)
-info(url)
-
-cotes_df = AddCote.run(url)
-info(cotes_df)
-
-cotes ="all"
-html = AddCote._AddCote__extract_html(url)
-result_block = AddCote._AddCote__extract_soup(html, soup_class="table reports")
-
-
-
-
-
-
+form = {    'date_start': "2018-01-01", 'quinte' : 1, 
+            'euro_only' : True, 'typec': [  'attelé', 'monté',]}
+df = RaceSelector(form).run(df)
 
 
 # load needed results
 df = GroupBy.internalize_results(df)
 
-_df = CoteSimplePlace.add(df)
+# bets and turf
+info("just Bet")
+_df = Bet.simple_gagnant(       df, 
+                                Strats.choix_de_la_meilleure_cote, 
+                                N=0)
 
-# # bet
-# bet = Bet("simple_place", Strats.choix_de_la_meilleure_cote)
-# info(bet)
-# info(bet.__dict__)
-
-# # bets and turf
-# info("just Bet")
-# _df = Bet.simple_gagnant(       df, 
-#                                 Strats.choix_de_la_meilleure_cote)
-
-# info("Trurfing Room Once")
-# delta, bet_ratio, __df  = TurfingRoom.once( df, 
-#                                             BetRoom.simple_gagnant, 
-#                                             Strats.choix_de_la_meilleure_cote, 
-#                                             N=0)
+info("Trurfing Room Once")
+delta, bet_ratio, __df  = TurfingRoom.once( df, 
+                                            BetRoom.simple_gagnant, 
+                                            Strats.choix_de_la_meilleure_cote, 
+                                            N=0)
 
 
 
 
 
-# DF  = df.copy()
+DF  = df.copy()
 
 def main() : 
 
@@ -99,5 +74,19 @@ def main() :
 
 if __name__ == '__main__':
     main()
+
+
+
+
+def blockchain_AI(x) : 
+    """ultimate Blockchain IA function"""
+
+    try         : x = float(x)
+    except      : raise TypeError("numerical attribute expected")
+
+    if   x > 0  : return "positif"
+    elif x < 0  : return "negatif"
+
+    return "nul"
 
 
