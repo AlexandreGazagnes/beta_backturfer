@@ -435,6 +435,77 @@ class AddCote :
         return ordre
 
 
+    def __extract_trio_desordre(table) : 
+
+        df = pd.read_html(str(table))[0] 
+
+        if not len(df.columns) == 4 : 
+            warning("wrong shape for Trio table reports first / len columns")
+            return np.nan
+
+        df.columns = ["numero", "pmu", "pmu.fr", "leturf.fr"]
+
+        if not len(df) >= 1 : 
+            warning("wrong shape for Trio table reports first / len df")
+            return np.nan
+
+        trio = df.copy()
+
+        f = lambda i : str(i).count("-") == 2
+        trio = trio.loc[trio.numero.apply(f), :]
+
+        trio.index = trio.numero.apply(lambda i : str(i).strip().lower().strip())
+        trio.drop("numero", axis=1, inplace=True)
+        trio.index_name="numero"
+
+
+        def f(i) : 
+            if isinstance(i, str) : 
+                return np.float16(str(i).replace("€", "").replace(" ", "").replace(",", ".").strip())
+            else :
+                return i
+        for i in trio.columns :   
+            trio[i] = trio[i].apply(f)
+
+        trio = trio.iloc[:1, :] 
+
+        return trio
+
+
+    def __extract_trio_ordre(table) : 
+
+        df = pd.read_html(str(table))[0] 
+
+        if not len(df.columns) == 4 : 
+            warning("wrong shape for Trio table reports first / len columns")
+            return np.nan
+
+        df.columns = ["numero", "pmu", "pmu.fr", "leturf.fr"]
+
+        if not len(df) >= 1 : 
+            warning("wrong shape for Trio table reports first / len df")
+            return np.nan
+
+        trio = df.copy()
+
+        trio.index = trio.numero.apply(lambda i : str(i).strip().lower().strip())
+        trio.drop("numero", axis=1, inplace=True)
+        trio.index_name="numero"
+
+
+        def f(i) : 
+            if isinstance(i, str) : 
+                return np.float16(str(i).replace("€", "").replace(" ", "").replace(",", ".").strip())
+            else :
+                return i
+        for i in trio.columns :   
+            trio[i] = trio[i].apply(f)
+
+        trio = trio.iloc[:1, :] 
+
+        return trio
+
+
     def __extract_deux_sur_quatre(table) : 
 
         # build a good df
@@ -510,7 +581,6 @@ class AddCote :
         tierce = tierce.iloc[:1, :] 
 
         return tierce
-
 
 
     def __extract_tierce_desordre(table) : 
@@ -629,81 +699,7 @@ class AddCote :
         return quinte
 
 
-    def __extract_trio_desordre(table) : 
-
-        df = pd.read_html(str(table))[0] 
-
-        if not len(df.columns) == 4 : 
-            warning("wrong shape for Trio table reports first / len columns")
-            return np.nan
-
-        df.columns = ["numero", "pmu", "pmu.fr", "leturf.fr"]
-
-        if not len(df) >= 1 : 
-            warning("wrong shape for Trio table reports first / len df")
-            return np.nan
-
-        trio = df.copy()
-
-        f = lambda i : str(i).count("-") == 2
-        trio = trio.loc[trio.numero.apply(f), :]
-
-        trio.index = trio.numero.apply(lambda i : str(i).strip().lower().strip())
-        trio.drop("numero", axis=1, inplace=True)
-        trio.index_name="numero"
-
-
-        def f(i) : 
-            if isinstance(i, str) : 
-                return np.float16(str(i).replace("€", "").replace(" ", "").replace(",", ".").strip())
-            else :
-                return i
-        for i in trio.columns :   
-            trio[i] = trio[i].apply(f)
-
-        trio = trio.iloc[:1, :] 
-
-        return trio
-
-
-    def __extract_trio_ordre(table) : 
-
-        df = pd.read_html(str(table))[0] 
-
-        if not len(df.columns) == 4 : 
-            warning("wrong shape for Trio table reports first / len columns")
-            return np.nan
-
-        df.columns = ["numero", "pmu", "pmu.fr", "leturf.fr"]
-
-        if not len(df) >= 1 : 
-            warning("wrong shape for Trio table reports first / len df")
-            return np.nan
-
-        trio = df.copy()
-
-        trio.index = trio.numero.apply(lambda i : str(i).strip().lower().strip())
-        trio.drop("numero", axis=1, inplace=True)
-        trio.index_name="numero"
-
-
-        def f(i) : 
-            if isinstance(i, str) : 
-                return np.float16(str(i).replace("€", "").replace(" ", "").replace(",", ".").strip())
-            else :
-                return i
-        for i in trio.columns :   
-            trio[i] = trio[i].apply(f)
-
-        trio = trio.iloc[:1, :] 
-
-        return trio
-
-
-
-
-
-    def run(url, cotes="all") :
+    def add(url, cotes="all") :
 
         cotes_dict = {  'simple_gagnant' : None,
                         'simple_place'   : None,
@@ -721,11 +717,18 @@ class AddCote :
 
         if cotes == "all" : 
             pass
+
+        elif isinstance(cotes, str) : 
+            cotes = [cotes]
+            cotes = [i for i in cotes if i in AddCote.cotes]
         elif isinstance(cotes, Iterable) : 
             cotes = [i for i in cotes if i in AddCote.cotes]
         else : 
+            warning("Error cotes non valid as an argument of AddCote.add")
             return cotes_dict
 
+        if len(cotes) == 0 : 
+            warning("Error cotes non valid as an argument of AddCote.add")
 
         # html
         html = AddCote.__extract_html(url)
@@ -791,7 +794,7 @@ class AddCote :
                     cotes_dict["couple_gagnant"]  = AddCote.__extract_couple_gagnant(couple)
                     cotes_dict['couple_place']    = AddCote.__extract_couple_couple_place(couple)
 
-        del couple
+            del couple
 
 
         # trio
@@ -882,9 +885,6 @@ class AddCote :
         del quinte
 
 
-
-
-
         # handle cotes df /cote dict
         cotes_df = pd.DataFrame(columns = ["numero", "type", "pmu", "pmu.fr", "leturf.fr"])
 
@@ -898,5 +898,8 @@ class AddCote :
         cotes_df = cotes_df[["type", "numero", "pmu", "pmu.fr", "leturf.fr"]]
 
         return cotes_df
+
+
+
 
 
