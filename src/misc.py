@@ -10,6 +10,7 @@ from itertools import product
 from multiprocessing import Process
 from collections import Iterable, OrderedDict
 from tqdm import tqdm
+from pprint import pprint
 
 # import dask
 # from dask import dataframe as dd
@@ -35,7 +36,7 @@ sns.set()
 
 # logger 
 logger = logging.getLogger()
-logger.setLevel(logging.DEBUG)
+logger.setLevel(logging.INFO)
 
 
 # consts
@@ -53,13 +54,16 @@ class change_repr(object):
         self.functor     = functor
         self.__name__    = functor.__name__
         self.__doc__     = functor.__doc__
-        self.Class     = str(functor).split(" ")[1].split(".")[0]
+        self.Class       = str(functor).split(" ")[1].split(".")[0]
+
 
     def __call__(self, *args, **kwargs):
         return self.functor(*args, **kwargs)
 
+
     def __repr__(self):
         return self.functor.__name__
+
 
     def __str__(self):
         return self.functor.__name__

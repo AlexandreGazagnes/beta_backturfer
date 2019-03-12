@@ -7,7 +7,6 @@ from src.misc import *
 from strats.easy import Strats
 
 
-
 # class
 class Bet : 
     """functions for bet in winning and podium mode
@@ -16,34 +15,67 @@ class Bet :
     Bet.ordered/unorder tierce : you bet 3 horse on the podium, ordered or not
     Bet.ordered/unorder quinte : you think you are Paco Rabanne, please stop drinking to much beers"""
 
-    bets_str = [('simple_gagnant', 'simple gagnant'),
-                ('simple_place', 'simple placé'),
-                ('couple_gagnant', 'couple gagnant'),
-                ('couple_place', 'couple placé'),
-                ('couple_ordre', 'couple ordre'),
-                ('deux_sur_quatre', '2 sur 4'),
-                ('trio_ordre', 'trio ordre'),
-                ('trio_desordre', 'trio désordre'),
-                ('tierce_ordre', 'tiercé ordre'),
-                ('tierce_desordre', 'tiercé désordre'),
-                ('quinte_ordre', 'quinté ordre'),
-                ('quinte_desordre', 'quinté désordre')]
+        #               name             str                min bet 
+    bets_str    = {'simple_gagnant':   ('simple gagnant',  1.5, ),
+                    'simple_place':     ('simple placé',    1.5, ),
+                    'couple_gagnant':   ('couple gagnant',  1.5,),
+                    'couple_place':     ('couple placé',    1.5, ),
+                    'couple_ordre':     ('couple ordre',    1.5,),
+                    'deux_sur_quatre':  ('2 sur 4',         3, ),
+                    'trio_ordre':       ('trio ordre',      1.5),
+                    'trio_desordre':    ('trio désordre',   1.5),
+                    'tierce_ordre':     ('tiercé ordre',    1),
+                    'tierce_desordre':  ('tiercé désordre', 1),
+                    'quinte_ordre':     ('quinté ordre',    2),
+                    'quinte_desordre':  ('quinté désordre', 2)      }
 
 
-    def args_check(funct ) :
+    plateforms  = ['hippodrome', 'web', 'indifferent', 'random']
 
-        def _args_check(*param, **params) : 
+    strat_comp  = list()
 
-            try :           assert isinstance(df, pd.DataFrame)
-            except Exception as e: raise e
-            if verbose :    assert isinstance(verbose, bool)
-            if strat :      assert callable(strat)
-            if strat :      assert strat.Class == "Strats"
-            if  N :         assert isinstance(N, int)
 
-            return funct(*param, **params)
+    def give_me_bets() : 
+        """give str ref of avialables bets type for user"""
 
-        return _args_check
+        li = [(j[0].ljust(15, " "), i) for i, j in Bet.bets_str.items()]
+        li = [f"{i} : {j}" for i,j in li]
+        return "\n".join(li)
+
+
+    def __init__(self, bet_type, strat, N=0, plateform='hippodrome', verbose=True) : 
+
+        assert isinstance(bet_type, str) 
+        assert bet_type in Bet.bets_str.keys()
+        assert isinstance(verbose, bool)
+        assert callable(strat)
+        assert strat.Class == "Strats"
+        assert isinstance(N, int)
+        assert isinstance(plateform, str)
+        assert plateform in Bet.plateforms
+
+        self.bet_type   = bet_type
+        self.strat      = strat
+        self.N          = N
+        self.plateform  = plateform
+        self.bet_min    = Bet.bets_str[bet_type][1]
+        self.verbose    = verbose
+
+        if verbose : 
+            info(self)
+
+
+    def run(self, df) : 
+
+        assert isinstance(df, pd.DataFrame)
+
+        if "results" not in df.columns : 
+            df = GroupBy.internalize_results(df)
+
+        _bet = eval(f"Bet.{self.bet_type}")
+
+
+        return _bet(df=df, strat=self.strat, N=self.N, verbose=self.verbose)
 
 
     def __winner_num(results) : 
@@ -107,7 +139,7 @@ class Bet :
         df["gains"]             = df.good_bet * df.win_cote  * df.bet_or_not * df.bet_autorized
 
         if verbose : 
-            warning(df["gains"].describe())
+            info(df["gains"].describe())
 
         return df
 
@@ -121,28 +153,19 @@ class Bet :
         assert isinstance(df, pd.DataFrame)
         assert isinstance(verbose, int)
         assert callable(strat)
-         assert strat.Class == "Strats"
+        assert strat.Class == "Strats"
         if N : assert isinstance(N, int)
 
+        df["bet_autorized"]     = 1
         df["bet_horse"]         = df.results.apply(lambda i : strat(i, N) )
-        df["win_horses"]        = df.results.apply(Bet.__find_podium_nums)
+        df["win_horses"]        = df.results.apply(Bet.__podium_nums)
 
-        # split podium nums and iterate in cols to find if numero in win_horses
-        s = len(df.win_horses.iloc[0])
-        for i in range(s) : 
-            df[f"_win_horses_{i}"] = df.win_horses.apply(lambda j : j[i]) 
-        good_cols = [i for i in df.columns if "_win_horses" in i]
-
-        for i in good_cols :  
-            df[i] = df[i] == df.bet_horse
-
-        df["good_bet"] =  df.loc[:, good_cols].sum(axis=1)
-        df = df.drop(good_cols, axis=1, inplace=False)
-
-        df["bet_or_not"]    = df.bet_horse.apply(lambda i : 1 if i>=1 else 0)
+        df["good_bet"]          = df.apply(lambda i : i.bet_horse in i. win_horses, axis=1)        
+        
+        df["bet_or_not"]        = df.bet_horse.apply(lambda i : 1 if i>=1 else 0)
 
         # find podiumcote of bet_horse
-        df["horse_cote"]   = -1.0
+        df["horse_cote"]        = -1.0
 
         for i in df.index : 
             horse = df.loc[i, "bet_horse"]
@@ -154,10 +177,10 @@ class Bet :
                 df.loc[i, "horse_cote"] = -1
 
         
-        df["gains"]             = df.good_bet * df.horse_cote * df.bet_or_not
+        df["gains"]             = df.good_bet * df.horse_cote * df.bet_or_not * df.bet_autorized 
 
         if verbose : 
-            warning(df["gains"].describe())
+            info(df["gains"].describe())
 
         return df
 
