@@ -349,7 +349,7 @@ class AddCote :
         gagnant = df.apply(lambda i : ("Gagnant" or "gagnant") in i.numero, axis=1)  
         gagnant = df.loc[gagnant, :] 
 
-        f = lambda i : "-" in i
+        f = lambda i : "-" in str(i)
         gagnant = gagnant.loc[gagnant.numero.apply(f), :]
 
         gagnant.index = gagnant.numero.apply(lambda i : i.strip().lower().replace(" > gagnant", "").strip())
@@ -382,7 +382,7 @@ class AddCote :
         place = df.apply(lambda i : ("Placé" or "place" or "Place" or "place") in i.numero, axis=1)  
         place = df.loc[place, :] 
 
-        f = lambda i : "-" in i
+        f = lambda i : "-" in str(i)
         place = place.loc[place.numero.apply(f), :]
 
         place.index = place.numero.apply(lambda i : str(i).strip().lower().replace(" > place", "").replace(" > placé", "").strip())
@@ -413,7 +413,7 @@ class AddCote :
             return np.nan
 
         ordre = df.copy()
-        f = lambda i : "-" in i
+        f = lambda i : "-" in str(i)
         ordre = ordre.loc[ordre.numero.apply(f), :]
 
 
