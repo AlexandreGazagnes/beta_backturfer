@@ -201,9 +201,18 @@ USER_AGENT = {'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKi
 
 class AddCote : 
 
-    cotes = [   'simple_gagnant', 'simple_place' , 'couple_gagnant', 'couple_place' , 
-                'couple_ordre' , 'deux_sur_quatre' ,'tierce_ordre', 'tierce_desordre', 
-                'quinte_ordre', 'quinte_desordre'    ]
+    cotes =         [   'simple_gagnant', 'simple_place' , 
+                        'couple_gagnant', 'couple_place', 'couple_ordre', 
+                        'deux_sur_quatre' ,
+                        'tierce_ordre', 'tierce_desordre', 
+                        'trio_ordre', 'trio_desordre',
+                        'quinte_ordre', 'quinte_desordre'    ]
+
+
+    html_identifier = { 
+
+                        }
+
 
 
     def __extract_html(url) : 
@@ -433,6 +442,10 @@ class AddCote :
             return np.nan
 
         deux_sur_quatre = df.copy()
+
+        f = lambda i : "-" in i
+        deux_sur_quatre = deux_sur_quatre.loc[deux_sur_quatre.numero.apply(f), :]
+
         deux_sur_quatre.index = deux_sur_quatre.numero.apply(lambda i : i.strip().lower().strip())
         deux_sur_quatre.drop("numero", axis=1, inplace=True)
         deux_sur_quatre.index_name="numero"
@@ -463,6 +476,9 @@ class AddCote :
             return np.nan
 
         tierce = df.copy()
+
+        f = lambda i : str(i).count("-") == 2
+        tierce = tierce.loc[tierce.numero.apply(f), :]
         
         f = lambda i : ("desordre" not in str(i).lower()) and ("désordre" not in str(i).lower())
         tierce = tierce.loc[tierce.numero.apply(f), :]
@@ -499,6 +515,8 @@ class AddCote :
             return np.nan
 
         tierce = df.copy()
+        f = lambda i : str(i).count("-") == 2
+        tierce = tierce.loc[tierce.numero.apply(f), :]
         
         f = lambda i : ("desordre" in str(i).lower()) or ("désordre" in str(i).lower())
         tierce = tierce.loc[tierce.numero.apply(f), :]
@@ -537,6 +555,10 @@ class AddCote :
         
         f = lambda i : ("desordre" not in str(i).lower()) and ("désordre" not in str(i).lower()) \
                             and ("bonus" not in str(i).lower()) and ("tirelire" not in str(i).lower())
+
+        quinte = quinte.loc[quinte.numero.apply(f), :]
+
+        f = lambda i : str(i).count("-") == 4
         quinte = quinte.loc[quinte.numero.apply(f), :]
 
         quinte.index = quinte.numero.apply(lambda i : i.strip().lower().strip())
@@ -553,7 +575,6 @@ class AddCote :
             quinte[i] = quinte[i].apply(f)
 
         return quinte
-
 
 
     def __extract_quinte_desordre(table) : 
@@ -588,7 +609,46 @@ class AddCote :
         for i in quinte.columns :   
             quinte[i] = quinte[i].apply(f)
 
+        quinte = quinte.iloc[:1, :] 
+
         return quinte
+
+
+    def __extract_trio(table) : 
+
+        df = pd.read_html(str(table))[0] 
+
+        if not len(df.columns) == 4 : 
+            warning("wrong shape for Trio table reports first / len columns")
+            return np.nan
+
+        df.columns = ["numero", "pmu", "pmu.fr", "leturf.fr"]
+
+        if not len(df) >= 1 : 
+            warning("wrong shape for Trio table reports first / len df")
+            return np.nan
+
+        trio = df.copy()
+
+        f = lambda i : str(i).count("-") == 2
+        trio = trio.loc[trio.numero.apply(f), :]
+
+        trio.index = trio.numero.apply(lambda i : i.strip().lower().strip())
+        trio.drop("numero", axis=1, inplace=True)
+        trio.index_name="numero"
+
+
+        def f(i) : 
+            if isinstance(i, str) : 
+                return np.float16(str(i).replace("€", "").replace(" ", "").replace(",", ".").strip())
+            else :
+                return i
+        for i in trio.columns :   
+            trio[i] = trio[i].apply(f)
+
+        trio = trio.iloc[:1, :] 
+
+        return trio
 
 
 
@@ -600,6 +660,7 @@ class AddCote :
                         'couple_place'   : None,
                         'couple_ordre'   : None, 
                         'deux_sur_quatre': None,
+                        'trio'           : None,
                         'tierce_ordre'   : None,
                         'tierce_desordre': None,
                         'quinte_ordre'   : None,
@@ -678,6 +739,8 @@ class AddCote :
                     cotes_dict["couple_gagnant"]  = AddCote.__extract_couple_gagnant(couple)
                     cotes_dict['couple_place']    = AddCote.__extract_couple_couple_place(couple)
 
+        del couple
+
 
         # deux_sur_quatre
         if (("2_sur_4" or "deux_sur_quatre") in cotes) or (cotes =="all") :
@@ -694,6 +757,8 @@ class AddCote :
             elif len(deux_sur_quatre) == 1 : 
                 deux_sur_quatre = deux_sur_quatre[0]
                 cotes_dict["deux_sur_quatre"] = AddCote.__extract_deux_sur_quatre(deux_sur_quatre)
+
+        del deux_sur_quatre
 
         # tierce
         if (("tierce" or "Tiercé" or "tiercé" or "Tiercé") in cotes) or (cotes =="all") :
@@ -731,6 +796,28 @@ class AddCote :
                 cotes_dict["quinte_ordre"] = AddCote.__extract_quinte_ordre(quinte)
                 cotes_dict["quinte_desordre"] = AddCote.__extract_quinte_desordre(quinte)
 
+        del quinte
+
+
+        # trio
+        if (("Trio" or "trio") in cotes) or (cotes =="all") :
+            trio = list()
+            for i, j in enumerate(result_block) :  
+                r = str(result_block[i]) 
+                if "Trio" in r :  
+                        trio.append(r) 
+
+            if len(trio) > 1  :   
+                warning("Errors????")
+
+            elif len(trio) == 1 : 
+                trio = trio[0]
+                cotes_dict["trio_ordre"] = AddCote.__extract_trio(trio)
+
+        del trio
+
+
+        # handle cotes df /cote dict
         cotes_df = pd.DataFrame(columns = ["numero", "type", "pmu", "pmu.fr", "leturf.fr"])
 
         for k,v in cotes_dict.items() : 
