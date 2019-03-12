@@ -699,7 +699,8 @@ class AddCote :
         return quinte
 
 
-    def add(url, cotes="all") :
+    def scrap(url, cotes="all") :
+        """give an url srcrap specific cotes and return a df"""
 
         cotes_dict = {  'simple_gagnant' : None,
                         'simple_place'   : None,
@@ -724,11 +725,11 @@ class AddCote :
         elif isinstance(cotes, Iterable) : 
             cotes = [i for i in cotes if i in AddCote.cotes]
         else : 
-            warning("Error cotes non valid as an argument of AddCote.add")
+            warning("Error cotes non valid as an argument of AddCotes.scrap")
             return cotes_dict
 
         if len(cotes) == 0 : 
-            warning("Error cotes non valid as an argument of AddCote.add")
+            warning("Error cotes non valid as an argument of AddCotes.scrap")
 
         # html
         html = AddCote.__extract_html(url)
@@ -898,6 +899,58 @@ class AddCote :
         cotes_df = cotes_df[["type", "numero", "pmu", "pmu.fr", "leturf.fr"]]
 
         return cotes_df
+
+
+
+
+    @time_it 
+    @get_size_of
+    def add_cotes(df, cotes="all", cores=6, dest="data/cotes/", verbose=True, clear_temp=True, lazy=True) : 
+        """for all lines of the dataframe, perform a multiporcess scrap of all urls"""
+
+        assert isinstance(df, pd.DataFrame)
+        assert "url" in df.columns
+        assert isinstance(cores, int)
+        assert (cores >= 1) and (cores <= 8)
+        if not os.path.isdir(dest) : 
+            os.mkdir(dest)
+        assert isinstance(verbose, bool)
+
+        t0 = time.time()
+
+
+        def scrap_it(i0=0, i1=10000000) : 
+
+            for n in list_of_comp[i0:i1] :
+                if lazy : 
+                    if f"comp-{n}.pk" in os.listdir(dest) : 
+                        continue
+                url = df.loc[df.comp == n, "url"]
+                _df = AddCote.scrap(url, cotes)
+                pk_save(_df, f"comp-{n}", dest)
+
+
+        # multiprocessing
+        list_of_comp = df.comp.unique()
+        if cores < 2 : 
+            scrap_it(i0=0, i1=10000000)
+        else : 
+            chks  = chunks(list_of_comp, cores)
+            process_list = [Process(target=scrap_it, args=chk) for chk in chks]
+            [i.start() for i in process_list]
+            [i.join()  for i in process_list]
+
+        # verbose
+        if verbose : 
+            info(f"df size in Mo : {sys.getsizeof(new_df) / 1000000}")
+            info(f"timer load df : {round(time.time() - t0, 2)}")
+            info(f"debut {new_df.jour.min()} fin {new_df.jour.max()}")
+            info(new_df.shape)
+            info(new_df.dtypes)
+
+
+
+
 
 
 
