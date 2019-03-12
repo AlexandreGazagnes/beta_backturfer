@@ -396,6 +396,7 @@ class AddCote :
             warning("wrong shape for COUPLE table reports first / len df")
             return np.nan
 
+        ordre = df.copy()
         f = lambda i : "-" in i
         ordre = ordre.loc[ordre.numero.apply(f), :]
 
@@ -660,14 +661,14 @@ class AddCote :
                     cotes_dict["couple_gagnant"]  = AddCote.__extract_couple_gagnant(couple[1])
                     cotes_dict['couple_place']    = AddCote.__extract_couple_couple_place(couple[1])
                 else : 
-                    warning("error in couple")
+                    warning("error in couple Gagnant")
 
-                if ("ordre" or "Ordre") in couple[1] : 
+                if "Ordre" in couple[1] : 
                     cotes_dict['couple_ordre']    = AddCote.__extract_couple_ordre(couple[1])
-                elif ("ordre" or "Ordre") in couple[0] : 
+                elif "Ordre" in couple[0] : 
                     cotes_dict['couple_ordre']    = AddCote.__extract_couple_ordre(couple[0])
                 else : 
-                    warning("error in couple")
+                    warning("error in couple Ordre")
 
             elif len(couple) == 1 : 
                 couple = couple[0]
@@ -676,7 +677,6 @@ class AddCote :
                 else : 
                     cotes_dict["couple_gagnant"]  = AddCote.__extract_couple_gagnant(couple)
                     cotes_dict['couple_place']    = AddCote.__extract_couple_couple_place(couple)
-
 
 
         # deux_sur_quatre
