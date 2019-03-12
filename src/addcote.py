@@ -767,7 +767,7 @@ class AddCote :
                         deux_sur_quatre.append(r) 
 
             if len(deux_sur_quatre) > 1  :   
-                warning("Errors????")
+                warning("errors deux sur quatre in result_block")
 
             elif len(deux_sur_quatre) == 1 : 
                 deux_sur_quatre = deux_sur_quatre[0]
@@ -785,7 +785,7 @@ class AddCote :
                         tierce.append(r) 
 
             if len(tierce) > 1  :   
-                warning("Errors????")
+                warning("Errors tierce in result_block")
 
             elif len(tierce) == 1 : 
                 tierce = tierce[0]
@@ -804,7 +804,7 @@ class AddCote :
                         quinte.append(r) 
 
             if len(quinte) > 1  :   
-                warning("Errors????")
+                warning("Errors quinte in result_block")
 
             elif len(quinte) == 1 : 
                 quinte = quinte[0]
@@ -823,7 +823,7 @@ class AddCote :
                         trio.append(r) 
 
             if len(trio) > 1  :   
-                warning("Errors????")
+                warning("Errors Trio in result_block")
 
             elif len(trio) == 1 : 
                 trio = trio[0]
