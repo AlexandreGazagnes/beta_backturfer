@@ -265,7 +265,7 @@ class AddCote :
             soup = BeautifulSoup(html, 'html.parser') 
             result_block = soup.find_all('table', attrs={'class': soup_class})
         except Exception as e :
-            s = f"error request {e} for url {url}"
+            s = f"error request {e} for url"
             warning(s)
             return np.nan
 
@@ -808,10 +808,10 @@ class AddCote :
 
 
             if len(trio) == 2 : 
-                if 'ordre' in trio[0] : 
+                if 'Ordre' in trio[0] : 
                     cotes_dict["trio_ordre"] =  AddCote.__extract_trio_ordre(trio[0] )
                     cotes_dict["trio_desordre"]   =  AddCote.__extract_trio_desordre(trio[1])
-                elif 'ordre' in trio[1] : 
+                elif 'Ordre' in trio[1] : 
                     cotes_dict["trio_ordre"] =  AddCote.__extract_trio_ordre(trio[1] )
                     cotes_dict["trio_desordre"]   =  AddCote.__extract_trio_desordre(trio[0])
                 else : 
@@ -819,7 +819,7 @@ class AddCote :
 
             elif len(trio) == 1  :   
                 trio = trio[0]
-                if 'ordre' in trio : 
+                if 'Ordre' in trio : 
                     cotes_dict["trio_ordre"]        = AddCote.__extract_trio_ordre(trio)
                 else : 
                     cotes_dict["trio_desordre"]   =  AddCote.__extract_trio_desordre(trio)
