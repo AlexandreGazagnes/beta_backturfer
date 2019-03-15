@@ -932,16 +932,16 @@ class AddCote :
         def scrap_it(i0=0, i1=10000000) : 
 
             for n in list_of_comp[i0:i1] :
-                if lazy : 
-                    if f"comp-{n}.pk" in os.listdir(dest) : 
-                        continue
-                url = df.loc[df.comp == n, "url"].values
-                assert len(url) == 1
-                url = url[0]
-                info(url)
-                _df = AddCote.scrap(url, cotes)
-                info(_df)
-                pk_save(_df, f"comp-{n}", dest)
+                if lazy and (f"comp-{n}.pk" in os.listdir(dest))  : 
+                    continue
+                else : 
+                    url = df.loc[df.comp == n, "url"].values
+                    assert len(url) == 1
+                    url = url[0]
+                    info(url)
+                    _df = AddCote.scrap(url, cotes)
+                    info(_df)
+                    pk_save(_df, f"comp-{n}", dest)
 
 
         # multiprocessing

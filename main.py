@@ -28,15 +28,18 @@ race_sel    = RaceSelector(form)
 df          = race_sel(df)
 
 
-url = np.random.choice(df.url)
-info(url)
+# run AddCote
+AddCote.add_cotes(df, cotes="all", cores=6, dest="data/cotes/", lazy=True)
 
-cotes_df = AddCote.run(url)
-info(cotes_df)
 
-cotes ="all"
-html = AddCote._AddCote__extract_html(url)
-result_block = AddCote._AddCote__extract_soup(html, soup_class="table reports")
+
+
+# url = np.random.choice(df.url)
+# info(url)
+
+# cotes ="all"
+# html = AddCote._AddCote__extract_html(url)
+# result_block = AddCote._AddCote__extract_soup(html, soup_class="table reports")
 
 
 
