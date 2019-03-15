@@ -10,7 +10,9 @@ import pytest
 
 
 def test_df_shape() : 
+
     df  = pk_load("WITHOUT_RESULTS_pturf_grouped_and_merged_cache_carac_2016-2019_OK", "data/")
+
     assert len(df) == 130571
     assert len(df.columns) == 16
     assert 'url' in df.columns
@@ -25,6 +27,7 @@ def test_RaceSelector() :
                     'euro_only' : True, 'typec': [  'attelé', 'monté', "plat"]}
     race_sel    = RaceSelector(form)
     df          = race_sel(df)
+
     assert len(df) == 362
     assert len(df.columns) == 16
     assert 'url' in df.columns
