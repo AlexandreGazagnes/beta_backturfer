@@ -23,16 +23,23 @@ df  = pk_load("WITHOUT_RESULTS_pturf_grouped_and_merged_cache_carac_2016-2019_OK
 # dataframe selection
 info("selecting good dataframe")
 form        = { 'date_start': "2018-01-01", 'quinte' : 1, 
-                'euro_only' : True, 'typec': [  'attelé', 'monté',]}
+                'euro_only' : True, 'typec': [  'attelé', 'monté', "plat"]}
 race_sel    = RaceSelector(form)
 df          = race_sel(df)
 
 
-url = np.random.choice(df.url)
-info(url)
 
-cotes_df = AddCote.run(url)
-info(cotes_df)
+
+# df = df.iloc[-10:, :]
+
+AddCote.add_cotes(df, cores=1, lazy=False)
+
+
+
+# url = np.random.choice(df.url)
+# info(url)
+
+
 
 cotes ="all"
 html = AddCote._AddCote__extract_html(url)
