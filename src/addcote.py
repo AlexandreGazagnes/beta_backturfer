@@ -8,6 +8,20 @@ import requests
 from bs4 import BeautifulSoup
 
 
+# import asyncio
+# import logging
+# import re
+# import sys
+# from typing import IO
+# import urllib.error
+# import urllib.parse
+
+# import aiofiles
+# import aiohttp
+# from aiohttp import ClientSession
+
+
+
 # consts
 USER_AGENT = {'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36'}
 
@@ -290,7 +304,7 @@ class AddCote :
 
         gagnant = df.apply(lambda i : ("Gagnant" or "gagnant") in i.numero, axis=1)  
         gagnant = df.loc[gagnant, :] 
-        gagnant.index = gagnant.numero.apply(lambda i : int(i.strip().lower().replace(" > gagnant", "").strip()))
+        gagnant.index = gagnant.numero.apply(lambda i : int(str(i).strip().lower().replace(" > gagnant", "").strip()))
         gagnant.drop("numero", axis=1, inplace=True)
         gagnant.index_name="numero"
 
@@ -319,7 +333,7 @@ class AddCote :
 
         place = df.apply(lambda i : ("Placé" or "place" or "Place" or "place") in i.numero, axis=1)  
         place = df.loc[place, :] 
-        place.index = place.numero.apply(lambda i : int(i.strip().lower().replace(" > place", "").replace(" > placé", "").strip()))
+        place.index = place.numero.apply(lambda i : int(str(i).strip().lower().replace(" > place", "").replace(" > placé", "").strip()))
         place.drop("numero", axis=1, inplace=True)
         place.index_name="numero"
 
@@ -352,7 +366,7 @@ class AddCote :
         f = lambda i : "-" in str(i)
         gagnant = gagnant.loc[gagnant.numero.apply(f), :]
 
-        gagnant.index = gagnant.numero.apply(lambda i : i.strip().lower().replace(" > gagnant", "").strip())
+        gagnant.index = gagnant.numero.apply(lambda i : str(i).strip().lower().replace(" > gagnant", "").strip())
         gagnant.drop("numero", axis=1, inplace=True)
         gagnant.index_name="numero"
 
@@ -771,25 +785,25 @@ class AddCote :
                 warning("Errors????")
             
             elif len(couple) == 2 :
-                if ("Gagnant" or "gagnant") in couple[0] : 
+                if "gagnant" in str(couple[0]).lower() : 
                     cotes_dict["couple_gagnant"]  = AddCote.__extract_couple_gagnant(couple[0])
                     cotes_dict['couple_place']    = AddCote.__extract_couple_couple_place(couple[0])
-                elif ("Gagnant" or "gagnant") in couple[1] : 
+                elif "gagnant" in str(couple[1]).lower() : 
                     cotes_dict["couple_gagnant"]  = AddCote.__extract_couple_gagnant(couple[1])
                     cotes_dict['couple_place']    = AddCote.__extract_couple_couple_place(couple[1])
                 else : 
                     warning("error  0 couple gagnant in result block")
 
-                if "Ordre" in couple[1] : 
+                if "ordre" in str(couple[1]).lower() : 
                     cotes_dict['couple_ordre']    = AddCote.__extract_couple_ordre(couple[1])
-                elif "Ordre" in couple[0] : 
+                elif "ordre" in str(couple[0]).lower() : 
                     cotes_dict['couple_ordre']    = AddCote.__extract_couple_ordre(couple[0])
                 else : 
-                    warning("error  0 couple ordre in result block")
+                    warning("error 1 couple ordre in result block")
 
             elif len(couple) == 1 : 
                 couple = couple[0]
-                if ("ordre" or "Ordre") in couple : 
+                if "ordre" in str(couple).lower() : 
                     cotes_dict['couple_ordre']    = AddCote.__extract_couple_ordre(couple)
                 else : 
                     cotes_dict["couple_gagnant"]  = AddCote.__extract_couple_gagnant(couple)
@@ -808,10 +822,10 @@ class AddCote :
 
 
             if len(trio) == 2 : 
-                if 'Ordre' in trio[0] : 
+                if 'ordre' in str(trio[0]).lower() : 
                     cotes_dict["trio_ordre"] =  AddCote.__extract_trio_ordre(trio[0] )
                     cotes_dict["trio_desordre"]   =  AddCote.__extract_trio_desordre(trio[1])
-                elif 'Ordre' in trio[1] : 
+                elif 'ordre' in str(trio[1]).lower(): 
                     cotes_dict["trio_ordre"] =  AddCote.__extract_trio_ordre(trio[1] )
                     cotes_dict["trio_desordre"]   =  AddCote.__extract_trio_desordre(trio[0])
                 else : 
@@ -819,7 +833,7 @@ class AddCote :
 
             elif len(trio) == 1  :   
                 trio = trio[0]
-                if 'Ordre' in trio : 
+                if 'ordre' in str(trio).lower(): 
                     cotes_dict["trio_ordre"]        = AddCote.__extract_trio_ordre(trio)
                 else : 
                     cotes_dict["trio_desordre"]   =  AddCote.__extract_trio_desordre(trio)
@@ -902,7 +916,6 @@ class AddCote :
 
 
 
-
     # @time_it 
     # @get_size_of
     def add_cotes(df, cotes="all", cores=6, dest="data/cotes/", verbose=True, clear_temp=True, lazy=True) : 
@@ -951,7 +964,6 @@ class AddCote :
             # info(f"debut {new_df.jour.min()} fin {new_df.jour.max()}")
             # info(new_df.shape)
             # info(new_df.dtypes)
-
 
 
 
