@@ -23,14 +23,14 @@ df  = pk_load("WITHOUT_RESULTS_pturf_grouped_and_merged_cache_carac_2016-2019_OK
 # dataframe selection
 info("selecting good dataframe")
 form        = { 'date_start': "2018-01-01", 'quinte' : 1, 
-                'euro_only' : True, 'typec': [  'attelé', 'monté',]}
+                'euro_only' : True, 'typec': [  'attelé', 'monté', "plat"]}
 race_sel    = RaceSelector(form)
 df          = race_sel(df)
 
 
+
 # run AddCote
 AddCote.add_cotes(df, cotes="all", cores=6, dest="data/cotes/", lazy=True)
-
 
 
 
