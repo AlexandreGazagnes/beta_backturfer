@@ -29,21 +29,17 @@ df          = race_sel(df)
 
 
 
-
-# df = df.iloc[-10:, :]
-
-AddCote.add_cotes(df, cores=1, lazy=False)
+# run AddCote
+AddCote.add_cotes(df, cotes="all", cores=6, dest="data/cotes/", lazy=True)
 
 
 
 # url = np.random.choice(df.url)
 # info(url)
 
-
-
-cotes ="all"
-html = AddCote._AddCote__extract_html(url)
-result_block = AddCote._AddCote__extract_soup(html, soup_class="table reports")
+# cotes ="all"
+# html = AddCote._AddCote__extract_html(url)
+# result_block = AddCote._AddCote__extract_soup(html, soup_class="table reports")
 
 
 
