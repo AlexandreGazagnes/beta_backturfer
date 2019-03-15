@@ -114,12 +114,12 @@ temp/*.pk
 data/pturf*.csv
 data/cache*.csv
 data/carac*.csv
-
 data/pturf*.pk
 data/cache*.pk
 data/carac*.pk
 data/results/*.pk
 data/cotes/*.pk
 data/TEMP*.pk
+data/comp*.pk
 
 dask-worker-space

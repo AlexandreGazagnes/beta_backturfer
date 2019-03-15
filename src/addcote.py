@@ -8,6 +8,20 @@ import requests
 from bs4 import BeautifulSoup
 
 
+# import asyncio
+# import logging
+# import re
+# import sys
+# from typing import IO
+# import urllib.error
+# import urllib.parse
+
+# import aiofiles
+# import aiohttp
+# from aiohttp import ClientSession
+
+
+
 # consts
 USER_AGENT = {'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36'}
 
@@ -265,7 +279,7 @@ class AddCote :
             soup = BeautifulSoup(html, 'html.parser') 
             result_block = soup.find_all('table', attrs={'class': soup_class})
         except Exception as e :
-            s = f"error request {e} for url {url}"
+            s = f"error request {e} for url"
             warning(s)
             return np.nan
 
@@ -290,12 +304,12 @@ class AddCote :
 
         gagnant = df.apply(lambda i : ("Gagnant" or "gagnant") in i.numero, axis=1)  
         gagnant = df.loc[gagnant, :] 
-        gagnant.index = gagnant.numero.apply(lambda i : int(i.strip().lower().replace(" > gagnant", "").strip()))
+        gagnant.index = gagnant.numero.apply(lambda i : int(str(i).strip().lower().replace(" > gagnant", "").strip()))
         gagnant.drop("numero", axis=1, inplace=True)
         gagnant.index_name="numero"
 
         for i in gagnant.columns :   
-            gagnant[i] = gagnant[i].apply(lambda i : np.float16(str(i).replace("€", "").replace(" ", "").replace(",", ".").strip())) 
+            gagnant[i] = gagnant[i].apply(lambda i : np.float32(str(i).replace("€", "").replace(" ", "").replace(",", ".").strip())) 
 
         gagnant = gagnant.iloc[:1, :]
 
@@ -319,12 +333,12 @@ class AddCote :
 
         place = df.apply(lambda i : ("Placé" or "place" or "Place" or "place") in i.numero, axis=1)  
         place = df.loc[place, :] 
-        place.index = place.numero.apply(lambda i : int(i.strip().lower().replace(" > place", "").replace(" > placé", "").strip()))
+        place.index = place.numero.apply(lambda i : int(str(i).strip().lower().replace(" > place", "").replace(" > placé", "").strip()))
         place.drop("numero", axis=1, inplace=True)
         place.index_name="numero"
 
         for i in place.columns :   
-            place[i] = place[i].apply(lambda i : np.float16(str(i).replace("€", "").replace(" ", "").replace(",", ".").strip())) 
+            place[i] = place[i].apply(lambda i : np.float32(str(i).replace("€", "").replace(" ", "").replace(",", ".").strip())) 
         
         place = place.iloc[:3, :]
 
@@ -349,15 +363,15 @@ class AddCote :
         gagnant = df.apply(lambda i : ("Gagnant" or "gagnant") in i.numero, axis=1)  
         gagnant = df.loc[gagnant, :] 
 
-        f = lambda i : "-" in i
+        f = lambda i : "-" in str(i)
         gagnant = gagnant.loc[gagnant.numero.apply(f), :]
 
-        gagnant.index = gagnant.numero.apply(lambda i : i.strip().lower().replace(" > gagnant", "").strip())
+        gagnant.index = gagnant.numero.apply(lambda i : str(i).strip().lower().replace(" > gagnant", "").strip())
         gagnant.drop("numero", axis=1, inplace=True)
         gagnant.index_name="numero"
 
         for i in gagnant.columns :   
-            gagnant[i] = gagnant[i].apply(lambda i : np.float16(str(i).replace("€", "").replace(" ", "").replace(",", ".").strip())) 
+            gagnant[i] = gagnant[i].apply(lambda i : np.float32(str(i).replace("€", "").replace(" ", "").replace(",", ".").strip())) 
 
         gagnant = gagnant.iloc[:1, :]
 
@@ -382,15 +396,15 @@ class AddCote :
         place = df.apply(lambda i : ("Placé" or "place" or "Place" or "place") in i.numero, axis=1)  
         place = df.loc[place, :] 
 
-        f = lambda i : "-" in i
+        f = lambda i : "-" in str(i)
         place = place.loc[place.numero.apply(f), :]
 
-        place.index = place.numero.apply(lambda i : i.strip().lower().replace(" > place", "").replace(" > placé", "").strip())
+        place.index = place.numero.apply(lambda i : str(i).strip().lower().replace(" > place", "").replace(" > placé", "").strip())
         place.drop("numero", axis=1, inplace=True)
         place.index_name="numero"
 
         for i in place.columns :   
-            place[i] = place[i].apply(lambda i : np.float16(str(i).replace("€", "").replace(" ", "").replace(",", ".").strip())) 
+            place[i] = place[i].apply(lambda i : np.float32(str(i).replace("€", "").replace(" ", "").replace(",", ".").strip())) 
 
         place = place.iloc[:3, :]
 
@@ -413,18 +427,18 @@ class AddCote :
             return np.nan
 
         ordre = df.copy()
-        f = lambda i : "-" in i
+        f = lambda i : "-" in str(i)
         ordre = ordre.loc[ordre.numero.apply(f), :]
 
 
         ordre = df.copy()
-        ordre.index = ordre.numero.apply(lambda i : i.strip().lower().strip())
+        ordre.index = ordre.numero.apply(lambda i : str(i).strip().lower().strip())
         ordre.drop("numero", axis=1, inplace=True)
         ordre.index_name="numero"
 
         def f(i) : 
             if isinstance(i, str) : 
-                return np.float16(str(i).replace("€", "").replace(" ", "").replace(",", ".").strip())
+                return np.float32(str(i).replace("€", "").replace(" ", "").replace(",", ".").strip())
             else :
                 return i
         for i in ordre.columns :   
@@ -433,6 +447,74 @@ class AddCote :
         ordre = ordre.iloc[:1, :]
 
         return ordre
+
+
+    def __extract_trio_desordre(table) : 
+
+        df = pd.read_html(str(table))[0] 
+
+        if not len(df.columns) == 4 : 
+            warning("wrong shape for Trio table reports first / len columns")
+            return np.nan
+
+        df.columns = ["numero", "pmu", "pmu.fr", "leturf.fr"]
+
+        if not len(df) >= 1 : 
+            warning("wrong shape for Trio table reports first / len df")
+            return np.nan
+
+        trio = df.copy()
+
+        trio.index = trio.numero.apply(lambda i : str(i).strip().lower().strip())
+        trio.drop("numero", axis=1, inplace=True)
+        trio.index_name="numero"
+
+
+        def f(i) : 
+            if isinstance(i, str) : 
+                return np.float32(str(i).replace("€", "").replace(" ", "").replace(",", ".").strip())
+            else :
+                return i
+        for i in trio.columns :   
+            trio[i] = trio[i].apply(f)
+
+        trio = trio.iloc[:1, :] 
+
+        return trio
+
+
+    def __extract_trio_ordre(table) : 
+
+        df = pd.read_html(str(table))[0] 
+
+        if not len(df.columns) == 4 : 
+            warning("wrong shape for Trio table reports first / len columns")
+            return np.nan
+
+        df.columns = ["numero", "pmu", "pmu.fr", "leturf.fr"]
+
+        if not len(df) >= 1 : 
+            warning("wrong shape for Trio table reports first / len df")
+            return np.nan
+
+        trio = df.copy()
+
+        trio.index = trio.numero.apply(lambda i : str(i).strip().lower().strip())
+        trio.drop("numero", axis=1, inplace=True)
+        trio.index_name="numero"
+
+
+        def f(i) : 
+            if isinstance(i, str) : 
+                return np.float32(str(i).replace("€", "").replace(" ", "").replace(",", ".").strip())
+            else :
+                return i
+        for i in trio.columns :   
+            trio[i] = trio[i].apply(f)
+
+        trio = trio.iloc[:1, :] 
+
+        return trio
 
 
     def __extract_deux_sur_quatre(table) : 
@@ -446,22 +528,22 @@ class AddCote :
 
         df.columns = ["numero", "pmu", "pmu.fr", "leturf.fr"]
 
-        if not len(df) == 1 : 
+        if not len(df) >= 1 : 
             warning("wrong shape for 2 sur 4 table reports first / len df")
             return np.nan
 
         deux_sur_quatre = df.copy()
 
-        f = lambda i : str(i).count("-") == 4
+        f = lambda i : str(i).count("-") == 3
         deux_sur_quatre = deux_sur_quatre.loc[deux_sur_quatre.numero.apply(f), :]
 
-        deux_sur_quatre.index = deux_sur_quatre.numero.apply(lambda i : i.strip().lower().strip())
+        deux_sur_quatre.index = deux_sur_quatre.numero.apply(lambda i : str(i).strip().lower().strip())
         deux_sur_quatre.drop("numero", axis=1, inplace=True)
         deux_sur_quatre.index_name="numero"
 
         def f(i) : 
             if isinstance(i, str) : 
-                return np.float16(str(i).replace("€", "").replace(" ", "").replace(",", ".").strip())
+                return np.float32(str(i).replace("€", "").replace(" ", "").replace(",", ".").strip())
             else :
                 return i
         for i in deux_sur_quatre.columns :   
@@ -494,14 +576,14 @@ class AddCote :
         f = lambda i : str(i).count("-") == 2
         tierce = tierce.loc[tierce.numero.apply(f), :]
 
-        tierce.index = tierce.numero.apply(lambda i : i.strip().lower().strip())
+        tierce.index = tierce.numero.apply(lambda i : str(i).strip().lower().strip())
         tierce.drop("numero", axis=1, inplace=True)
         tierce.index_name="numero"
 
 
         def f(i) : 
             if isinstance(i, str) : 
-                return np.float16(str(i).replace("€", "").replace(" ", "").replace(",", ".").strip())
+                return np.float32(str(i).replace("€", "").replace(" ", "").replace(",", ".").strip())
             else :
                 return i
         for i in tierce.columns :   
@@ -510,7 +592,6 @@ class AddCote :
         tierce = tierce.iloc[:1, :] 
 
         return tierce
-
 
 
     def __extract_tierce_desordre(table) : 
@@ -532,14 +613,14 @@ class AddCote :
         f = lambda i : ("desordre" in str(i).lower()) or ("désordre" in str(i).lower())
         tierce = tierce.loc[tierce.numero.apply(f), :]
 
-        tierce.index = tierce.numero.apply(lambda i : i.strip().lower().strip())
+        tierce.index = tierce.numero.apply(lambda i : str(i).strip().lower().strip())
         tierce.drop("numero", axis=1, inplace=True)
         tierce.index_name="numero"
 
 
         def f(i) : 
             if isinstance(i, str) : 
-                return np.float16(str(i).replace("€", "").replace(" ", "").replace(",", ".").strip())
+                return np.float32(str(i).replace("€", "").replace(" ", "").replace(",", ".").strip())
             else :
                 return i
         for i in tierce.columns :   
@@ -574,14 +655,14 @@ class AddCote :
         f = lambda i : str(i).count("-") == 4
         quinte = quinte.loc[quinte.numero.apply(f), :]
 
-        quinte.index = quinte.numero.apply(lambda i : i.strip().lower().strip())
+        quinte.index = quinte.numero.apply(lambda i : str(i).strip().lower().strip())
         quinte.drop("numero", axis=1, inplace=True)
         quinte.index_name="numero"
 
 
         def f(i) : 
             if isinstance(i, str) : 
-                return np.float16(str(i).replace("€", "").replace(" ", "").replace(",", ".").strip())
+                return np.float32(str(i).replace("€", "").replace(" ", "").replace(",", ".").strip())
             else :
                 return i
         for i in quinte.columns :   
@@ -611,14 +692,14 @@ class AddCote :
         f = lambda i : ("desordre" in str(i).lower()) or ("désordre" in str(i).lower())
         quinte = quinte.loc[quinte.numero.apply(f), :]
 
-        quinte.index = quinte.numero.apply(lambda i : i.strip().lower().strip())
+        quinte.index = quinte.numero.apply(lambda i : str(i).strip().lower().strip())
         quinte.drop("numero", axis=1, inplace=True)
         quinte.index_name="numero"
 
 
         def f(i) : 
             if isinstance(i, str) : 
-                return np.float16(str(i).replace("€", "").replace(" ", "").replace(",", ".").strip())
+                return np.float32(str(i).replace("€", "").replace(" ", "").replace(",", ".").strip())
             else :
                 return i
         for i in quinte.columns :   
@@ -629,53 +710,17 @@ class AddCote :
         return quinte
 
 
-    def __extract_trio(table) : 
-
-        df = pd.read_html(str(table))[0] 
-
-        if not len(df.columns) == 4 : 
-            warning("wrong shape for Trio table reports first / len columns")
-            return np.nan
-
-        df.columns = ["numero", "pmu", "pmu.fr", "leturf.fr"]
-
-        if not len(df) >= 1 : 
-            warning("wrong shape for Trio table reports first / len df")
-            return np.nan
-
-        trio = df.copy()
-
-        f = lambda i : str(i).count("-") == 2
-        trio = trio.loc[trio.numero.apply(f), :]
-
-        trio.index = trio.numero.apply(lambda i : i.strip().lower().strip())
-        trio.drop("numero", axis=1, inplace=True)
-        trio.index_name="numero"
-
-
-        def f(i) : 
-            if isinstance(i, str) : 
-                return np.float16(str(i).replace("€", "").replace(" ", "").replace(",", ".").strip())
-            else :
-                return i
-        for i in trio.columns :   
-            trio[i] = trio[i].apply(f)
-
-        trio = trio.iloc[:1, :] 
-
-        return trio
-
-
-
-    def run(url, cotes="all") :
+    def scrap(url, cotes="all") :
+        """give an url srcrap specific cotes and return a df"""
 
         cotes_dict = {  'simple_gagnant' : None,
                         'simple_place'   : None,
                         'couple_gagnant' : None,
                         'couple_place'   : None,
                         'couple_ordre'   : None, 
+                        'trio_desordre'  : None,
+                        'trio_ordre'     : None,
                         'deux_sur_quatre': None,
-                        'trio'           : None,
                         'tierce_ordre'   : None,
                         'tierce_desordre': None,
                         'quinte_ordre'   : None,
@@ -684,11 +729,18 @@ class AddCote :
 
         if cotes == "all" : 
             pass
+
+        elif isinstance(cotes, str) : 
+            cotes = [cotes]
+            cotes = [i for i in cotes if i in AddCote.cotes]
         elif isinstance(cotes, Iterable) : 
             cotes = [i for i in cotes if i in AddCote.cotes]
         else : 
+            warning("Error cotes non valid as an argument of AddCotes.scrap")
             return cotes_dict
 
+        if len(cotes) == 0 : 
+            warning("Error cotes non valid as an argument of AddCotes.scrap")
 
         # html
         html = AddCote.__extract_html(url)
@@ -730,31 +782,62 @@ class AddCote :
                 warning("Errors????")
             
             elif len(couple) == 2 :
-                if ("Gagnant" or "gagnant") in couple[0] : 
+                if "gagnant" in str(couple[0]).lower() : 
                     cotes_dict["couple_gagnant"]  = AddCote.__extract_couple_gagnant(couple[0])
                     cotes_dict['couple_place']    = AddCote.__extract_couple_couple_place(couple[0])
-                elif ("Gagnant" or "gagnant") in couple[1] : 
+                elif "gagnant" in str(couple[1]).lower() : 
                     cotes_dict["couple_gagnant"]  = AddCote.__extract_couple_gagnant(couple[1])
                     cotes_dict['couple_place']    = AddCote.__extract_couple_couple_place(couple[1])
                 else : 
-                    warning("error in couple Gagnant")
+                    warning("error  0 couple gagnant in result block")
 
-                if "Ordre" in couple[1] : 
+                if "ordre" in str(couple[1]).lower() : 
                     cotes_dict['couple_ordre']    = AddCote.__extract_couple_ordre(couple[1])
-                elif "Ordre" in couple[0] : 
+                elif "ordre" in str(couple[0]).lower() : 
                     cotes_dict['couple_ordre']    = AddCote.__extract_couple_ordre(couple[0])
                 else : 
-                    warning("error in couple Ordre")
+                    warning("error 1 couple ordre in result block")
 
             elif len(couple) == 1 : 
                 couple = couple[0]
-                if ("ordre" or "Ordre") in couple : 
+                if "ordre" in str(couple).lower() : 
                     cotes_dict['couple_ordre']    = AddCote.__extract_couple_ordre(couple)
                 else : 
                     cotes_dict["couple_gagnant"]  = AddCote.__extract_couple_gagnant(couple)
                     cotes_dict['couple_place']    = AddCote.__extract_couple_couple_place(couple)
 
-        del couple
+            del couple
+
+
+        # trio
+        if (("Trio" or "trio") in cotes) or (cotes =="all") :
+            trio = list()
+            for i, j in enumerate(result_block) :  
+                r = str(result_block[i]) 
+                if "trio" in r.lower() :  
+                        trio.append(r) 
+
+
+            if len(trio) == 2 : 
+                if 'ordre' in str(trio[0]).lower() : 
+                    cotes_dict["trio_ordre"] =  AddCote.__extract_trio_ordre(trio[0] )
+                    cotes_dict["trio_desordre"]   =  AddCote.__extract_trio_desordre(trio[1])
+                elif 'ordre' in str(trio[1]).lower(): 
+                    cotes_dict["trio_ordre"] =  AddCote.__extract_trio_ordre(trio[1] )
+                    cotes_dict["trio_desordre"]   =  AddCote.__extract_trio_desordre(trio[0])
+                else : 
+                    warning("error 0 in trio /result_block")
+
+            elif len(trio) == 1  :   
+                trio = trio[0]
+                if 'ordre' in str(trio).lower(): 
+                    cotes_dict["trio_ordre"]        = AddCote.__extract_trio_ordre(trio)
+                else : 
+                    cotes_dict["trio_desordre"]   =  AddCote.__extract_trio_desordre(trio)
+            else :
+                    warning("error 1 in trio /result_block")
+
+        del trio
 
 
         # deux_sur_quatre
@@ -767,7 +850,7 @@ class AddCote :
                         deux_sur_quatre.append(r) 
 
             if len(deux_sur_quatre) > 1  :   
-                warning("Errors????")
+                warning("errors deux sur quatre in result_block")
 
             elif len(deux_sur_quatre) == 1 : 
                 deux_sur_quatre = deux_sur_quatre[0]
@@ -785,7 +868,7 @@ class AddCote :
                         tierce.append(r) 
 
             if len(tierce) > 1  :   
-                warning("Errors????")
+                warning("Errors tierce in result_block")
 
             elif len(tierce) == 1 : 
                 tierce = tierce[0]
@@ -804,7 +887,7 @@ class AddCote :
                         quinte.append(r) 
 
             if len(quinte) > 1  :   
-                warning("Errors????")
+                warning("Errors quinte in result_block")
 
             elif len(quinte) == 1 : 
                 quinte = quinte[0]
@@ -812,24 +895,6 @@ class AddCote :
                 cotes_dict["quinte_desordre"] = AddCote.__extract_quinte_desordre(quinte)
 
         del quinte
-
-
-        # trio
-        if (("Trio" or "trio") in cotes) or (cotes =="all") :
-            trio = list()
-            for i, j in enumerate(result_block) :  
-                r = str(result_block[i]) 
-                if "Trio" in r :  
-                        trio.append(r) 
-
-            if len(trio) > 1  :   
-                warning("Errors????")
-
-            elif len(trio) == 1 : 
-                trio = trio[0]
-                cotes_dict["trio_ordre"] = AddCote.__extract_trio(trio)
-
-        del trio
 
 
         # handle cotes df /cote dict
@@ -845,5 +910,152 @@ class AddCote :
         cotes_df = cotes_df[["type", "numero", "pmu", "pmu.fr", "leturf.fr"]]
 
         return cotes_df
+
+
+
+    # @time_it 
+    # @get_size_of
+    def add_cotes(df, cotes="all", cores=6, dest="data/cotes/", verbose=True, clear_temp=True, lazy=True) : 
+        """for all lines of the dataframe, perform a multiporcess scrap of all urls"""
+
+        assert isinstance(df, pd.DataFrame)
+        assert "url" in df.columns
+        assert isinstance(cores, int)
+        assert (cores >= 1) and (cores <= 8)
+        if not os.path.isdir(dest) : 
+            os.mkdir(dest)
+        assert isinstance(verbose, bool)
+
+        t0 = time.time()
+
+
+        def scrap_it(i0=0, i1=10000000) : 
+
+            for n in list_of_comp[i0:i1] :
+                if lazy : 
+                    if f"comp-{n}.pk" in os.listdir(dest) : 
+                        continue
+                url = df.loc[df.comp == n, "url"].values
+                assert len(url) == 1
+                url = url[0]
+                info(url)
+                _df = AddCote.scrap(url, cotes)
+                info(_df)
+                pk_save(_df, f"comp-{n}", dest)
+
+
+        # multiprocessing
+        list_of_comp = df.comp.unique()
+        if cores < 2 : 
+            scrap_it(i0=0, i1=10000000)
+        else : 
+            chks  = chunks(list_of_comp, cores)
+            process_list = [Process(target=scrap_it, args=chk) for chk in chks]
+            [i.start() for i in process_list]
+            [i.join()  for i in process_list]
+
+        # verbose
+        if verbose : 
+            # info(f"df size in Mo : {sys.getsizeof(new_df) / 1000000}")
+            info(f"timer load df : {round(time.time() - t0, 2)}")
+            # info(f"debut {new_df.jour.min()} fin {new_df.jour.max()}")
+            # info(new_df.shape)
+            # info(new_df.dtypes)
+
+
+
+    @get_size_of
+    @time_it 
+    def internalize_cotes(df, cotes="all",  path="data/results/", temp="temp/internalize_cotes/" , cores=6) :
+
+        if "cotes" in df.columns : 
+            raise ValueError ("results ALREADY in columns")
+
+        assert len(df.comp.unique()) == len(df)
+
+        _df = df.copy()
+
+        def funct(i0=0, i1=10000000) :                 
+                
+            cotes = []
+            for comp in tqdm(_df.comp[i0: i1]) : 
+                cotes.append([comp, pk_load(str(comp), path)])
+            
+            cotes = pd.DataFrame(cotes, columns=["comp", "cotes"])
+
+            info(cotes.columns)
+            info(cotes.head())
+            
+            pk_save(cotes, str(cotes.comp[0]), temp)
+
+
+    #     def temp_merge() : 
+
+    #         sub_df = pd.DataFrame(columns=["comp", "results"])
+
+    #         for n in tqdm(os.listdir(temp)) :
+
+    #             if not ".pk" in n : continue
+    #             else : n = n.replace(".pk", "")
+
+    #             r  = pk_load(str(n), temp)
+    #             sub_df = sub_df.append(r, ignore_index=True)
+    #             os.remove(f"{temp}{n}.pk")
+
+    #         sub_df["comp"] = sub_df.comp.astype(np.uint32)
+
+    #         return sub_df
+
+
+    #     # multiporcessing
+    #     if cores < 2 : 
+    #             funct()
+    #     else : 
+    #         chks  = chunks(_df.comp, cores)
+    #         process_list = [Process(target=funct, args=chk) for chk in chks]
+    #         [i.start() for i in process_list]
+    #         [i.join()  for i in process_list]
+
+    #     # merge
+    #     results = temp_merge()
+
+    #     _df = _df.sort_values("comp", axis=0, ascending=True, inplace=False)
+    #     _df.index = reindex(_df)
+
+    #     results = results.sort_values("comp", axis=0, ascending=True, inplace=False)
+    #     results.index = reindex(results)
+
+
+    #     assert len(_df) == len(results)
+    #     val = _df.comp.values == results.comp.values
+    #     assert val.all()
+
+
+    #     val = _df.index.values == results.index.values
+    #     assert val.all()
+
+
+    #     info(_df.columns)
+    #     info(results.columns)
+
+    #     results.columns = ["_comp", "results"]
+    #     final_df = pd.concat([_df, results], axis=1, ignore_index=False)
+    #     # final_df.columns = list(_df.columns) + list(results.columns) 
+
+    #     info(final_df.loc[:, ["comp", "_comp"]].head())
+
+    #     val = (final_df.comp.values ==final_df["_comp"].values)
+    #     assert val.all()                                          
+
+    #     final_df.drop("_comp", axis=1, inplace=True)
+
+    #     assert len(final_df) == len(_df)
+    #     assert len(final_df) == len(results)
+
+    #     pk_clean(temp)
+
+    #     return final_df
+
+
 
 
