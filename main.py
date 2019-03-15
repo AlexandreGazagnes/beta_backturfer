@@ -33,31 +33,12 @@ df          = race_sel(df)
 AddCote.add_cotes(df, cotes="all", cores=6, dest="data/cotes/", lazy=True)
 
 
-
-# url = np.random.choice(df.url)
-# info(url)
-
-# cotes ="all"
-# html = AddCote._AddCote__extract_html(url)
-# result_block = AddCote._AddCote__extract_soup(html, soup_class="table reports")
-
-
-
-
-
-
-
-
-# load needed results
-df = GroupBy.internalize_results(df)
-
-_df = CoteSimplePlace.add(df)
-
 # # bet
-# bet = Bet("simple_place", Strats.choix_de_la_meilleure_cote)
-# info(bet)
-# info(bet.__dict__)
+bet = Bet("simple_place", Strats.choix_de_la_meilleure_cote)
+info(bet)
+info(bet.__dict__)
 
+_df = bet(df)
 # # bets and turf
 # info("just Bet")
 # _df = Bet.simple_gagnant(       df, 
