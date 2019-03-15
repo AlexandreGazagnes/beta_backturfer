@@ -932,8 +932,12 @@ class AddCote :
         def scrap_it(i0=0, i1=10000000) : 
 
             for n in list_of_comp[i0:i1] :
+                
+                # if lazy do nothing
                 if lazy and (f"comp-{n}.pk" in os.listdir(dest))  : 
                     continue
+                
+                # else run process
                 else : 
                     url = df.loc[df.comp == n, "url"].values
                     assert len(url) == 1
