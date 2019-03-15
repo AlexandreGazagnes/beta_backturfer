@@ -309,7 +309,7 @@ class AddCote :
         gagnant.index_name="numero"
 
         for i in gagnant.columns :   
-            gagnant[i] = gagnant[i].apply(lambda i : np.float16(str(i).replace("€", "").replace(" ", "").replace(",", ".").strip())) 
+            gagnant[i] = gagnant[i].apply(lambda i : np.float32(str(i).replace("€", "").replace(" ", "").replace(",", ".").strip())) 
 
         gagnant = gagnant.iloc[:1, :]
 
@@ -338,7 +338,7 @@ class AddCote :
         place.index_name="numero"
 
         for i in place.columns :   
-            place[i] = place[i].apply(lambda i : np.float16(str(i).replace("€", "").replace(" ", "").replace(",", ".").strip())) 
+            place[i] = place[i].apply(lambda i : np.float32(str(i).replace("€", "").replace(" ", "").replace(",", ".").strip())) 
         
         place = place.iloc[:3, :]
 
@@ -371,7 +371,7 @@ class AddCote :
         gagnant.index_name="numero"
 
         for i in gagnant.columns :   
-            gagnant[i] = gagnant[i].apply(lambda i : np.float16(str(i).replace("€", "").replace(" ", "").replace(",", ".").strip())) 
+            gagnant[i] = gagnant[i].apply(lambda i : np.float32(str(i).replace("€", "").replace(" ", "").replace(",", ".").strip())) 
 
         gagnant = gagnant.iloc[:1, :]
 
@@ -404,7 +404,7 @@ class AddCote :
         place.index_name="numero"
 
         for i in place.columns :   
-            place[i] = place[i].apply(lambda i : np.float16(str(i).replace("€", "").replace(" ", "").replace(",", ".").strip())) 
+            place[i] = place[i].apply(lambda i : np.float32(str(i).replace("€", "").replace(" ", "").replace(",", ".").strip())) 
 
         place = place.iloc[:3, :]
 
@@ -438,7 +438,7 @@ class AddCote :
 
         def f(i) : 
             if isinstance(i, str) : 
-                return np.float16(str(i).replace("€", "").replace(" ", "").replace(",", ".").strip())
+                return np.float32(str(i).replace("€", "").replace(" ", "").replace(",", ".").strip())
             else :
                 return i
         for i in ordre.columns :   
@@ -465,9 +465,6 @@ class AddCote :
 
         trio = df.copy()
 
-        f = lambda i : str(i).count("-") == 2
-        trio = trio.loc[trio.numero.apply(f), :]
-
         trio.index = trio.numero.apply(lambda i : str(i).strip().lower().strip())
         trio.drop("numero", axis=1, inplace=True)
         trio.index_name="numero"
@@ -475,7 +472,7 @@ class AddCote :
 
         def f(i) : 
             if isinstance(i, str) : 
-                return np.float16(str(i).replace("€", "").replace(" ", "").replace(",", ".").strip())
+                return np.float32(str(i).replace("€", "").replace(" ", "").replace(",", ".").strip())
             else :
                 return i
         for i in trio.columns :   
@@ -509,7 +506,7 @@ class AddCote :
 
         def f(i) : 
             if isinstance(i, str) : 
-                return np.float16(str(i).replace("€", "").replace(" ", "").replace(",", ".").strip())
+                return np.float32(str(i).replace("€", "").replace(" ", "").replace(",", ".").strip())
             else :
                 return i
         for i in trio.columns :   
@@ -546,7 +543,7 @@ class AddCote :
 
         def f(i) : 
             if isinstance(i, str) : 
-                return np.float16(str(i).replace("€", "").replace(" ", "").replace(",", ".").strip())
+                return np.float32(str(i).replace("€", "").replace(" ", "").replace(",", ".").strip())
             else :
                 return i
         for i in deux_sur_quatre.columns :   
@@ -586,7 +583,7 @@ class AddCote :
 
         def f(i) : 
             if isinstance(i, str) : 
-                return np.float16(str(i).replace("€", "").replace(" ", "").replace(",", ".").strip())
+                return np.float32(str(i).replace("€", "").replace(" ", "").replace(",", ".").strip())
             else :
                 return i
         for i in tierce.columns :   
@@ -623,7 +620,7 @@ class AddCote :
 
         def f(i) : 
             if isinstance(i, str) : 
-                return np.float16(str(i).replace("€", "").replace(" ", "").replace(",", ".").strip())
+                return np.float32(str(i).replace("€", "").replace(" ", "").replace(",", ".").strip())
             else :
                 return i
         for i in tierce.columns :   
@@ -665,7 +662,7 @@ class AddCote :
 
         def f(i) : 
             if isinstance(i, str) : 
-                return np.float16(str(i).replace("€", "").replace(" ", "").replace(",", ".").strip())
+                return np.float32(str(i).replace("€", "").replace(" ", "").replace(",", ".").strip())
             else :
                 return i
         for i in quinte.columns :   
@@ -702,7 +699,7 @@ class AddCote :
 
         def f(i) : 
             if isinstance(i, str) : 
-                return np.float16(str(i).replace("€", "").replace(" ", "").replace(",", ".").strip())
+                return np.float32(str(i).replace("€", "").replace(" ", "").replace(",", ".").strip())
             else :
                 return i
         for i in quinte.columns :   
@@ -817,7 +814,7 @@ class AddCote :
             trio = list()
             for i, j in enumerate(result_block) :  
                 r = str(result_block[i]) 
-                if "Trio" in r :  
+                if "trio" in r.lower() :  
                         trio.append(r) 
 
 
