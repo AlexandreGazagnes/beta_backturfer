@@ -169,14 +169,15 @@ class Bet :
         df["horse_cote"]        = -1.0
 
         for i in df.index : 
-            horse = df.loc[i, "bet_horse"]
-            if horse >=1 : 
-                r = df.loc[i, "results"]
-                cote = r.loc[r.numero == horse, "cotepodium"].values[0]
-                df.loc[i, "horse_cote"] = cote
-            else : 
+            if not df.loc[i, "good_bet"] or (not (df.loc[i, "bet_horse"] >= 1)) : 
                 df.loc[i, "horse_cote"] = -1
-
+            else : 
+                horse   = df.loc[i, "bet_horse"]
+                comp    = df.loc[i, "comp"]
+                results = df.loc[i, "results"]
+                cotes   = pk_load(f"comp-{comp}", "data/cotes/")
+                cote    = cotes.loc[(cotes.type == "simple_place") and (int(cotes.numero) == int(horse)) , "pmu"]   
+                df.loc[i, "horse_cote"] = int(cote)             
         
         df["gains"]             = df.good_bet * df.horse_cote * df.bet_or_not * df.bet_autorized 
 
