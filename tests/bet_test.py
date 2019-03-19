@@ -209,6 +209,16 @@ class Test_SimplePlace() :
             assert race_0.bet_horse == result_0.numero.iloc[0] 
 
 
+    def test_bet_consistancy_2(self, selected_df) : 
+        """bet results good_bet rate"""
+
+        # bet = Bet("simple_place", Strats.choix_de_la_meilleure_cote)
+        # _df = bet.run(selected_df)
+        # rate = round(sum(_df.good_bet)/len(_df), 2)
+        # assert rate == 0.25
+        pass
+
+
     def test_bet_consistancy_3(self, selected_df) : 
         """bet results for one race"""
 
@@ -287,10 +297,6 @@ class Test_SimplePlace() :
         assert _df.bet_horse == 15
         assert (_df.win_horses == [15, 11, 6]).all()
         assert _df.good_bet == True
-
-
-
-
 
 
 
