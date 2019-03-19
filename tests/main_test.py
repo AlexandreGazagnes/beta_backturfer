@@ -37,8 +37,6 @@ def test_RaceSelector() :
 
 
 def test_GroupBy_internalize_results() : 
-
-    from backturfer import * 
     
     df  = pk_load("WITHOUT_RESULTS_pturf_grouped_and_merged_cache_carac_2016-2019_OK", "data/")
     form        = { 'date_start': "2018-01-01", 'quinte' : 1, 
