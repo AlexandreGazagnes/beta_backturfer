@@ -137,9 +137,9 @@ class Bet :
         _df["bet_horse"]         = _df.results.apply(lambda i : strat(i, N) )
         _df["win_horse"]         = _df.results.apply(Bet.__winner_num)
         _df["bet_or_not"]        = _df.bet_horse.apply(lambda i : 1 if i>=1 else 0)
-        _df["win_cote"]          = _df.results.apply(Bet.__winner_cote)
         _df["good_bet"]          = _df.bet_horse == _df.win_horse
-        _df["gains"]             = _df.good_bet * _df.win_cote  * _df.bet_or_not * _df.bet_autorized
+        _df["horse_cote"]        = _df.apply(lambda i :  Bet.__winner_cote(i.results) if i.good_bet else -1.0, axis=1) 
+        _df["gains"]             = _df.good_bet * _df.horse_cote  * _df.bet_or_not * _df.bet_autorized
 
         if verbose : 
             info(_df["gains"].describe())
@@ -204,12 +204,12 @@ class Bet :
         return _df
 
 
-    # @change_repr
-    # def couple_gagnant(df, strat, N=None, mise_min=1.5,verbose=True): 
-    #     """trouver les 2 premiers dans le desordre
-    #         Pour les courses d'au moins 8 partants, au Couplé Gagnant, trouver les deux premiers chevaux de l'arrivée, quel que soit l'ordre."""
+    @change_repr
+    def couple_gagnant(df, strat, N=None, mise_min=1.5,verbose=True): 
+        """trouver les 2 premiers dans le desordre
+            Pour les courses d'au moins 8 partants, au Couplé Gagnant, trouver les deux premiers chevaux de l'arrivée, quel que soit l'ordre."""
         
-    #     raise NotImplementedError
+        raise NotImplementedError
 
 
     # @change_repr
