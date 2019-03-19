@@ -271,12 +271,9 @@ class Bet :
                 _df.loc[i, "bet_or_not"] = False
                 _df.loc[i, "couple_cote"] = -1.0  
 
-
         _df["gains"]             = _df.good_bet * _df.couple_cote * _df.bet_or_not * _df.bet_autorized 
 
-        return _df
-
-
+        return _df 
 
     @change_repr
     def couple_gagnant(df, strat, N=None,  n=2, mise_min=1.5,verbose=True): 
