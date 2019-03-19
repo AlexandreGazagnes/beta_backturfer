@@ -25,13 +25,18 @@ def selected_df() :
 
         return df
 
+@pytest.fixture
+def test_strat():
+    return SimpleStrats.choix_de_la_meilleure_cote
+
+
 class Test_SimpleGagnant() : 
     """test class for simple gagnants bets"""
 
     def test_bet_init(self) : 
         """just Bet.__init__()"""
 
-        bet = Bet("simple_gagnant", Strats.choix_de_la_meilleure_cote)
+        bet = Bet("simple_gagnant", test_strat)
         # info(bet)
         # info(bet.__dict__)
 
@@ -39,7 +44,7 @@ class Test_SimpleGagnant() :
     def test_bet_run(self, selected_df) : 
         """just Bet.run()"""
 
-        bet = Bet("simple_gagnant", Strats.choix_de_la_meilleure_cote)
+        bet = Bet("simple_gagnant", test_strat)
         # info(bet)
         # info(bet.__dict__)
         _df = bet.run(selected_df)
@@ -48,7 +53,7 @@ class Test_SimpleGagnant() :
     def test_bet_consistancy_0(self, selected_df) : 
         """bet results columns"""
 
-        bet = Bet("simple_gagnant", Strats.choix_de_la_meilleure_cote)
+        bet = Bet("simple_gagnant", test_strat)
         _df = bet.run(selected_df)
 
         for i in ['bet_horse', 'win_horse', 'bet_or_not', 'horse_cote', 'good_bet']  : 
@@ -58,7 +63,7 @@ class Test_SimpleGagnant() :
     def test_bet_consistancy_1(self, selected_df) : 
         """bet results 'bet horses' """
 
-        bet = Bet("simple_gagnant", Strats.choix_de_la_meilleure_cote)
+        bet = Bet("simple_gagnant", test_strat)
         _df = bet.run(selected_df)
 
         for _ in range(10) : # run 10 times 
@@ -77,7 +82,7 @@ class Test_SimpleGagnant() :
     def test_bet_consistancy_2(self, selected_df) : 
         """bet results good_bet rate"""
 
-        bet = Bet("simple_gagnant", Strats.choix_de_la_meilleure_cote)
+        bet = Bet("simple_gagnant", test_strat)
         _df = bet.run(selected_df)
         rate = round(sum(_df.good_bet)/len(_df), 2)
         assert rate == 0.25
@@ -89,7 +94,7 @@ class Test_SimplePlace() :
     def test_bet_init(self) : 
 
         """just Bet.__init__()"""
-        bet = Bet("simple_place", Strats.choix_de_la_meilleure_cote)
+        bet = Bet("simple_place", test_strat)
         info(bet)
         info(bet.__dict__)
 
@@ -97,14 +102,14 @@ class Test_SimplePlace() :
     def test_bet_run(self, selected_df) : 
 
         """just Bet.run()"""
-        bet = Bet("simple_place", Strats.choix_de_la_meilleure_cote)
+        bet = Bet("simple_place", test_strat)
         _df = bet.run(selected_df)
 
 
     def test_bet_consistancy_0(self, selected_df) : 
         """bet results columns"""
 
-        bet = Bet("simple_place", Strats.choix_de_la_meilleure_cote)
+        bet = Bet("simple_place", test_strat)
         _df = bet.run(selected_df)
 
         for i in ['bet_horse', 'win_horses', 'bet_or_not', 'horse_cote', 'good_bet']  : 
@@ -114,7 +119,7 @@ class Test_SimplePlace() :
     def test_bet_consistancy_1(self, selected_df) : 
         """bet results 'bet horses' """
 
-        bet = Bet("simple_place", Strats.choix_de_la_meilleure_cote)
+        bet = Bet("simple_place", test_strat)
         _df = bet.run(selected_df)
 
         for _ in range(10) : # run 10 times 
@@ -137,7 +142,7 @@ class Test_CoupleGagnant() :
     def test_bet_init(self) : 
         """just Bet.__init__()"""
 
-        bet = Bet("couple_gagnant", Strats.choix_de_la_meilleure_cote)
+        bet = Bet("couple_gagnant", test_strat)
         info(bet)
         info(bet.__dict__)
 
@@ -145,7 +150,7 @@ class Test_CoupleGagnant() :
     def test_bet_run(self, selected_df) : 
         """just Bet.run()"""
 
-        bet = Bet("couple_gagnant", Strats.choix_de_la_meilleure_cote)
+        bet = Bet("couple_gagnant", test_strat)
 
         with pytest.raises(NotImplementedError):
             _df = bet.run(selected_df)
@@ -154,7 +159,7 @@ class Test_CoupleGagnant() :
     def test_bet_consistancy_0(self, selected_df) : 
         """bet results columns"""
 
-        bet = Bet("couple_gagnant", Strats.choix_de_la_meilleure_cote)
+        bet = Bet("couple_gagnant", test_strat)
     
         with pytest.raises(NotImplementedError):
             _df = bet.run(selected_df)

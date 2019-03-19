@@ -73,7 +73,7 @@ class SimpleStrats :
     def choix_aleatoire_parmi_les_3_meilleures_cotes(results, N=None, numb=1, cote_type="direct") : 
         """chose one horse random given the 3 best cotes"""
 
-        return Strats.choix_aleatoire_parmi_les__n__meilleures_cotes(results, 3, numb, cote_type)
+        return SimpleStrats.choix_aleatoire_parmi_les__n__meilleures_cotes(results, 3, numb, cote_type)
 
 
     # @change_repr
@@ -106,7 +106,7 @@ class SimpleStrats :
     def choix_de_la_meilleure_cote(results, N=None, cote_type="direct") : 
         """chose the horse with best cote"""
 
-        return Strats.choix_de_la__N__meilleure_cote(results, 0, cote_type)
+        return SimpleStrats.choix_de_la__N__meilleure_cote(results, 0, cote_type)
 
 
     @change_repr
@@ -121,7 +121,7 @@ class SimpleStrats :
         """go to the hippo, flip a coin and 1/2 decide to bet or not, if bet, use best_cote_strategy"""
 
         n = randint(0, 2)
-        if n : return Strats.choix_de_la__N__meilleure_cote(results, 0, cote_type)
+        if n : return SimpleStrats.choix_de_la__N__meilleure_cote(results, 0, cote_type)
         else : return -1
 
 

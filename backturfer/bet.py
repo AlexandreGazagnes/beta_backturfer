@@ -50,8 +50,7 @@ class Bet :
         assert bet_type in Bet.bets_str.keys()
         assert isinstance(verbose, bool)
         assert callable(strat)
-        assert strat._type      == "strats"
-        assert strat._subtype   ==  "simple"
+        assert strat.Class == "SimpleStrats"
         assert isinstance(N, int)
         assert isinstance(plateform, str)
         assert plateform in Bet.plateforms
@@ -129,8 +128,7 @@ class Bet :
         assert isinstance(df, pd.DataFrame)
         assert isinstance(verbose, bool)
         assert callable(strat)
-        assert strat._type      == "strats"
-        assert strat._subtype   ==  "simple"
+        assert strat.Class == "SimpleStrats"
         if N : assert isinstance(N, int)
 
         _df = df.copy()
@@ -158,8 +156,7 @@ class Bet :
         assert isinstance(df, pd.DataFrame)
         assert isinstance(verbose, int)
         assert callable(strat)
-        assert strat._type      == "strats"
-        assert strat._subtype   ==  "simple"
+        assert strat.Class == "SimpleStrats"
         if N : assert isinstance(N, int)
 
         def corected_nums(i) : 
