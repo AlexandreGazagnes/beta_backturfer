@@ -3,8 +3,8 @@
 
 
 # import 
-from src.misc import *
-from src.groupby import GroupBy
+from backturfer.misc import *
+from backturfer.groupby import GroupBy
 from strats.easy import Strats
 
 

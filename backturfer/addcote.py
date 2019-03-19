@@ -3,7 +3,7 @@
 
 
 # import 
-from src.misc import * 
+from backturfer.misc import * 
 import requests
 from bs4 import BeautifulSoup
 

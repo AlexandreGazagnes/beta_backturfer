@@ -3,7 +3,7 @@
 
 
 # import 
-from src.misc import *
+from backturfer.misc import *
 from numpy.random import randint, choice
 
 
