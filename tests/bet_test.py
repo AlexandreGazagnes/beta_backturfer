@@ -130,5 +130,36 @@ class Test_SimplePlace() :
 
 
 
+class Test_CoupleGagnant() : 
+    """test class for simple places bets"""
+
+    def test_bet_init(self) : 
+        """just Bet.__init__()"""
+
+        bet = Bet("couple_gagnant", Strats.choix_de_la_meilleure_cote)
+        info(bet)
+        info(bet.__dict__)
+
+
+    def test_bet_run(self, selected_df) : 
+        """just Bet.run()"""
+
+        bet = Bet("couple_gagnant", Strats.choix_de_la_meilleure_cote)
+
+        with pytest.raises(NotImplementedError):
+            _df = bet.run(selected_df)
+
+
+    def test_bet_consistancy_0(self, selected_df) : 
+        """bet results columns"""
+
+        bet = Bet("couple_gagnant", Strats.choix_de_la_meilleure_cote)
+    
+        with pytest.raises(NotImplementedError):
+            _df = bet.run(selected_df)
+            for i in ['bet_horses', 'win_horses', 'bet_or_not', 'horse_cote', 'good_bet']  : 
+                assert i in _df.columns
+
+
 
 
