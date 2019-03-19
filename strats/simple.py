@@ -28,10 +28,10 @@ class SimpleStrats :
 
 
     @change_repr
-    def choix_aleatoire_parmi_les_inscrits(results, N=None, numb=1, cote_type="direct") : 
+    def choix_aleatoire_parmi_les_inscrits(results, N=None, n=1, cote_type="direct") : 
         """chose one horse random"""
 
-        r = choice(results.numero, size=numb, replace=False)
+        r = choice(results.numero, size=n, replace=False)
         if len(r) == 1 : 
             r = r[0]
 
@@ -39,10 +39,10 @@ class SimpleStrats :
 
 
     @change_repr
-    def choix_aleatoire_parmi_les_partants(results, N=None, numb=1, cote_type="direct") : 
+    def choix_aleatoire_parmi_les_partants(results, N=None, n=1, cote_type="direct") : 
         """chose one horse random"""
 
-        r = choice(results.numero, size=numb, replace=False)
+        r = choice(results.numero, size=n, replace=False)
         if len(r) == 1 : 
             r = r[0]
 
@@ -50,7 +50,7 @@ class SimpleStrats :
 
 
     @change_repr
-    def choix_aleatoire_parmi_les__N__meilleures_cotes(results, N, numb=1, cote_type="direct") : 
+    def choix_aleatoire_parmi_les__N__meilleures_cotes(results, N, n=1, cote_type="direct") : 
         """chose one horse random given the N best cotes"""
 
         if not isinstance(N, int) : 
@@ -62,7 +62,7 @@ class SimpleStrats :
         r = results.sort_values(f"cote{cote_type}", ascending=True, inplace=False)
         best_N_cotedirect = r.numero.iloc[:N].values
 
-        r = choice(best_N_cotedirect, size=numb, replace=False)
+        r = choice(best_N_cotedirect, size=n, replace=False)
         if len(r) == 1 : 
             r = r[0]
 
@@ -70,10 +70,10 @@ class SimpleStrats :
 
 
     @change_repr
-    def choix_aleatoire_parmi_les_3_meilleures_cotes(results, N=None, numb=1, cote_type="direct") : 
+    def choix_aleatoire_parmi_les_3_meilleures_cotes(results, N=None, n=1, cote_type="direct") : 
         """chose one horse random given the 3 best cotes"""
 
-        return SimpleStrats.choix_aleatoire_parmi_les__n__meilleures_cotes(results, 3, numb, cote_type)
+        return SimpleStrats.choix_aleatoire_parmi_les__n__meilleures_cotes(results, 3, n, cote_type)
 
 
     # @change_repr

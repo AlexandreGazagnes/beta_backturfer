@@ -44,7 +44,7 @@ class Bet :
         return "\n".join(li)
 
 
-    def __init__(self, bet_type, strat, N=0, plateform='hippodrome', verbose=True) : 
+    def __init__(self, bet_type, strat, N=0, n=0, plateform='hippodrome', verbose=True) : 
 
         assert isinstance(bet_type, str) 
         assert bet_type in Bet.bets_str.keys()
@@ -52,12 +52,14 @@ class Bet :
         assert callable(strat)
         assert strat.Class == "SimpleStrats"
         assert isinstance(N, int)
+        assert isinstance(n, int)
         assert isinstance(plateform, str)
         assert plateform in Bet.plateforms
 
         self.bet_type   = bet_type
         self.strat      = strat
         self.N          = N
+        self.n          = n
         self.plateform  = plateform
         self.bet_min    = Bet.bets_str[bet_type][1]
         self.verbose    = verbose
@@ -76,7 +78,7 @@ class Bet :
         _bet = eval(f"Bet.{self.bet_type}")
         info(_bet)
 
-        return _bet(df=df, strat=self.strat, N=self.N, verbose=self.verbose)
+        return _bet(df=df, strat=self.strat, N=self.N, n=self.n, verbose=self.verbose)
 
 
     def __winner_num(results) : 
@@ -211,8 +213,7 @@ class Bet :
         assert isinstance(df, pd.DataFrame)
         assert isinstance(verbose, int)
         assert callable(strat)
-        assert strat._type      == "strats"
-        assert strat._subtype   ==  "couple"
+        assert strat.Class == "CoupleStrats"
         if N : assert isinstance(N, int)
 
         _df = df.copy()

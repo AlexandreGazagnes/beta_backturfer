@@ -29,6 +29,11 @@ def selected_df() :
 def simple_strat():
     return SimpleStrats.choix_de_la_meilleure_cote
 
+@pytest.fixture
+def couple_strat():
+    return CoupleStrats.choix_des_2_meilleures_cotes
+
+
 
 class Test_SimpleGagnant() : 
     """test class for simple gagnants bets"""
