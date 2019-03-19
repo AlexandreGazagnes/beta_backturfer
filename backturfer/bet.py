@@ -228,7 +228,7 @@ class Bet :
         _df["bet_horses"]       = _df.results.apply(lambda i : strat(i, N, n=2) )
         _df["win_horses"]       = _df.results.apply(lambda i : Bet.__n_first_nums(i, 2))
         _df["good_bet"]         = _df.apply(lambda i : (i.bet_horses[0] in i.win_horses) * (i.bet_horses[1] in i.win_horses) , axis=1)    
-        _df["bet_or_not"]       = _df.bet_horse.apply(lambda i : 1 if i>=1 else 0)
+        _df["bet_or_not"]       = _df.bet_horses.apply(lambda i : 1 if len(i) == 2 else 0)
         _df["couple_cote"]      = -1.0
 
         for i in _df.index : 
@@ -250,8 +250,7 @@ class Bet :
 
         _df["gains"]             = _df.good_bet * _df.couple_cote * _df.bet_or_not * _df.bet_autorized 
 
-
-        raise NotImplementedError
+        return _df
 
 
     # @change_repr
