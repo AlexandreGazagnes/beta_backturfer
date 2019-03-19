@@ -204,10 +204,78 @@ class Bet :
 
         return _df
 
-    # @change_repr
-    # def couple_place(df, strat, N=None, mise_min=1.5, verbose=True): 
-    #     """trouver les 2 des 3 premiers chevux  dans le desordre
-    #     Pour les courses d'au moins 8 partants, au Couplé Placé, trouver deux des trois premiers chevaux de l'arrivée, quel que soit l'ordre."""
+    @change_repr
+    def couple_place(df, strat, N=None, n=2, mise_min=1.5, verbose=True): 
+        """trouver les 2 des 3 premiers chevux  dans le desordre
+        Pour les courses d'au moins 8 partants, au Couplé Placé, trouver deux des trois premiers chevaux de l'arrivée, quel que soit l'ordre."""
+        assert isinstance(df, pd.DataFrame)
+        assert isinstance(verbose, int)
+        assert callable(strat)
+        assert strat.Class == "CoupleStrats"
+        if N : assert isinstance(N, int)
+        if n : assert isinstance(n, int)
+
+        def correct_nums(i) : 
+
+            # if isinstance(i, pd.Series) : 
+            #     if len(i) == 1
+            #         i = i.loc[0]
+            #     else : 
+            #         raise ValueError("2 dim Series")
+            
+            if isinstance(i, list):
+                if (len(i) == 2) and isinstance(i[0], int) and isinstance(i[1], int) : 
+                    return i
+                else : 
+                    raise ValueError("wrong shape for cotes of couple_place : a list but not good")
+            elif isinstance(i, str) : 
+                i = i.split("-")
+                assert len(i) == 2
+                i = [ii.strip() for ii in i]
+                i = [int(ii) for ii in i]
+                return i 
+            else : 
+                info(type(i))
+                info(i)
+                # raise ValueError("cotes of couple_place : not a list not an str")
+            return None
+
+        _df = df.copy()
+
+        _df["bet_autorized"]    = 1
+        _df["bet_horses"]       = _df.results.apply(lambda i : strat(i, N, n=2) )
+        _df["win_horses"]       = _df.results.apply(lambda i : Bet.__n_first_nums(i, 3))
+        _df["good_bet"]         = _df.apply(lambda i : (i.bet_horses[0] in i.win_horses) * (i.bet_horses[1] in i.win_horses) , axis=1)      
+        _df["bet_or_not"]       = _df.bet_horses.apply(lambda i : 1 if len(i) == 3 else 0)
+        _df["couple_cote"]      = -1.0
+
+        for i in _df.index : 
+            if (not _df.loc[i, "good_bet"])  : 
+                continue        
+            horses   = _df.loc[i, "bet_horses"]
+            comp    = _df.loc[i, "comp"]
+            cotes   = pk_load(f"comp-{comp}", "data/cotes/")  
+            cotes    = cotes.loc[cotes.type == "couple_place" , :]
+            cotes["numero"] = cotes.numero.apply(correct_nums)
+            # info(cotes.numero)
+            # info(f"{horses[0]}, {horses[1]}")
+            mask = cotes.numero.apply(lambda i : (horses[0] in i) and (horses[1] in i))
+            # info(mask)
+            cote = cotes.loc[mask.values, "pmu"]
+
+            try : 
+                _df.loc[i, "couple_cote"] = float(cote)             
+            except : 
+                warning(comp)
+                warning(cote)
+                _df.loc[i, "bet_or_not"] = False
+                _df.loc[i, "couple_cote"] = -1.0  
+
+
+        _df["gains"]             = _df.good_bet * _df.couple_cote * _df.bet_or_not * _df.bet_autorized 
+
+        return _df
+
 
 
     @change_repr
@@ -253,12 +321,47 @@ class Bet :
         return _df
 
 
-    # @change_repr
-    # def couple_ordre(df, strat, N=None, mise_min=1.5, verbose=True): 
-    #     """ trouver dans l'ordre 1 et 2e cheval
-    #     Pour les courses de 4 à 7 partants, au Couplé Ordre, trouver les deux premiers chevaux dans l'ordre exact de l'arrivée."""
+    @change_repr
+    def couple_ordre(df, strat, N=None, n=2, mise_min=1.5, verbose=True): 
+        """ trouver dans l'ordre 1 et 2e cheval
+        Pour les courses de 4 à 7 partants, au Couplé Ordre, trouver les deux premiers chevaux dans l'ordre exact de l'arrivée."""
 
-    #     raise NotImplementedError
+        assert isinstance(df, pd.DataFrame)
+        assert isinstance(verbose, int)
+        assert callable(strat)
+        assert strat.Class == "CoupleStrats"
+        if N : assert isinstance(N, int)
+        if n : assert isinstance(n, int)
+
+        _df = df.copy()
+
+        _df["bet_autorized"]    = 1
+        _df["bet_horses"]       = _df.results.apply(lambda i : strat(i, N, n=2) )
+        _df["win_horses"]       = _df.results.apply(lambda i : Bet.__n_first_nums(i, 2))
+        _df["good_bet"]         = _df.apply(lambda i : (i.bet_horses[0] == i.win_horses[0]) * (i.bet_horses[1] == i.win_horses[1]) , axis=1)    
+        _df["bet_or_not"]       = _df.bet_horses.apply(lambda i : 1 if len(i) == 2 else 0)
+        _df["couple_cote"]      = -1.0
+
+        for i in _df.index : 
+            if (not _df.loc[i, "good_bet"])  : 
+                continue        
+            horses   = _df.loc[i, "bet_horses"]
+            comp    = _df.loc[i, "comp"]
+            cotes   = pk_load(f"comp-{comp}", "data/cotes/")  
+            cote    = cotes.loc[cotes.type == "couple_gagnant" , "pmu"]
+            
+            try : 
+                _df.loc[i, "couple_cote"] = float(cote)             
+            except : 
+                warning(comp)
+                warning(cote)
+                _df.loc[i, "bet_or_not"] = False
+                _df.loc[i, "couple_cote"] = -1.0  
+
+
+        _df["gains"]             = _df.good_bet * _df.couple_cote * _df.bet_or_not * _df.bet_autorized 
+
+        return _df
 
 
     # @change_repr
