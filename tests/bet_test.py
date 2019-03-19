@@ -26,44 +26,44 @@ def selected_df() :
         return df
 
 @pytest.fixture
-def test_strat():
+def simple_strat():
     return SimpleStrats.choix_de_la_meilleure_cote
 
 
 class Test_SimpleGagnant() : 
     """test class for simple gagnants bets"""
 
-    def test_bet_init(self) : 
+    def test_bet_init(self, simple_strat) : 
         """just Bet.__init__()"""
 
-        bet = Bet("simple_gagnant", test_strat)
+        bet = Bet("simple_gagnant", simple_strat)
         # info(bet)
         # info(bet.__dict__)
 
 
-    def test_bet_run(self, selected_df) : 
+    def test_bet_run(self, selected_df, simple_strat) : 
         """just Bet.run()"""
 
-        bet = Bet("simple_gagnant", test_strat)
+        bet = Bet("simple_gagnant", simple_strat)
         # info(bet)
         # info(bet.__dict__)
         _df = bet.run(selected_df)
         
 
-    def test_bet_consistancy_0(self, selected_df) : 
+    def test_bet_consistancy_0(self, selected_df, simple_strat) : 
         """bet results columns"""
 
-        bet = Bet("simple_gagnant", test_strat)
+        bet = Bet("simple_gagnant", simple_strat)
         _df = bet.run(selected_df)
 
         for i in ['bet_horse', 'win_horse', 'bet_or_not', 'horse_cote', 'good_bet']  : 
             assert i in _df.columns
 
 
-    def test_bet_consistancy_1(self, selected_df) : 
+    def test_bet_consistancy_1(self, selected_df, simple_strat) : 
         """bet results 'bet horses' """
 
-        bet = Bet("simple_gagnant", test_strat)
+        bet = Bet("simple_gagnant", simple_strat)
         _df = bet.run(selected_df)
 
         for _ in range(10) : # run 10 times 
@@ -79,10 +79,10 @@ class Test_SimpleGagnant() :
             assert race_0.bet_horse == result_0.numero.iloc[0] 
 
 
-    def test_bet_consistancy_2(self, selected_df) : 
+    def test_bet_consistancy_2(self, selected_df, simple_strat) : 
         """bet results good_bet rate"""
 
-        bet = Bet("simple_gagnant", test_strat)
+        bet = Bet("simple_gagnant", simple_strat)
         _df = bet.run(selected_df)
         rate = round(sum(_df.good_bet)/len(_df), 2)
         assert rate == 0.25
@@ -91,35 +91,35 @@ class Test_SimpleGagnant() :
 class Test_SimplePlace() : 
     """test class for simple places bets"""
 
-    def test_bet_init(self) : 
+    def test_bet_init(self, simple_strat) : 
 
         """just Bet.__init__()"""
-        bet = Bet("simple_place", test_strat)
+        bet = Bet("simple_place", simple_strat)
         info(bet)
         info(bet.__dict__)
 
 
-    def test_bet_run(self, selected_df) : 
+    def test_bet_run(self, selected_df, simple_strat) : 
 
         """just Bet.run()"""
-        bet = Bet("simple_place", test_strat)
+        bet = Bet("simple_place", simple_strat)
         _df = bet.run(selected_df)
 
 
-    def test_bet_consistancy_0(self, selected_df) : 
+    def test_bet_consistancy_0(self, selected_df, simple_strat) : 
         """bet results columns"""
 
-        bet = Bet("simple_place", test_strat)
+        bet = Bet("simple_place", simple_strat)
         _df = bet.run(selected_df)
 
         for i in ['bet_horse', 'win_horses', 'bet_or_not', 'horse_cote', 'good_bet']  : 
             assert i in _df.columns
 
 
-    def test_bet_consistancy_1(self, selected_df) : 
+    def test_bet_consistancy_1(self, selected_df, simple_strat) : 
         """bet results 'bet horses' """
 
-        bet = Bet("simple_place", test_strat)
+        bet = Bet("simple_place", simple_strat)
         _df = bet.run(selected_df)
 
         for _ in range(10) : # run 10 times 
@@ -142,24 +142,24 @@ class Test_CoupleGagnant() :
     def test_bet_init(self) : 
         """just Bet.__init__()"""
 
-        bet = Bet("couple_gagnant", test_strat)
+        bet = Bet("couple_gagnant", simple_strat)
         info(bet)
         info(bet.__dict__)
 
 
-    def test_bet_run(self, selected_df) : 
+    def test_bet_run(self, selected_df, simple_strat) : 
         """just Bet.run()"""
 
-        bet = Bet("couple_gagnant", test_strat)
+        bet = Bet("couple_gagnant", simple_strat)
 
         with pytest.raises(NotImplementedError):
             _df = bet.run(selected_df)
 
 
-    def test_bet_consistancy_0(self, selected_df) : 
+    def test_bet_consistancy_0(self, selected_df, simple_strat) : 
         """bet results columns"""
 
-        bet = Bet("couple_gagnant", test_strat)
+        bet = Bet("couple_gagnant", simple_strat)
     
         with pytest.raises(NotImplementedError):
             _df = bet.run(selected_df)
