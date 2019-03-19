@@ -131,18 +131,20 @@ class Bet :
         assert strat.Class == "Strats"
         if N : assert isinstance(N, int)
 
-        df["bet_autorized"]     = 1
-        df["bet_horse"]         = df.results.apply(lambda i : strat(i, N) )
-        df["win_horse"]         = df.results.apply(Bet.__winner_num)
-        df["bet_or_not"]        = df.bet_horse.apply(lambda i : 1 if i>=1 else 0)
-        df["win_cote"]          = df.results.apply(Bet.__winner_cote)
-        df["good_bet"]          = df.bet_horse == df.win_horse
-        df["gains"]             = df.good_bet * df.win_cote  * df.bet_or_not * df.bet_autorized
+        _df = df.copy()
+
+        _df["bet_autorized"]     = 1
+        _df["bet_horse"]         = _df.results.apply(lambda i : strat(i, N) )
+        _df["win_horse"]         = _df.results.apply(Bet.__winner_num)
+        _df["bet_or_not"]        = _df.bet_horse.apply(lambda i : 1 if i>=1 else 0)
+        _df["win_cote"]          = _df.results.apply(Bet.__winner_cote)
+        _df["good_bet"]          = _df.bet_horse == _df.win_horse
+        _df["gains"]             = _df.good_bet * _df.win_cote  * _df.bet_or_not * _df.bet_autorized
 
         if verbose : 
-            info(df["gains"].describe())
+            info(_df["gains"].describe())
 
-        return df
+        return _df
 
 
     @change_repr
@@ -157,34 +159,49 @@ class Bet :
         assert strat.Class == "Strats"
         if N : assert isinstance(N, int)
 
-        df["bet_autorized"]     = 1
-        df["bet_horse"]         = df.results.apply(lambda i : strat(i, N) )
-        df["win_horses"]        = df.results.apply(Bet.__podium_nums)
-
-        df["good_bet"]          = df.apply(lambda i : i.bet_horse in i. win_horses, axis=1)        
+        def corected_nums(i) : 
+            try :       return int(str(i).strip())
+            except :    return i
         
-        df["bet_or_not"]        = df.bet_horse.apply(lambda i : 1 if i>=1 else 0)
+        _df = df.copy()
+
+        _df["bet_autorized"]     = 1
+        _df["bet_horse"]         = _df.results.apply(lambda i : strat(i, N) )
+        _df["win_horses"]        = _df.results.apply(Bet.__podium_nums)
+
+        _df["good_bet"]          = _df.apply(lambda i : i.bet_horse in i. win_horses, axis=1)        
+        
+        _df["bet_or_not"]        = _df.bet_horse.apply(lambda i : 1 if i>=1 else 0)
 
         # find podiumcote of bet_horse
-        df["horse_cote"]        = -1.0
+        _df["horse_cote"]        = -1.0
 
-        for i in df.index : 
-            if not df.loc[i, "good_bet"] or (not (df.loc[i, "bet_horse"] >= 1)) : 
-                df.loc[i, "horse_cote"] = -1
-            else : 
-                horse   = df.loc[i, "bet_horse"]
-                comp    = df.loc[i, "comp"]
-                results = df.loc[i, "results"]
-                cotes   = pk_load(f"comp-{comp}", "data/cotes/")
-                cote    = cotes.loc[(cotes.type == "simple_place") and (int(cotes.numero) == int(horse)) , "pmu"]   
-                df.loc[i, "horse_cote"] = int(cote)             
+        for i in _df.index : 
+            if (not _df.loc[i, "good_bet"]) or (not (_df.loc[i, "bet_horse"] >= 1)) : 
+                continue
         
-        df["gains"]             = df.good_bet * df.horse_cote * df.bet_or_not * df.bet_autorized 
+            horse   = _df.loc[i, "bet_horse"]
+            comp    = _df.loc[i, "comp"]
+            # results = _df.loc[i, "results"]
+            cotes   = pk_load(f"comp-{comp}", "data/cotes/")  
+            mask    = (cotes.type == "simple_place") * cotes.numero.apply(corected_nums) == int(horse)
+            cote    = cotes.loc[mask , "pmu"]
+            
+            try : 
+                _df.loc[i, "horse_cote"] = float(cote)             
+            except : 
+                warning(comp)
+                warning(cote)
+                _df.loc[i, "bet_or_not"] = False
+                _df.loc[i, "horse_cote"] = -1.0  
+
+
+        _df["gains"]             = _df.good_bet * _df.horse_cote * _df.bet_or_not * _df.bet_autorized 
 
         if verbose : 
-            info(df["gains"].describe())
+            info(_df["gains"].describe())
 
-        return df
+        return _df
 
 
     # @change_repr

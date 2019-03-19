@@ -27,23 +27,26 @@ def selected_df() :
 class Test_SimpleGagnant() : 
     """test class for simple gagnants bets"""
 
-    def test_Bet(self) : 
+    def test_bet_init(self) : 
         """just Bet.__init__()"""
+
         bet = Bet("simple_gagnant", Strats.choix_de_la_meilleure_cote)
-        info(bet)
-        info(bet.__dict__)
+        # info(bet)
+        # info(bet.__dict__)
 
 
     def test_bet_run(self, selected_df) : 
         """just Bet.run()"""
+
         bet = Bet("simple_gagnant", Strats.choix_de_la_meilleure_cote)
-        info(bet)
-        info(bet.__dict__)
+        # info(bet)
+        # info(bet.__dict__)
         _df = bet.run(selected_df)
         
 
     def test_bet_consistancy_0(self, selected_df) : 
         """bet results columns"""
+
         bet = Bet("simple_gagnant", Strats.choix_de_la_meilleure_cote)
         _df = bet.run(selected_df)
 
@@ -53,6 +56,7 @@ class Test_SimpleGagnant() :
 
     def test_bet_consistancy_1(self, selected_df) : 
         """bet results 'bet horses' """
+
         bet = Bet("simple_gagnant", Strats.choix_de_la_meilleure_cote)
         _df = bet.run(selected_df)
 
@@ -69,20 +73,19 @@ class Test_SimpleGagnant() :
             assert race_0.bet_horse == result_0.numero.iloc[0] 
 
 
-    def test_Bet_consistancy_2(self, selected_df) : 
+    def test_bet_consistancy_2(self, selected_df) : 
         """bet results good_bet rate"""
+
         bet = Bet("simple_gagnant", Strats.choix_de_la_meilleure_cote)
         _df = bet.run(selected_df)
         rate = round(sum(_df.good_bet)/len(_df), 2)
         assert rate == 0.25
 
 
-
 class Test_SimplePlace() : 
     """test class for simple places bets"""
 
-
-    def test_Bet(self) : 
+    def test_bet_init(self) : 
         """just Bet.__init__()"""
         bet = Bet("simple_place", Strats.choix_de_la_meilleure_cote)
         info(bet)
