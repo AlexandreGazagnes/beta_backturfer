@@ -209,6 +209,88 @@ class Test_SimplePlace() :
             assert race_0.bet_horse == result_0.numero.iloc[0] 
 
 
+    def test_bet_consistancy_3(self, selected_df) : 
+        """bet results for one race"""
+
+        bet = Bet("simple_place", Strats.choix_de_la_meilleure_cote)
+        df = selected_df.copy()
+
+        _comp = 1086803
+        df = df.loc[df.comp == _comp, :]
+        assert len(df) == 1
+        assert df.url.iloc[0] == "https://www.paris-turf.com/programme-courses/2018-08-21/reunion-deauville/resultats-rapports/prix-de-la-barberie-1086803"
+        
+        _df = bet.run(df)
+        assert len(_df) == 1
+
+        _df = _df.iloc[0]
+        assert _df.bet_horse == 2
+        assert (_df.win_horses == [6, 16, 4]).all()
+        assert _df.good_bet == False
+
+
+    def test_bet_consistancy_4(self, selected_df) : 
+        """bet results good_bet rate"""
+
+        bet = Bet("simple_place", Strats.choix_de_la_meilleure_cote)
+        df = selected_df.copy()
+
+        _comp = 1101558
+        df = df.loc[df.comp == _comp, :]
+        assert len(df) == 1
+        assert df.url.iloc[0] == "https://www.paris-turf.com/programme-courses/2018-10-16/reunion-chantilly/resultats-rapports/prix-d-orry-1101558"
+        
+        _df = bet.run(df)
+        assert len(_df) == 1
+
+        _df = _df.iloc[0]
+        assert _df.bet_horse == 16
+        assert (_df.win_horses == [13,1,12]).all()
+        assert _df.good_bet == False
+
+
+    def test_bet_consistancy_5(self, selected_df) : 
+        """bet results good_bet rate"""
+
+        bet = Bet("simple_place", Strats.choix_de_la_meilleure_cote)
+        df = selected_df.copy()
+
+        _comp = 1115896
+        df = df.loc[df.comp == _comp, :]
+        assert len(df) == 1
+        assert df.url.iloc[0] == "https://www.paris-turf.com/programme-courses/2019-01-18/reunion-cagnes-sur-mer/resultats-rapports/prix-charles-gastaud-1115896"
+        
+        _df = bet.run(df)
+        assert len(_df) == 1
+
+        _df = _df.iloc[0]
+        assert _df.bet_horse == 7
+        assert (_df.win_horses == [17, 10, 7]).all()
+        assert _df.good_bet == True
+
+
+    def test_bet_consistancy_6(self, selected_df) : 
+        """bet results good_bet rate"""
+
+        bet = Bet("simple_place", Strats.choix_de_la_meilleure_cote)
+        df = selected_df.copy()
+
+        _comp = 1124061
+        df = df.loc[df.comp == _comp, :]
+        assert len(df) == 1
+        assert df.url.iloc[0] == "https://www.paris-turf.com/programme-courses/2019-01-24/reunion-vincennes/resultats-rapports/prix-de-la-semaine-internationale-1124061"
+        
+        _df = bet.run(df)
+        assert len(_df) == 1
+
+        _df = _df.iloc[0]
+        assert _df.bet_horse == 15
+        assert (_df.win_horses == [15, 11, 6]).all()
+        assert _df.good_bet == True
+
+
+
+
 
 
 
