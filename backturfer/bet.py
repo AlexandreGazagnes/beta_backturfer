@@ -123,7 +123,7 @@ class Bet :
 
 
     @change_repr
-    def simple_gagnant(df, strat, N=None, mise_min=1.5, verbose=True) : 
+    def simple_gagnant(df, strat, N=None, n=1, mise_min=1.5, verbose=True) : 
         """miser sur un cheval gagnant"""
 
         assert isinstance(df, pd.DataFrame)
@@ -149,7 +149,7 @@ class Bet :
 
 
     @change_repr
-    def simple_place(df, strat, N=None, mise_min=1.5, verbose=True) : 
+    def simple_place(df, strat, N=None, n=1, mise_min=1.5, verbose=True) : 
         """miser sur un cheavl sur le podium
          - vous gagnez s'il arrive parmi les 3 premiers à l’arrivée dans une course comptant au minimum 8 chevaux inscrits au programme (*)
          - vous gagnez s’il arrive à la première ou à la deuxième place dans une course comptant entre 4 et 7 chevaux inscrits au programme (*)"""
@@ -224,10 +224,31 @@ class Bet :
 
         _df = df.copy()
 
-        _df["bet_autorized"]     = 1
-        _df["bet_horses"]         = _df.results.apply(lambda i : strat(i, N, n=2) )
-        _df["win_horses"]        = _df.results.apply(lambda i : Bet.__n_first_nums(i, 2))
-        _df["good_bet"]          = _df.apply(lambda i : (i.bet_horses[0] in i.win_horses) * (i.bet_horses[1] in i.win_horses) , axis=1)    
+        _df["bet_autorized"]    = 1
+        _df["bet_horses"]       = _df.results.apply(lambda i : strat(i, N, n=2) )
+        _df["win_horses"]       = _df.results.apply(lambda i : Bet.__n_first_nums(i, 2))
+        _df["good_bet"]         = _df.apply(lambda i : (i.bet_horses[0] in i.win_horses) * (i.bet_horses[1] in i.win_horses) , axis=1)    
+        _df["bet_or_not"]       = _df.bet_horse.apply(lambda i : 1 if i>=1 else 0)
+        _df["couple_cote"]      = -1.0
+
+        for i in _df.index : 
+            if (not _df.loc[i, "good_bet"])  : 
+                continue        
+            horses   = _df.loc[i, "bet_horses"]
+            comp    = _df.loc[i, "comp"]
+            cotes   = pk_load(f"comp-{comp}", "data/cotes/")  
+            cote    = cotes.loc[cotes.type == "couple_gagnant" , "pmu"]
+            
+            try : 
+                _df.loc[i, "couple_cote"] = float(cote)             
+            except : 
+                warning(comp)
+                warning(cote)
+                _df.loc[i, "bet_or_not"] = False
+                _df.loc[i, "couple_cote"] = -1.0  
+
+
+        _df["gains"]             = _df.good_bet * _df.couple_cote * _df.bet_or_not * _df.bet_autorized 
 
 
         raise NotImplementedError
