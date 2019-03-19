@@ -3,10 +3,9 @@
 
 
 # import 
-from backturfer.misc       import *
-from backturfer.groupby    import GroupBy
-from strats.easy    import Strats
-
+from backturfer.misc        import *
+from backturfer.groupby     import GroupBy
+from strats                 import * 
 
 
 

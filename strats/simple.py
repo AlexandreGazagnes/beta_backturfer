@@ -8,7 +8,10 @@ from numpy.random import randint, choice
 
 
 # class
-class Strats : 
+class SimpleStrats : 
+
+    _type       = "strats"
+    _subtype    = "simple"
 
     strats_str =[   ('choix_de_la_meilleure_cote', 'choix de la meilleure cote'),
                     ('choix_de_la__N__meilleure_cote', 'choix de la - N - meilleure cote'),

@@ -3,9 +3,9 @@
 
 
 # import 
-from backturfer.misc import *
+from backturfer.misc    import *
 from backturfer.groupby import GroupBy
-from strats.easy import Strats
+from strats             import * 
 
 
 # class
@@ -50,7 +50,8 @@ class Bet :
         assert bet_type in Bet.bets_str.keys()
         assert isinstance(verbose, bool)
         assert callable(strat)
-        assert strat.Class == "Strats"
+        assert strat._type      == "strats"
+        assert strat._subtype   ==  "simple"
         assert isinstance(N, int)
         assert isinstance(plateform, str)
         assert plateform in Bet.plateforms
@@ -128,7 +129,8 @@ class Bet :
         assert isinstance(df, pd.DataFrame)
         assert isinstance(verbose, bool)
         assert callable(strat)
-        assert strat.Class == "Strats"
+        assert strat._type      == "strats"
+        assert strat._subtype   ==  "simple"
         if N : assert isinstance(N, int)
 
         _df = df.copy()
@@ -156,7 +158,8 @@ class Bet :
         assert isinstance(df, pd.DataFrame)
         assert isinstance(verbose, int)
         assert callable(strat)
-        assert strat.Class == "Strats"
+        assert strat._type      == "strats"
+        assert strat._subtype   ==  "simple"
         if N : assert isinstance(N, int)
 
         def corected_nums(i) : 
@@ -203,20 +206,40 @@ class Bet :
 
         return _df
 
-
     @change_repr
-    def couple_gagnant(df, strat, N=None, mise_min=1.5,verbose=True): 
-        """trouver les 2 premiers dans le desordre
-            Pour les courses d'au moins 8 partants, au Couplé Gagnant, trouver les deux premiers chevaux de l'arrivée, quel que soit l'ordre."""
+    def couple_place(df, strat, N=None, mise_min=1.5, verbose=True): 
+        """trouver les 2 des 3 premiers chevux  dans le desordre
+        Pour les courses d'au moins 8 partants, au Couplé Placé, trouver deux des trois premiers chevaux de l'arrivée, quel que soit l'ordre."""
+
+        assert isinstance(df, pd.DataFrame)
+        assert isinstance(verbose, int)
+        assert callable(strat)
+        assert strat._type      == "strats"
+        assert strat._subtype   ==  "couple"
+        if N : assert isinstance(N, int)
+
+        _df = df.copy()
+
+        _df["bet_autorized"]     = 1
+        _df["bet_horse"]         = _df.results.apply(lambda i : strat(i, N) )
+        _df["win_horses"]        = _df.results.apply(Bet.__podium_nums)
+
+        _df["good_bet"]          = _df.apply(lambda i : i.bet_horse in i. win_horses, axis=1)        
         
+        _df["bet_or_not"]        = _df.bet_horse.apply(lambda i : 1 if i>=1 else 0)
+
+        # find podiumcote of bet_horse
+        _df["horse_cote"]        = -1.0
+
+
         raise NotImplementedError
 
 
     # @change_repr
-    # def couple_place(df, strat, N=None, mise_min=1.5, verbose=True): 
-    #     """trouver les 2 des 3 premiers chevux  dans le desordre
-    #     Pour les courses d'au moins 8 partants, au Couplé Placé, trouver deux des trois premiers chevaux de l'arrivée, quel que soit l'ordre."""
-
+    # def couple_gagnant(df, strat, N=None, mise_min=1.5,verbose=True): 
+    #     """trouver les 2 premiers dans le desordre
+    #         Pour les courses d'au moins 8 partants, au Couplé Gagnant, trouver les deux premiers chevaux de l'arrivée, quel que soit l'ordre."""
+        
     #     raise NotImplementedError
 
 
