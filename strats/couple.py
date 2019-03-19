@@ -28,34 +28,34 @@ class CoupleStrats :
     #                 ('choisir_la_pire_cote_partante', 'choisir la pire cote partante')]
 
 
-    @change_repr
-    def choix_aleatoire_parmi_les_inscrits(results, N=None, n=1, cote_type="direct") : 
-        """chose one horse random"""
+    # @change_repr
+    # def choix_aleatoire_parmi_les_inscrits(results, N=None, n=1, cote_type="direct") : 
+    #     """chose one horse random"""
 
-        r = choice(results.numero, size=numb, replace=False)
-        if len(r) == 1 : 
-            r = r[0]
+    #     r = choice(results.numero, size=numb, replace=False)
+    #     if len(r) == 1 : 
+    #         r = r[0]
 
-        return r
+    #     return r
 
-    @change_repr
-    def choix_aleatoire_parmi_les__N__meilleures_cotes(results, N, n=1, cote_type="direct") : 
-        """chose one horse random given the N best cotes"""
+    # @change_repr
+    # def choix_aleatoire_parmi_les__N__meilleures_cotes(results, N, n=1, cote_type="direct") : 
+    #     """chose one horse random given the N best cotes"""
 
-        if not isinstance(N, int) : 
-            raise ValueError("N should be an int")
+    #     if not isinstance(N, int) : 
+    #         raise ValueError("N should be an int")
 
-        if  N == 0 : 
-            return -1
+    #     if  N == 0 : 
+    #         return -1
 
-        r = results.sort_values(f"cote{cote_type}", ascending=True, inplace=False)
-        best_N_cotedirect = r.numero.iloc[:N].values
+    #     r = results.sort_values(f"cote{cote_type}", ascending=True, inplace=False)
+    #     best_N_cotedirect = r.numero.iloc[:N].values
 
-        r = choice(best_N_cotedirect, size=n, replace=False)
-        if len(r) == 1 : 
-            r = r[0]
+    #     r = choice(best_N_cotedirect, size=n, replace=False)
+    #     if len(r) == 1 : 
+    #         r = r[0]
 
-        return r
+    #     return r
 
     @change_repr
     def choix_de_la__N__meilleure_cote(results, N, n=1, cote_type="direct") : 
@@ -73,7 +73,7 @@ class CoupleStrats :
         if n==1 : 
             return r.numero.iloc[N]
         elif n > 1 and n <7 : 
-            return r.numero.iloc[N:n+N]
+            return list(r.numero.iloc[N:n+N])
 
 
     @change_repr
