@@ -50,7 +50,7 @@ class Test_SimpleGagnant() :
         bet = Bet("simple_gagnant", Strats.choix_de_la_meilleure_cote)
         _df = bet.run(selected_df)
 
-        for i in ['bet_horse', 'win_horse', 'bet_or_not', 'win_cote', 'good_bet']  : 
+        for i in ['bet_horse', 'win_horse', 'bet_or_not', 'horse_cote', 'good_bet']  : 
             assert i in _df.columns
 
 
