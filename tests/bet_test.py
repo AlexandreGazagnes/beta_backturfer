@@ -35,93 +35,93 @@ def couple_strat():
 
 
 
-# class Test_SimpleGagnant() : 
-#     """test class for simple gagnants bets"""
+class Test_SimpleGagnant() : 
+    """test class for simple gagnants bets"""
 
-#     def test_bet_run(self, selected_df, simple_strat) : 
-#         """just Bet.run()"""
+    def test_bet_run(self, selected_df, simple_strat) : 
+        """just Bet.run()"""
 
-#         bet = Bet("simple_gagnant", simple_strat)
-#         # info(bet)
-#         # info(bet.__dict__)
-#         _df = bet.run(selected_df)
+        bet = Bet("simple_gagnant", simple_strat)
+        # info(bet)
+        # info(bet.__dict__)
+        _df = bet.run(selected_df)
         
 
-#     def test_bet_consistancy_0(self, selected_df, simple_strat) : 
-#         """bet results columns"""
+    def test_bet_consistancy_0(self, selected_df, simple_strat) : 
+        """bet results columns"""
 
-#         bet = Bet("simple_gagnant", simple_strat)
-#         _df = bet.run(selected_df)
+        bet = Bet("simple_gagnant", simple_strat)
+        _df = bet.run(selected_df)
 
-#         for i in ['bet_horse', 'win_horse', 'bet_or_not', 'horse_cote', 'good_bet']  : 
-#             assert i in _df.columns
-
-
-#     def test_bet_consistancy_1(self, selected_df, simple_strat) : 
-#         """bet results 'bet horses' """
-
-#         bet = Bet("simple_gagnant", simple_strat)
-#         _df = bet.run(selected_df)
-
-#         for _ in range(10) : # run 10 times 
-#             while True : 
-#                 race_0   = _df.iloc[np.random.choice(_df.index), :] # pick a random race
-#                 result_0 = race_0.results.sort_values("cotedirect", ascending=True, axis=0)
-#                 try : 
-#                     if (result_0.cotedirect.iloc[0] > 0.0 ) and (result_0.cotedirect.iloc[0] < 10.0 ) : # be sure prob !=0
-#                         break
-#                 except : # if error just pass it 
-#                     pass
-
-#             assert race_0.bet_horse == result_0.numero.iloc[0] 
+        for i in ['bet_horse', 'win_horse', 'bet_or_not', 'horse_cote', 'good_bet']  : 
+            assert i in _df.columns
 
 
-#     def test_bet_consistancy_2(self, selected_df, simple_strat) : 
-#         """bet results good_bet rate"""
+    def test_bet_consistancy_1(self, selected_df, simple_strat) : 
+        """bet results 'bet horses' """
 
-#         bet = Bet("simple_gagnant", simple_strat)
-#         _df = bet.run(selected_df)
-#         rate = round(sum(_df.good_bet)/len(_df), 2)
-#         assert rate == 0.25
+        bet = Bet("simple_gagnant", simple_strat)
+        _df = bet.run(selected_df)
 
+        for _ in range(10) : # run 10 times 
+            while True : 
+                race_0   = _df.iloc[np.random.choice(_df.index), :] # pick a random race
+                result_0 = race_0.results.sort_values("cotedirect", ascending=True, axis=0)
+                try : 
+                    if (result_0.cotedirect.iloc[0] > 0.0 ) and (result_0.cotedirect.iloc[0] < 10.0 ) : # be sure prob !=0
+                        break
+                except : # if error just pass it 
+                    pass
 
-# class Test_SimplePlace() : 
-#     """test class for simple places bets"""
-
-#     def test_bet_run(self, selected_df, simple_strat) : 
-
-#         """just Bet.run()"""
-#         bet = Bet("simple_place", simple_strat)
-#         _df = bet.run(selected_df)
-
-
-#     def test_bet_consistancy_0(self, selected_df, simple_strat) : 
-#         """bet results columns"""
-
-#         bet = Bet("simple_place", simple_strat)
-#         _df = bet.run(selected_df)
-
-#         for i in ['bet_horse', 'win_horses', 'bet_or_not', 'horse_cote', 'good_bet']  : 
-#             assert i in _df.columns
+            assert race_0.bet_horse == result_0.numero.iloc[0] 
 
 
-#     def test_bet_consistancy_1(self, selected_df, simple_strat) : 
-#         """bet results 'bet horses' """
+    def test_bet_consistancy_2(self, selected_df, simple_strat) : 
+        """bet results good_bet rate"""
 
-#         bet = Bet("simple_place", simple_strat)
-#         _df = bet.run(selected_df)
+        bet = Bet("simple_gagnant", simple_strat)
+        _df = bet.run(selected_df)
+        rate = round(sum(_df.good_bet)/len(_df), 2)
+        assert rate == 0.25
 
-#         for _ in range(10) : # run 10 times 
-#             while True : 
-#                 race_0   = _df.iloc[np.random.choice(_df.index), :] # pick a random race
-#                 result_0 = race_0.results.sort_values("cotedirect", ascending=True, axis=0)
-#                 try : 
-#                     if (result_0.cotedirect.iloc[0] > 0.0 ) and (result_0.cotedirect.iloc[0] < 10.0 ) : # be sure prob !=0
-#                         break
-#                 except : # if error just pass it 
-#                     pass
 
-#             assert race_0.bet_horse == result_0.numero.iloc[0] 
+class Test_SimplePlace() : 
+    """test class for simple places bets"""
+
+    def test_bet_run(self, selected_df, simple_strat) : 
+
+        """just Bet.run()"""
+        bet = Bet("simple_place", simple_strat)
+        _df = bet.run(selected_df)
+
+
+    def test_bet_consistancy_0(self, selected_df, simple_strat) : 
+        """bet results columns"""
+
+        bet = Bet("simple_place", simple_strat)
+        _df = bet.run(selected_df)
+
+        for i in ['bet_horse', 'win_horses', 'bet_or_not', 'horse_cote', 'good_bet']  : 
+            assert i in _df.columns
+
+
+    def test_bet_consistancy_1(self, selected_df, simple_strat) : 
+        """bet results 'bet horses' """
+
+        bet = Bet("simple_place", simple_strat)
+        _df = bet.run(selected_df)
+
+        for _ in range(10) : # run 10 times 
+            while True : 
+                race_0   = _df.iloc[np.random.choice(_df.index), :] # pick a random race
+                result_0 = race_0.results.sort_values("cotedirect", ascending=True, axis=0)
+                try : 
+                    if (result_0.cotedirect.iloc[0] > 0.0 ) and (result_0.cotedirect.iloc[0] < 10.0 ) : # be sure prob !=0
+                        break
+                except : # if error just pass it 
+                    pass
+
+            assert race_0.bet_horse == result_0.numero.iloc[0] 
 
 
 class Test_CoupleGagnant() : 
@@ -184,4 +184,24 @@ class Test_CoupleGagnant() :
 
         _df = bet.run(_df)
         assert not _df.good_bet.any()
+
+
+class Test_CoupleOrdre() : 
+    """test class for simple places bets"""
+
+    def test_bet_run(self, selected_df, couple_strat) : 
+        """just Bet.run()"""
+
+        bet = Bet("couple_ordre", couple_strat)
+        _df = bet.run(selected_df)
+
+
+    def test_bet_consistancy_0(self, selected_df, couple_strat) : 
+        """bet results columns"""
+
+        bet = Bet("couple_ordre", couple_strat)
+        _df = bet.run(selected_df)
+
+        for i in ['bet_horses', 'win_horses', 'bet_or_not', 'couple_cote', 'good_bet']  : 
+            assert i in _df.columns
 
