@@ -28,19 +28,24 @@ race_sel    = RaceSelector(form)
 df          = race_sel(df)
 
 
+bet = Bet("simple_place", Strats.choix_de_la_meilleure_cote)
 
-# # run AddCote
+
+_df = bet.run(df)
+
 # AddCote.add_cotes(df, cotes="all", cores=6, dest="data/cotes/", lazy=True)
 
 
-# # bet
-bet = Bet("simple_place", Strats.choix_de_la_meilleure_cote)
-info(bet)
-info(bet.__dict__)
 
-_df = bet.run(df)
-# # bets and turf
-# info("just Bet")
+# # # bet
+# bet = Bet("simple_place", Strats.choix_de_la_meilleure_cote)
+# info(bet)
+# info(bet.__dict__)
+
+# _df = bet(df)
+# # # bets and turf
+# # info("just Bet")
+
 # _df = Bet.simple_gagnant(       df, 
 #                                 Strats.choix_de_la_meilleure_cote)
 
