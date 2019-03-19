@@ -160,7 +160,7 @@ class Test_SimpleGagnant() :
         assert _df.win_horse == 15
         assert _df.good_bet == True
 
-
+ 
 
 class Test_SimplePlace() : 
     """test class for simple places bets"""
