@@ -86,19 +86,47 @@ class Test_SimplePlace() :
     """test class for simple places bets"""
 
     def test_bet_init(self) : 
+
         """just Bet.__init__()"""
         bet = Bet("simple_place", Strats.choix_de_la_meilleure_cote)
         info(bet)
         info(bet.__dict__)
 
+
     def test_bet_run(self, selected_df) : 
+
         """just Bet.run()"""
         bet = Bet("simple_place", Strats.choix_de_la_meilleure_cote)
         _df = bet.run(selected_df)
 
 
+    def test_bet_consistancy_0(self, selected_df) : 
+        """bet results columns"""
+
+        bet = Bet("simple_place", Strats.choix_de_la_meilleure_cote)
+        _df = bet.run(selected_df)
+
+        for i in ['bet_horse', 'win_horses', 'bet_or_not', 'horse_cote', 'good_bet']  : 
+            assert i in _df.columns
 
 
+    def test_bet_consistancy_1(self, selected_df) : 
+        """bet results 'bet horses' """
+
+        bet = Bet("simple_place", Strats.choix_de_la_meilleure_cote)
+        _df = bet.run(selected_df)
+
+        for _ in range(10) : # run 10 times 
+            while True : 
+                race_0   = _df.iloc[np.random.choice(_df.index), :] # pick a random race
+                result_0 = race_0.results.sort_values("cotedirect", ascending=True, axis=0)
+                try : 
+                    if (result_0.cotedirect.iloc[0] > 0.0 ) and (result_0.cotedirect.iloc[0] < 10.0 ) : # be sure prob !=0
+                        break
+                except : # if error just pass it 
+                    pass
+
+            assert race_0.bet_horse == result_0.numero.iloc[0] 
 
 
 
