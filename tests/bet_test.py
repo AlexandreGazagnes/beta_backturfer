@@ -430,9 +430,20 @@ class TestQuinteDesordre(TestGeneric) :
         self.columns(_df, cols)
 
 
-
     def test_bet_results(self, selected_df, quinte_strat) :
 
         goods = [   1003385, 1016312, 1017959, 1020195, 1032311, 1064461, 1071483,
                     1085414, 1104605]
         self.good(selected_df, self.bet_type, quinte_strat, goods)
+
+        wrongs = [  1070469, 1003362, 1040226, 1071797, 1019434, 1048045, 1048513,
+                    1047986, 1033716, 1115942, 1032246, 1065454, 1009550, 1048643,
+                    1124400, 1064502, 1029992, 1041779, 1047837, 1064547, 1059111,
+                    1032342, 1101558, 1003124, 1077286, 1023195, 1104905, 1023730,
+                    1048579, 1064570]
+        self.wrong(selected_df, self.bet_type, quinte_strat, wrongs)
+
+
+
+
+
