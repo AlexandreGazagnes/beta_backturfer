@@ -160,7 +160,47 @@ class Test_SimpleGagnant() :
         assert _df.win_horse == 15
         assert _df.good_bet == True
 
- 
+
+    def test_bet_consistancy_7(self, selected_df) : 
+        """bet winnings"""
+
+        comps = [   1071233, 1075658, 1123874, 1072071, 1107118, 1068713, 1104842,
+                    1096257, 1048673, 1069402, 1048673, 1104733, 1106948, 1048545,
+                    1082366, 1086335, 1064636, 1123874, 1106671, 1085399, 1084597,
+                    1064570, 1124061, 1111058, 1084683, 1096257, 1085414, 1104965,
+                    1048673, 1086567 ]
+
+        bet = Bet("simple_gagnant", Strats.choix_de_la_meilleure_cote)
+        _df = selected_df.copy()
+        _df = _df.loc[_df.comp.apply(lambda i : i in comps), :]   
+        # assert len(_df) == len(comps)
+        _df = bet.run(_df)
+        assert _df.good_bet.all()
+
+
+    def test_bet_consistancy_8(self, selected_df) : 
+        """bet loosing"""
+
+        comps = [   1053493, 1071754, 1104696, 1072040, 1099183, 1077608, 1064617,
+                    1084724, 1116020, 1072897, 1099339, 1071622, 1069459, 1104801,
+                    1086901, 1065454, 1070386, 1071415, 1048698, 1111115, 1064547,
+                    1104679, 1106908, 1072040, 1086093, 1074598, 1104931, 1070386,
+                    1086093, 1116020 ]
+     
+        bet = Bet("simple_gagnant", Strats.choix_de_la_meilleure_cote)
+        _df = selected_df.copy()
+        _df = _df.loc[_df.comp.apply(lambda i : i in comps), :]   
+        
+        # for i in comps : 
+        #     if i not in _df.comp : 
+        #         raise ValueError(i)
+
+        # assert len(_df) == len(comps)
+
+        _df = bet.run(_df)
+        assert not _df.good_bet.any()
+
+
 
 class Test_SimplePlace() : 
     """test class for simple places bets"""
@@ -297,6 +337,48 @@ class Test_SimplePlace() :
         assert _df.bet_horse == 15
         assert (_df.win_horses == [15, 11, 6]).all()
         assert _df.good_bet == True
+
+
+
+
+    def test_bet_consistancy_7(self, selected_df) : 
+        """bet winnings"""
+
+        comps = [   1086541, 1077608, 1072071, 1085443, 1048614, 1084714, 1069172,
+                    1086645, 1064461, 1104559, 1084714, 1095149, 1048470, 1073055,
+                    1101268, 1086645, 1107118, 1101268, 1124432, 1124400, 1048470,
+                    1104867, 1069172, 1068713, 1124149, 1107118, 1086567, 1064538,
+                    1099401, 1074598 ]
+
+        bet = Bet("simple_place", Strats.choix_de_la_meilleure_cote)
+        _df = selected_df.copy()
+        _df = _df.loc[_df.comp.apply(lambda i : i in comps), :]   
+        # assert len(_df) == len(comps)
+        _df = bet.run(_df)
+        assert _df.good_bet.all()
+
+
+    def test_bet_consistancy_8(self, selected_df) : 
+        """bet loosing"""
+
+        comps = [   1088486, 1048658, 1113348, 1059769, 1076989, 1086486, 1123937,
+                    1101678, 1058997, 1058974, 1104801, 1084848, 1074502, 1072949,
+                    1071797, 1072040, 1124606, 1099313, 1071389, 1048453, 1104896,
+                    1074660, 1084724, 1073103, 1104679, 1124410, 1071813, 1085999,
+                    1113356, 1113356    ]
+
+        bet = Bet("simple_place", Strats.choix_de_la_meilleure_cote)
+        _df = selected_df.copy()
+        _df = _df.loc[_df.comp.apply(lambda i : i in comps), :]   
+
+        # for i in comps : 
+        #     if i not in _df.comp : 
+        #         raise ValueError(i)
+
+        # assert len(_df) == len(comps)
+
+        _df = bet.run(_df)
+        assert not _df.good_bet.any()
 
 
 
