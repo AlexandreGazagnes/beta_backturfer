@@ -171,12 +171,6 @@ class Bet :
          - vous gagnez s'il arrive parmi les 3 premiers à l’arrivée dans une course comptant au minimum 8 chevaux inscrits au programme (*)
          - vous gagnez s’il arrive à la première ou à la deuxième place dans une course comptant entre 4 et 7 chevaux inscrits au programme (*)"""
 
-        assert isinstance(df, pd.DataFrame)
-        assert isinstance(verbose, int)
-        assert callable(strat)
-        assert strat.Class == "SimpleStrats"
-        if N : assert isinstance(N, int)
-
         def corected_nums(i) : 
             try :       return int(str(i).strip())
             except :    return i
@@ -224,12 +218,6 @@ class Bet :
     def couple_place(df, strat, N=None, n=2, mise_min=1.5, verbose=True): 
         """trouver les 2 des 3 premiers chevux  dans le desordre
         Pour les courses d'au moins 8 partants, au Couplé Placé, trouver deux des trois premiers chevaux de l'arrivée, quel que soit l'ordre."""
-        assert isinstance(df, pd.DataFrame)
-        assert isinstance(verbose, int)
-        assert callable(strat)
-        assert strat.Class == "CoupleStrats"
-        if N : assert isinstance(N, int)
-        if n : assert isinstance(n, int)
 
         def correct_nums(i) : 
 
@@ -292,13 +280,6 @@ class Bet :
         """trouver les 2 premiers dans le desordre
             Pour les courses d'au moins 8 partants, au Couplé Gagnant, trouver les deux premiers chevaux de l'arrivée, quel que soit l'ordre."""
 
-        assert isinstance(df, pd.DataFrame)
-        assert isinstance(verbose, int)
-        assert callable(strat)
-        assert strat.Class == "CoupleStrats"
-        if N : assert isinstance(N, int)
-        if n : assert isinstance(n, int)
-
         _df = df.copy()
 
         _df["bet_autorized"]    = 1
@@ -336,13 +317,6 @@ class Bet :
         """ trouver dans l'ordre 1 et 2e cheval
         Pour les courses de 4 à 7 partants, au Couplé Ordre, trouver les deux premiers chevaux dans l'ordre exact de l'arrivée."""
 
-        assert isinstance(df, pd.DataFrame)
-        assert isinstance(verbose, int)
-        assert callable(strat)
-        assert strat.Class == "CoupleStrats"
-        if N : assert isinstance(N, int)
-        if n : assert isinstance(n, int)
-
         _df = df.copy()
 
         _df["bet_autorized"]    = 1
@@ -379,13 +353,6 @@ class Bet :
     def trio_desordre(df, strat, N=None, n=3, mise_min=1.5, verbose=True): 
         """tiercé mais si pas quinte  ???? VERIFIER ???
             Pour les courses d'au moins 8 partants (hors course Quinté+), trouvez les trois premiers chevaux de l'arrivée, quel que soit l'ordre."""
-
-        assert isinstance(df, pd.DataFrame)
-        assert isinstance(verbose, int)
-        assert callable(strat)
-        assert strat.Class == "TrioStrats"
-        if N : assert isinstance(N, int)
-        if n : assert isinstance(n, int)
 
         _df = df.copy()
 
@@ -425,13 +392,6 @@ class Bet :
     def trio_ordre(df, strat, N=None, n=3, mise_min=1.5, verbose=True): 
         """ tiercé mais si pas quinte ???? VERIFIER ???
         Pour les courses des réunions nationales comportant de 4 à 7 partants maximum (hors courses exclusives internet et courses étrangères en masse commune), trouvez les trois premiers chevaux dans l’ordre exact d’arrivée. """
-
-        assert isinstance(df, pd.DataFrame)
-        assert isinstance(verbose, int)
-        assert callable(strat)
-        assert strat.Class == "TrioStrats"
-        if N : assert isinstance(N, int)
-        if n : assert isinstance(n, int)
 
         _df = df.copy()
 
@@ -476,13 +436,6 @@ class Bet :
         
         """trouver les 2 premiers dans le desordre
             Pour les courses d'au moins 8 partants, au Couplé Gagnant, trouver les deux premiers chevaux de l'arrivée, quel que soit l'ordre."""
-
-        assert isinstance(df, pd.DataFrame)
-        assert isinstance(verbose, int)
-        assert callable(strat)
-        assert strat.Class == "CoupleStrats"
-        if N : assert isinstance(N, int)
-        if n : assert isinstance(n, int)
 
         _df = df.copy()
 
@@ -536,13 +489,6 @@ class Bet :
         """ tiercé mais si pas quinte ???? VERIFIER ???
         Pour les courses des réunions nationales comportant de 4 à 7 partants maximum (hors courses exclusives internet et courses étrangères en masse commune), trouvez les trois premiers chevaux dans l’ordre exact d’arrivée. """
 
-        assert isinstance(df, pd.DataFrame)
-        assert isinstance(verbose, int)
-        assert callable(strat)
-        assert strat.Class == "QuinteStrats"
-        if N : assert isinstance(N, int)
-        if n : assert isinstance(n, int)
-
         _df = df.copy()
 
         _df["bet_autorized"]    = 1
@@ -584,12 +530,6 @@ class Bet :
         """ tiercé mais si pas quinte ???? VERIFIER ???
         Pour les courses des réunions nationales comportant de 4 à 7 partants maximum (hors courses exclusives internet et courses étrangères en masse commune), trouvez les trois premiers chevaux dans l’ordre exact d’arrivée. """
 
-        assert isinstance(df, pd.DataFrame)
-        assert isinstance(verbose, int)
-        assert callable(strat)
-        assert strat.Class == "QuinteStrats"
-        if N : assert isinstance(N, int)
-        if n : assert isinstance(n, int)
 
         _df = df.copy()
 
