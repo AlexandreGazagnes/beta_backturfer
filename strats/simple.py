@@ -8,7 +8,10 @@ from numpy.random import randint, choice
 
 
 # class
-class Strats : 
+class SimpleStrats : 
+
+    _type       = "strats"
+    _subtype    = "simple"
 
     strats_str =[   ('choix_de_la_meilleure_cote', 'choix de la meilleure cote'),
                     ('choix_de_la__N__meilleure_cote', 'choix de la - N - meilleure cote'),
@@ -25,10 +28,10 @@ class Strats :
 
 
     @change_repr
-    def choix_aleatoire_parmi_les_inscrits(results, N=None, numb=1, cote_type="direct") : 
+    def choix_aleatoire_parmi_les_inscrits(results, N=None, n=1, cote_type="direct") : 
         """chose one horse random"""
 
-        r = choice(results.numero, size=numb, replace=False)
+        r = choice(results.numero, size=n, replace=False)
         if len(r) == 1 : 
             r = r[0]
 
@@ -36,10 +39,10 @@ class Strats :
 
 
     @change_repr
-    def choix_aleatoire_parmi_les_partants(results, N=None, numb=1, cote_type="direct") : 
+    def choix_aleatoire_parmi_les_partants(results, N=None, n=1, cote_type="direct") : 
         """chose one horse random"""
 
-        r = choice(results.numero, size=numb, replace=False)
+        r = choice(results.numero, size=n, replace=False)
         if len(r) == 1 : 
             r = r[0]
 
@@ -47,7 +50,7 @@ class Strats :
 
 
     @change_repr
-    def choix_aleatoire_parmi_les__N__meilleures_cotes(results, N, numb=1, cote_type="direct") : 
+    def choix_aleatoire_parmi_les__N__meilleures_cotes(results, N, n=1, cote_type="direct") : 
         """chose one horse random given the N best cotes"""
 
         if not isinstance(N, int) : 
@@ -59,7 +62,7 @@ class Strats :
         r = results.sort_values(f"cote{cote_type}", ascending=True, inplace=False)
         best_N_cotedirect = r.numero.iloc[:N].values
 
-        r = choice(best_N_cotedirect, size=numb, replace=False)
+        r = choice(best_N_cotedirect, size=n, replace=False)
         if len(r) == 1 : 
             r = r[0]
 
@@ -67,10 +70,10 @@ class Strats :
 
 
     @change_repr
-    def choix_aleatoire_parmi_les_3_meilleures_cotes(results, N=None, numb=1, cote_type="direct") : 
+    def choix_aleatoire_parmi_les_3_meilleures_cotes(results, N=None, n=1, cote_type="direct") : 
         """chose one horse random given the 3 best cotes"""
 
-        return Strats.choix_aleatoire_parmi_les__n__meilleures_cotes(results, 3, numb, cote_type)
+        return SimpleStrats.choix_aleatoire_parmi_les__n__meilleures_cotes(results, 3, n, cote_type)
 
 
     # @change_repr
@@ -103,7 +106,7 @@ class Strats :
     def choix_de_la_meilleure_cote(results, N=None, cote_type="direct") : 
         """chose the horse with best cote"""
 
-        return Strats.choix_de_la__N__meilleure_cote(results, 0, cote_type)
+        return SimpleStrats.choix_de_la__N__meilleure_cote(results, 0, cote_type)
 
 
     @change_repr
@@ -118,7 +121,7 @@ class Strats :
         """go to the hippo, flip a coin and 1/2 decide to bet or not, if bet, use best_cote_strategy"""
 
         n = randint(0, 2)
-        if n : return Strats.choix_de_la__N__meilleure_cote(results, 0, cote_type)
+        if n : return SimpleStrats.choix_de_la__N__meilleure_cote(results, 0, cote_type)
         else : return -1
 
 

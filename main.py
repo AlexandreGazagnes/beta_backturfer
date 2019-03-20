@@ -2,36 +2,49 @@
 # coding: utf-8
 
 
-
 ###############################################################################
-
 #       BETA_BACKTURFER
-
 ###############################################################################
 
 
 # import 
 from backturfer import *
+from strats     import *
 
 
-# main dataframe
-info("loading dataframe")
+# loading dataframe
 df  = pk_load("WITHOUT_RESULTS_pturf_grouped_and_merged_cache_carac_2016-2019_OK", "data/")
 
 
-
 # dataframe selection
-info("selecting good dataframe")
-form        = { 'date_start': "2017-01-01", 'quinte' : 1, 
-                'euro_only' : True, 'typec': [  'attelé', 'monté', "plat"]}
+form        = { 'date_start': "2017-01-01", 
+                'quinte'    : 1, 
+                'euro_only' : True, 
+                'typec'     : ['attelé', 'monté', "plat"]  }
+
 race_sel    = RaceSelector(form)
 df          = race_sel(df)
+df          = GroupBy.internalize_results(df)
 
 
-bet = Bet("simple_place", Strats.choix_de_la_meilleure_cote)
+# # couple gagnant
+# bet = Bet("couple_gagnant", CoupleStrats.choix_des_2_meilleures_cotes)
+# df_couple_gagnant = bet.run(df.copy())
+# print(df_couple_gagnant.good_bet.value_counts(normalize=True))
 
 
-_df = bet.run(df)
+# # couple ordre
+# bet = Bet("couple_ordre", CoupleStrats.choix_des_2_meilleures_cotes)
+# df_couple_ordre = bet.run(df.copy())
+# print(df_couple_ordre.good_bet.value_counts(normalize=True))
+
+
+# couple place
+bet = Bet("couple_place", CoupleStrats.choix_des_2_meilleures_cotes)
+df_couple_place = bet.run(df.copy())
+print(df_couple_place.good_bet.value_counts(normalize=True))
+
+
 
 # AddCote.add_cotes(df, cotes="all", cores=6, dest="data/cotes/", lazy=True)
 
