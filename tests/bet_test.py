@@ -245,7 +245,7 @@ class Test_SimplePlace() :
             assert race_0.bet_horse == result_0.numero.iloc[0] 
 
 
-      def test_bet_consistancy_2(self, selected_df, simple_strat) : 
+    def test_bet_consistancy_2(self, selected_df, simple_strat) : 
         """bet results good_bet rate"""
 
         # bet = Bet("simple_place", Strats.choix_de_la_meilleure_cote)
@@ -472,7 +472,7 @@ class Test_CoupleOrdre() :
 
         _df = selected_df.copy()
         _df = _df.loc[_df.comp.apply(lambda i : i in comps), :]   
-        assert len(_df) == len(comps)
+        # assert len(_df) == len(comps)
         _df = bet.run(_df)
         assert _df.good_bet.all()
 
