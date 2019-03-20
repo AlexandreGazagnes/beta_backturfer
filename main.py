@@ -27,41 +27,47 @@ df          = race_sel(df)
 df          = GroupBy.internalize_results(df)
 
 
-# # couple gagnant
-# bet = Bet("couple_gagnant", CoupleStrats.choix_des_2_meilleures_cotes)
-# df_couple_gagnant = bet.run(df.copy())
-# print(df_couple_gagnant.good_bet.value_counts(normalize=True))
+# couple gagnant
+bet = Bet("couple_gagnant", CoupleStrats.choix_des_2_meilleures_cotes)
+df_couple_gagnant = bet.run(df.copy())
+
+print(df_couple_gagnant.good_bet.value_counts(normalize=True))
 
 
-# # couple ordre
-# bet = Bet("couple_ordre", CoupleStrats.choix_des_2_meilleures_cotes)
-# df_couple_ordre = bet.run(df.copy())
-# print(df_couple_ordre.good_bet.value_counts(normalize=True))
+# couple ordre
+bet = Bet("couple_ordre", CoupleStrats.choix_des_2_meilleures_cotes)
+df_couple_ordre = bet.run(df.copy())
+
+print(df_couple_ordre.good_bet.value_counts(normalize=True))
 
 
-# # couple place
-# bet = Bet("couple_place", CoupleStrats.choix_des_2_meilleures_cotes)
-# df_couple_place = bet.run(df.copy())
-# print(df_couple_place.good_bet.value_counts(normalize=True))
+# couple place
+bet = Bet("couple_place", CoupleStrats.choix_des_2_meilleures_cotes)
+df_couple_place = bet.run(df.copy())
+print(df_couple_place.good_bet.value_counts(normalize=True))
 
 
-# # deux sur quatre
-# bet = Bet("deux_sur_quatre", CoupleStrats.choix_des_2_meilleures_cotes)
-# df_2_sur_4 = bet.run(df.copy())
-# print(df_2_sur_4.good_bet.value_counts(normalize=True))
+# deux sur quatre
+bet = Bet("deux_sur_quatre", CoupleStrats.choix_des_2_meilleures_cotes)
+df_2_sur_4 = bet.run(df.copy())
+print(df_2_sur_4.good_bet.value_counts(normalize=True))
 
 
-# bet = Bet("trio_ordre", TrioStrats.choix_des_3_meilleures_cotes)
-# df_trio_ordre = bet.run(df.copy())
-# print(df_trio_ordre.good_bet.value_counts(normalize=True))
+bet = Bet("trio_ordre", TrioStrats.choix_des_3_meilleures_cotes)
+df_trio_ordre = bet.run(df.copy())
+print(df_trio_ordre.good_bet.value_counts(normalize=True))
 
 
 bet = Bet("quinte_desordre", QuinteStrats.choix_des_5_meilleures_cotes)
 df_quinte_desordre = bet.run(df.copy())
 print(df_quinte_desordre.good_bet.value_counts(normalize=True))
 
-_df = df_quinte_desordre.copy()
-goods = _df.loc[_df.good_bet, :]
+info(df_couple_gagnant)
+info(df_couple_ordre)
+info(df_couple_place)
+info(df_2_sur_4)
+info(df_trio_ordre)
+info(df_quinte_desordre)
 
 
 

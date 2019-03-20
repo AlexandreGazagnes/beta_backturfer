@@ -99,26 +99,40 @@ class Bet :
 
 
         _df = df.copy()
-        _df["bet_autorized"]     = True
+        # _df["bet_autorized"]     = True
 
-        _df["bet_autorized"]     = 1
-        if "simple" in self.bet_type.lower() :    
-            _df["bet_horse"]         = 99
-        elif ("couple" or "deux") in self.bet_type.lower() : 
-            _df["bet_horse"]         = [99, 99]
-        elif ("trio" or "tierce") in self.bet_type.lower() : 
-            _df["bet_horse"]         = [99, 99, 99]
-        elif "quinte"            in self.bet_type.lower() : 
-            _df["bet_horse"]         = [99, 99, 99, 99, 99]
-        else :
-            raise AttributeError("Bet.run : something went wrong")
+        # if "simple" in self.bet_type.lower() :    
+        #     _df["bet_horse"]         = 99
+        # elif ("couple" or "deux") in self.bet_type.lower() : 
+        #     _df["bet_horse"]         = [99, 99]
+        # elif ("trio" or "tierce") in self.bet_type.lower() : 
+        #     _df["bet_horse"]         = [99, 99, 99]
+        # elif "quinte"            in self.bet_type.lower() : 
+        #     _df["bet_horse"]         = [99, 99, 99, 99, 99]
+        # else :
+        #     raise AttributeError("Bet.run : something went wrong : 0")
         
+        # if "simple_gagnant"  == self.bet_type.lower() :    
+        #     _df["win_horse"]         = 99
+        # elif "simple_place" == self.bet_type.lower() : 
+        #     _df["win_horse"]         = [99, 99, 99]
+        # elif ("couple_gagnant" or "couple_ordre") == self.bet_type.lower() :  
+        #     _df["win_horse"]         = [99, 99]
+        # elif "couple_place" == self.bet_type.lower() : 
+        #     _df["win_horse"]         = [99, 99, 99]
+        # elif "deux" in n self.bet_type.lower() :  
+        #     _df["win_horse"]         = [99, 99, 99, 99]            
+        # elif ("trio" or "tierce") in self.bet_type.lower() : 
+        #     _df["win_horse"]         = [99, 99, 99]
+        # elif "quinte"            in self.bet_type.lower() : 
+        #     _df["win_horse"]         = [99, 99, 99, 99, 99]
+        # else :
+        #     raise AttributeError("Bet.run : something went wrong : 1")
 
-        _df["win_horse"]         = _df.results.apply(Bet.__winner_num)
-        _df["bet_or_not"]        = True
-        _df["good_bet"]          = False
-        _df["cote"]              = -1.0
-        _df["gains"]             = 0.0
+        # _df["bet_or_not"]        = True
+        # _df["good_bet"]          = False
+        # _df["cote"]              = -1.0
+        # _df["gains"]             = 0.0
 
         return eval(f"Bet.{self.bet_type}")(df=_df, strat=self.strat, N=self.N, n=self.n, verbose=self.verbose)
 
