@@ -36,8 +36,17 @@ def simple_strat():
 def couple_strat():
     return CoupleStrats.choix_des_2_meilleures_cotes
 
+@pytest.fixture
+def trio_strat():
+    return TrioStrats.choix_des_3_meilleures_cotes
 
-class Test_Generic() : 
+@pytest.fixture
+def quinte_strat():
+    return QuinteStrats.choix_des_5_meilleures_cotes
+
+
+
+class TestGeneric() : 
 
     def run(self, _selected_df, _bet_type, _strat) : 
         """ perform a Bet().run()"""
@@ -107,7 +116,7 @@ class Test_Generic() :
         assert not Bet(_bet_type, _strat).run(_df).good_bet.any()
 
 
-class Test_SimpleGagnant(Test_Generic) : 
+class TestSimpleGagnant(TestGeneric) : 
     """test class for simple gagnants bets"""
     
     bet_type = "simple_gagnant"
@@ -168,7 +177,7 @@ class Test_SimpleGagnant(Test_Generic) :
         self.wrong(selected_df, self.bet_type, simple_strat, wrongs)
 
         
-class Test_SimplePlace(Test_Generic) : 
+class TestSimplePlace(TestGeneric) : 
     """test class for simple places bets"""
 
     bet_type = "simple_place"
@@ -250,7 +259,7 @@ class Test_SimplePlace(Test_Generic) :
 
 
 
-class Test_CoupleGagnant(Test_Generic) : 
+class TestCoupleGagnant(TestGeneric) : 
     """test class for simple places bets"""
 
     bet_type = "couple_gagnant"
@@ -282,7 +291,7 @@ class Test_CoupleGagnant(Test_Generic) :
         self.wrong(selected_df, self.bet_type, couple_strat, wrongs)
 
 
-class Test_CoupleOrdre(Test_Generic) : 
+class TestCoupleOrdre(TestGeneric) : 
     """test class for simple places bets"""
 
     bet_type = "couple_ordre"
@@ -316,7 +325,7 @@ class Test_CoupleOrdre(Test_Generic) :
 
        
 
-class Test_CouplePlace(Test_Generic) : 
+class TestCouplePlace(TestGeneric) : 
     """test class for simple places bets"""
 
     bet_type = "couple_place"
@@ -330,7 +339,7 @@ class Test_CouplePlace(Test_Generic) :
 
 
 
-class Test_DeuxSurQuatre(Test_Generic) : 
+class TestDeuxSurQuatre(TestGeneric) : 
     """test class for simple places bets"""
 
     bet_type = "deux_sur_quatre"
@@ -343,5 +352,87 @@ class Test_DeuxSurQuatre(Test_Generic) :
         self.columns(_df, cols)
 
 
+class TestTrioOrdre(TestGeneric) : 
+    """test class for simple places bets"""
+
+    bet_type = "trio_ordre"
+
+    def test_basics(self, selected_df, trio_strat) : 
+        """just Bet.run() and various features"""
+        
+        _df = self.run(selected_df, self.bet_type, trio_strat)
+        cols = ['bet_horses', 'win_horses', 'bet_or_not', 'trio_cote', 'good_bet']
+        self.columns(_df, cols)
 
 
+class TestTrioDesordre(TestGeneric) : 
+    """test class for simple places bets"""
+
+    bet_type = "trio_desordre"
+
+    def test_basics(self, selected_df, trio_strat) : 
+        """just Bet.run() and various features"""
+        
+        _df = self.run(selected_df, self.bet_type, trio_strat)
+        cols = ['bet_horses', 'win_horses', 'bet_or_not', 'trio_cote', 'good_bet']
+        self.columns(_df, cols)
+
+
+class TestTierceOrdre(TestGeneric) : 
+    """test class for simple places bets"""
+
+    bet_type = "tierce_ordre"
+
+    def test_basics(self, selected_df, trio_strat) : 
+        """just Bet.run() and various features"""
+        
+        _df = self.run(selected_df, self.bet_type, trio_strat)
+        cols = ['bet_horses', 'win_horses', 'bet_or_not', 'trio_cote', 'good_bet']
+        self.columns(_df, cols)
+
+
+class TestTierceDesordre(TestGeneric) : 
+    """test class for simple places bets"""
+
+    bet_type = "tierce_desordre"
+
+    def test_basics(self, selected_df, trio_strat) : 
+        """just Bet.run() and various features"""
+        
+        _df = self.run(selected_df, self.bet_type, trio_strat)
+        cols = ['bet_horses', 'win_horses', 'bet_or_not', 'trio_cote', 'good_bet']
+        self.columns(_df, cols)
+
+
+class TestQuinteOrdre(TestGeneric) : 
+    """test class for simple places bets"""
+
+    bet_type = "quinte_ordre"
+
+    def test_basics(self, selected_df, quinte_strat) : 
+        """just Bet.run() and various features"""
+        
+        _df = self.run(selected_df, self.bet_type, quinte_strat)
+        cols = ['bet_horses', 'win_horses', 'bet_or_not', 'quinte_cote', 'good_bet']
+        self.columns(_df, cols)
+
+
+class TestQuinteDesordre(TestGeneric) : 
+    """test class for simple places bets"""
+
+    bet_type = "quinte_desordre"
+
+    def test_basics(self, selected_df, quinte_strat) : 
+        """just Bet.run() and various features"""
+        
+        _df = self.run(selected_df, self.bet_type, quinte_strat)
+        cols = ['bet_horses', 'win_horses', 'bet_or_not', 'quinte_cote', 'good_bet']
+        self.columns(_df, cols)
+
+
+
+    def test_bet_results(self, selected_df, quinte_strat) :
+
+        goods = [   1003385, 1016312, 1017959, 1020195, 1032311, 1064461, 1071483,
+                    1085414, 1104605]
+        self.good(selected_df, self.bet_type, quinte_strat, goods)

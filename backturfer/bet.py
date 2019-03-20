@@ -358,20 +358,97 @@ class Bet :
         return _df
 
 
-    # @change_repr
-    # def trio_desordre(df, strat, N=None, mise_min=1.5, verbose=True): 
-    #     """tiercé mais si pas quinte  ???? VERIFIER ???
-    #         Pour les courses d'au moins 8 partants (hors course Quinté+), trouvez les trois premiers chevaux de l'arrivée, quel que soit l'ordre."""
+    @change_repr
+    def trio_desordre(df, strat, N=None, n=3, mise_min=1.5, verbose=True): 
+        """tiercé mais si pas quinte  ???? VERIFIER ???
+            Pour les courses d'au moins 8 partants (hors course Quinté+), trouvez les trois premiers chevaux de l'arrivée, quel que soit l'ordre."""
 
-    #     raise NotImplementedError
+        assert isinstance(df, pd.DataFrame)
+        assert isinstance(verbose, int)
+        assert callable(strat)
+        assert strat.Class == "TrioStrats"
+        if N : assert isinstance(N, int)
+        if n : assert isinstance(n, int)
+
+        _df = df.copy()
+
+        _df["bet_autorized"]    = 1
+        _df["bet_horses"]       = _df.results.apply(lambda i : strat(i, N, n=3) )
+        _df["win_horses"]       = _df.results.apply(lambda i : Bet.__n_first_nums(i, 3))
+        _df["good_bet"]         = _df.apply(lambda i :    (i.bet_horses[0] == i.win_horses[0]) \
+                                                        * (i.bet_horses[1] == i.win_horses[1]) \
+                                                        * (i.bet_horses[2] == i.win_horses[2]) , axis=1)    
+        _df["good_bet"]         = _df.good_bet.apply(bool)
+        _df["bet_or_not"]       = _df.bet_horses.apply(lambda i : 1 if len(i) == 3 else 0)
+        _df["trio_cote"]        = -1.0
+
+        for i in _df.index : 
+            if (not _df.loc[i, "good_bet"])  : 
+                continue        
+            horses   = _df.loc[i, "bet_horses"]
+            comp    = _df.loc[i, "comp"]
+            cotes   = pk_load(f"comp-{comp}", "data/cotes/")  
+            cote    = cotes.loc[cotes.type == "trio_ordre" , "pmu"]
+            
+            try : 
+                _df.loc[i, "trio_cote"] = float(cote)             
+            except : 
+                warning(comp)
+                warning(cote)
+                _df.loc[i, "bet_or_not"] = False
+                _df.loc[i, "trio_cote"] = -1.0  
 
 
-    # @change_repr
-    # def trio_ordre(df, strat, N=None, mise_min=1.5, verbose=True): 
-    #     """ tiercé mais si pas quinte ???? VERIFIER ???
-    #     Pour les courses des réunions nationales comportant de 4 à 7 partants maximum (hors courses exclusives internet et courses étrangères en masse commune), trouvez les trois premiers chevaux dans l’ordre exact d’arrivée. """
+        _df["gains"]             = _df.good_bet * _df.trio_cote * _df.bet_or_not * _df.bet_autorized 
 
-    #     raise NotImplementedError
+        return _df
+
+
+    @change_repr
+    def trio_ordre(df, strat, N=None, n=3, mise_min=1.5, verbose=True): 
+        """ tiercé mais si pas quinte ???? VERIFIER ???
+        Pour les courses des réunions nationales comportant de 4 à 7 partants maximum (hors courses exclusives internet et courses étrangères en masse commune), trouvez les trois premiers chevaux dans l’ordre exact d’arrivée. """
+
+        assert isinstance(df, pd.DataFrame)
+        assert isinstance(verbose, int)
+        assert callable(strat)
+        assert strat.Class == "TrioStrats"
+        if N : assert isinstance(N, int)
+        if n : assert isinstance(n, int)
+
+        _df = df.copy()
+
+        _df["bet_autorized"]    = 1
+        _df["bet_horses"]       = _df.results.apply(lambda i : strat(i, N, n=3) )
+        _df["win_horses"]       = _df.results.apply(lambda i : Bet.__n_first_nums(i, 3))
+        _df["good_bet"]         = _df.apply(lambda i :    (i.bet_horses[0] in i.win_horses) \
+                                                        * (i.bet_horses[1] in i.win_horses) \
+                                                        * (i.bet_horses[2] in i.win_horses) , axis=1)    
+        _df["good_bet"]         = _df.good_bet.apply(bool)
+        _df["bet_or_not"]       = _df.bet_horses.apply(lambda i : 1 if len(i) == 3 else 0)
+        _df["trio_cote"]      = -1.0
+
+        for i in _df.index : 
+            if (not _df.loc[i, "good_bet"])  : 
+                continue        
+            horses   = _df.loc[i, "bet_horses"]
+            comp    = _df.loc[i, "comp"]
+            cotes   = pk_load(f"comp-{comp}", "data/cotes/")  
+            cote    = cotes.loc[cotes.type == "trio_ordre" , "pmu"]
+            
+            try : 
+                _df.loc[i, "trio_cote"] = float(cote)             
+            except : 
+                warning(comp)
+                warning(cote)
+                _df.loc[i, "bet_or_not"] = False
+                _df.loc[i, "trio_cote"] = -1.0  
+
+
+        _df["gains"]             = _df.good_bet * _df.trio_cote * _df.bet_or_not * _df.bet_autorized 
+
+        return _df
+
 
 
     @change_repr
@@ -421,32 +498,120 @@ class Bet :
         return _df
 
 
-    # @change_repr
-    # def tierce_ordre(df, strat, N=None, mise_min=1, verbose=True):
-    #     """tierce ordre
-    #     Si vos trois chevaux sont arrivés aux 3 premières places dans l'ordre indiqué, vous gagnez le rapport "Tiercé dans l'ordre"."""
+    @change_repr
+    def tierce_ordre(df, strat, N=None, n=3, mise_min=1, verbose=True):
+        """tierce ordre
+        Si vos trois chevaux sont arrivés aux 3 premières places dans l'ordre indiqué, vous gagnez le rapport "Tiercé dans l'ordre"."""
 
-    #     raise NotImplementedError
-
-
-    # @change_repr    
-    # def tierce_desordre(df, strat, N=None, mise_min=1, verbose=True):
-    #     """tierce desordre
-    #     Si vous avez trouvé les 3 premiers chevaux de la course mais dans un ordre différent de celui de l'arrivée, vous gagnez le rapport "Tiercé dans le désordre"."""
-
-    #     raise NotImplementedError
+        return Bet.trio_ordre(df, strat, N=N, n=n, mise_min=mise_min, verbose=verbose)
 
 
-    # @change_repr
-    # def quinte_ordre(df, strat, N=None, mise_min=2, verbose=True):
+    @change_repr    
+    def tierce_desordre(df, strat, N=None, n=3, mise_min=1, verbose=True):
+        """tierce desordre
+        Si vous avez trouvé les 3 premiers chevaux de la course mais dans un ordre différent de celui de l'arrivée, vous gagnez le rapport "Tiercé dans le désordre"."""
 
-    #     raise NotImplementedError
+        return Bet.trio_desordre(df, strat, N=N, n=n, mise_min=mise_min, verbose=verbose)
 
 
-    # @change_repr
-    # def quinte_desordre(df, strat, N=None, mise_min=2, verbose=True):
+    @change_repr
+    def quinte_desordre(df, strat, N=None, n=5,mise_min=2, verbose=True):
+        """ tiercé mais si pas quinte ???? VERIFIER ???
+        Pour les courses des réunions nationales comportant de 4 à 7 partants maximum (hors courses exclusives internet et courses étrangères en masse commune), trouvez les trois premiers chevaux dans l’ordre exact d’arrivée. """
 
-    #     raise NotImplementedError
+        assert isinstance(df, pd.DataFrame)
+        assert isinstance(verbose, int)
+        assert callable(strat)
+        assert strat.Class == "QuinteStrats"
+        if N : assert isinstance(N, int)
+        if n : assert isinstance(n, int)
+
+        _df = df.copy()
+
+        _df["bet_autorized"]    = 1
+        _df["bet_horses"]       = _df.results.apply(lambda i : strat(i, N, n=5) )
+        _df["win_horses"]       = _df.results.apply(lambda i : Bet.__n_first_nums(i, 5))
+        _df["good_bet"]         = _df.apply(lambda i :    (i.bet_horses[0] in i.win_horses) \
+                                                        * (i.bet_horses[1] in i.win_horses) \
+                                                        * (i.bet_horses[2] in i.win_horses) \
+                                                        * (i.bet_horses[3] in i.win_horses) \
+                                                        * (i.bet_horses[4] in i.win_horses) , axis=1)    
+        _df["good_bet"]         = _df.good_bet.apply(bool)
+        _df["bet_or_not"]       = _df.bet_horses.apply(lambda i : 1 if len(i) == 5 else 0)
+        _df["quinte_cote"]        = -1.0
+
+        for i in _df.index : 
+            if (not _df.loc[i, "good_bet"])  : 
+                continue        
+            horses   = _df.loc[i, "bet_horses"]
+            comp    = _df.loc[i, "comp"]
+            cotes   = pk_load(f"comp-{comp}", "data/cotes/")  
+            cote    = cotes.loc[cotes.type == "quinte_desordre" , "pmu"]
+            
+            try : 
+                _df.loc[i, "quinte_cote"] = float(cote)             
+            except : 
+                warning(comp)
+                warning(cote)
+                _df.loc[i, "bet_or_not"] = False
+                _df.loc[i, "quinte_cote"] = -1.0  
+
+
+        _df["gains"]             = _df.good_bet * _df.quinte_cote * _df.bet_or_not * _df.bet_autorized 
+
+        return _df
+
+
+    @change_repr
+    def quinte_ordre(df, strat, N=None, n=5, mise_min=2, verbose=True):
+        """ tiercé mais si pas quinte ???? VERIFIER ???
+        Pour les courses des réunions nationales comportant de 4 à 7 partants maximum (hors courses exclusives internet et courses étrangères en masse commune), trouvez les trois premiers chevaux dans l’ordre exact d’arrivée. """
+
+        assert isinstance(df, pd.DataFrame)
+        assert isinstance(verbose, int)
+        assert callable(strat)
+        assert strat.Class == "QuinteStrats"
+        if N : assert isinstance(N, int)
+        if n : assert isinstance(n, int)
+
+        _df = df.copy()
+
+        _df["bet_autorized"]    = 1
+        _df["bet_horses"]       = _df.results.apply(lambda i : strat(i, N, n=5) )
+        _df["win_horses"]       = _df.results.apply(lambda i : Bet.__n_first_nums(i, 5))
+        _df["good_bet"]         = _df.apply(lambda i :    (i.bet_horses[0] == i.win_horses[0]) \
+                                                        * (i.bet_horses[1] == i.win_horses[1]) \
+                                                        * (i.bet_horses[2] == i.win_horses[2]) \
+                                                        * (i.bet_horses[3] == i.win_horses[3]) \
+                                                        * (i.bet_horses[4] == i.win_horses[4]) , axis=1)    
+        _df["good_bet"]         = _df.good_bet.apply(bool)
+        _df["bet_or_not"]       = _df.bet_horses.apply(lambda i : 1 if len(i) == 5 else 0)
+        _df["quinte_cote"]        = -1.0
+
+        for i in _df.index : 
+            if (not _df.loc[i, "good_bet"])  : 
+                continue        
+            horses   = _df.loc[i, "bet_horses"]
+            comp    = _df.loc[i, "comp"]
+            cotes   = pk_load(f"comp-{comp}", "data/cotes/")  
+            cote    = cotes.loc[cotes.type == "quinte_ordre" , "pmu"]
+            
+            try : 
+                _df.loc[i, "quinte_cote"] = float(cote)             
+            except : 
+                warning(comp)
+                warning(cote)
+                _df.loc[i, "bet_or_not"] = False
+                _df.loc[i, "quinte_cote"] = -1.0  
+
+
+        _df["gains"]             = _df.good_bet * _df.quinte_cote * _df.bet_or_not * _df.bet_autorized 
+
+        return _df
+
+
+
+
 
 
 
