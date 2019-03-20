@@ -39,10 +39,10 @@ df          = GroupBy.internalize_results(df)
 # print(df_couple_ordre.good_bet.value_counts(normalize=True))
 
 
-# couple place
-bet = Bet("couple_place", CoupleStrats.choix_des_2_meilleures_cotes)
-df_couple_place = bet.run(df.copy())
-print(df_couple_place.good_bet.value_counts(normalize=True))
+# # couple place
+# bet = Bet("couple_place", CoupleStrats.choix_des_2_meilleures_cotes)
+# df_couple_place = bet.run(df.copy())
+# print(df_couple_place.good_bet.value_counts(normalize=True))
 
 
 # deux sur quatre
