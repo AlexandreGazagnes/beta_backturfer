@@ -94,14 +94,33 @@ class Bet :
         assert "comp" in df.columns
         assert "url" in df.columns
 
-
         if "results" not in df.columns : 
             df = GroupBy.internalize_results(df)
 
-        _bet = eval(f"Bet.{self.bet_type}")
-        info(_bet)
 
-        return _bet(df=df, strat=self.strat, N=self.N, n=self.n, verbose=self.verbose)
+        _df = df.copy()
+        _df["bet_autorized"]     = True
+
+        _df["bet_autorized"]     = 1
+        if "simple" in self.bet_type.lower() :    
+            _df["bet_horse"]         = 99
+        elif ("couple" or "deux") in self.bet_type.lower() : 
+            _df["bet_horse"]         = [99, 99]
+        elif ("trio" or "tierce") in self.bet_type.lower() : 
+            _df["bet_horse"]         = [99, 99, 99]
+        elif "quinte"            in self.bet_type.lower() : 
+            _df["bet_horse"]         = [99, 99, 99, 99, 99]
+        else :
+            raise AttributeError("Bet.run : something went wrong")
+        
+
+        _df["win_horse"]         = _df.results.apply(Bet.__winner_num)
+        _df["bet_or_not"]        = True
+        _df["good_bet"]          = False
+        _df["cote"]              = -1.0
+        _df["gains"]             = 0.0
+
+        return eval(f"Bet.{self.bet_type}")(df=_df, strat=self.strat, N=self.N, n=self.n, verbose=self.verbose)
 
 
     def __winner_num(results) : 
