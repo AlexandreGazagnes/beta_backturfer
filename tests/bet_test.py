@@ -15,6 +15,7 @@ import pytest
 def raw_df() : 
     return  pk_load("WITHOUT_RESULTS_pturf_grouped_and_merged_cache_carac_2016-2019_OK", "data/")
 
+
 @pytest.fixture
 def selected_df() : 
         df  = pk_load("WITHOUT_RESULTS_pturf_grouped_and_merged_cache_carac_2016-2019_OK", "data/")
@@ -25,14 +26,15 @@ def selected_df() :
 
         return df
 
+
 @pytest.fixture
 def simple_strat():
     return SimpleStrats.choix_de_la_meilleure_cote
 
+
 @pytest.fixture
 def couple_strat():
     return CoupleStrats.choix_des_2_meilleures_cotes
-
 
 
 class Test_SimpleGagnant() : 
@@ -85,10 +87,10 @@ class Test_SimpleGagnant() :
         assert rate == 0.25
 
 
-    def test_bet_consistancy_3(self, selected_df) : 
+    def test_bet_consistancy_3(self, selected_df, simple_strat) : 
         """bet results for one race"""
 
-        bet = Bet("simple_gagnant", Strats.choix_de_la_meilleure_cote)
+        bet = Bet("simple_gagnant", simple_strat)
         df = selected_df.copy()
 
         _comp = 1086803
@@ -104,10 +106,10 @@ class Test_SimpleGagnant() :
         assert _df.good_bet == False
 
 
-    def test_bet_consistancy_4(self, selected_df) : 
+    def test_bet_consistancy_4(self, selected_df, simple_strat) : 
         """bet results good_bet rate"""
 
-        bet = Bet("simple_gagnant", Strats.choix_de_la_meilleure_cote)
+        bet = Bet("simple_gagnant", simple_strat)
         df = selected_df.copy()
 
         _comp = 1101558
@@ -124,10 +126,10 @@ class Test_SimpleGagnant() :
         assert _df.good_bet == False
 
 
-    def test_bet_consistancy_5(self, selected_df) : 
+    def test_bet_consistancy_5(self, selected_df, simple_strat) : 
         """bet results good_bet rate"""
 
-        bet = Bet("simple_gagnant", Strats.choix_de_la_meilleure_cote)
+        bet = Bet("simple_gagnant", simple_strat)
         df = selected_df.copy()
 
         _comp = 1115896
@@ -144,10 +146,10 @@ class Test_SimpleGagnant() :
         assert _df.good_bet == False
 
 
-    def test_bet_consistancy_6(self, selected_df) : 
+    def test_bet_consistancy_6(self, selected_df, simple_strat) : 
         """bet results good_bet rate"""
 
-        bet = Bet("simple_gagnant", Strats.choix_de_la_meilleure_cote)
+        bet = Bet("simple_gagnant", simple_strat)
         df = selected_df.copy()
 
         _comp = 1124061
@@ -164,7 +166,7 @@ class Test_SimpleGagnant() :
         assert _df.good_bet == True
 
 
-    def test_bet_consistancy_7(self, selected_df) : 
+    def test_bet_consistancy_7(self, selected_df, simple_strat) : 
         """bet winnings"""
 
         comps = [   1071233, 1075658, 1123874, 1072071, 1107118, 1068713, 1104842,
@@ -173,7 +175,7 @@ class Test_SimpleGagnant() :
                     1064570, 1124061, 1111058, 1084683, 1096257, 1085414, 1104965,
                     1048673, 1086567 ]
 
-        bet = Bet("simple_gagnant", Strats.choix_de_la_meilleure_cote)
+        bet = Bet("simple_gagnant", simple_strat)
         _df = selected_df.copy()
         _df = _df.loc[_df.comp.apply(lambda i : i in comps), :]   
         # assert len(_df) == len(comps)
@@ -181,7 +183,7 @@ class Test_SimpleGagnant() :
         assert _df.good_bet.all()
 
 
-    def test_bet_consistancy_8(self, selected_df) : 
+    def test_bet_consistancy_8(self, selected_df, simple_strat) : 
         """bet loosing"""
 
         comps = [   1053493, 1071754, 1104696, 1072040, 1099183, 1077608, 1064617,
@@ -190,7 +192,7 @@ class Test_SimpleGagnant() :
                     1104679, 1106908, 1072040, 1086093, 1074598, 1104931, 1070386,
                     1086093, 1116020 ]
      
-        bet = Bet("simple_gagnant", Strats.choix_de_la_meilleure_cote)
+        bet = Bet("simple_gagnant", simple_strat)
         _df = selected_df.copy()
         _df = _df.loc[_df.comp.apply(lambda i : i in comps), :]   
         
@@ -242,7 +244,8 @@ class Test_SimplePlace() :
 
             assert race_0.bet_horse == result_0.numero.iloc[0] 
 
-      def test_bet_consistancy_2(self, selected_df) : 
+
+      def test_bet_consistancy_2(self, selected_df, simple_strat) : 
         """bet results good_bet rate"""
 
         # bet = Bet("simple_place", Strats.choix_de_la_meilleure_cote)
@@ -252,10 +255,10 @@ class Test_SimplePlace() :
         pass
 
 
-    def test_bet_consistancy_3(self, selected_df) : 
+    def test_bet_consistancy_3(self, selected_df, simple_strat) : 
         """bet results for one race"""
 
-        bet = Bet("simple_place", Strats.choix_de_la_meilleure_cote)
+        bet = Bet("simple_place", simple_strat)
         df = selected_df.copy()
 
         _comp = 1086803
@@ -272,10 +275,10 @@ class Test_SimplePlace() :
         assert _df.good_bet == False
 
 
-    def test_bet_consistancy_4(self, selected_df) : 
+    def test_bet_consistancy_4(self, selected_df, simple_strat) : 
         """bet results good_bet rate"""
 
-        bet = Bet("simple_place", Strats.choix_de_la_meilleure_cote)
+        bet = Bet("simple_place", simple_strat)
         df = selected_df.copy()
 
         _comp = 1101558
@@ -292,10 +295,10 @@ class Test_SimplePlace() :
         assert _df.good_bet == False
 
 
-    def test_bet_consistancy_5(self, selected_df) : 
+    def test_bet_consistancy_5(self, selected_df, simple_strat) : 
         """bet results good_bet rate"""
 
-        bet = Bet("simple_place", Strats.choix_de_la_meilleure_cote)
+        bet = Bet("simple_place", simple_strat)
         df = selected_df.copy()
 
         _comp = 1115896
@@ -312,10 +315,10 @@ class Test_SimplePlace() :
         assert _df.good_bet == True
 
 
-    def test_bet_consistancy_6(self, selected_df) : 
+    def test_bet_consistancy_6(self, selected_df, simple_strat) : 
         """bet results good_bet rate"""
 
-        bet = Bet("simple_place", Strats.choix_de_la_meilleure_cote)
+        bet = Bet("simple_place", simple_strat)
         df = selected_df.copy()
 
         _comp = 1124061
@@ -332,7 +335,7 @@ class Test_SimplePlace() :
         assert _df.good_bet == True
 
 
-    def test_bet_consistancy_7(self, selected_df) : 
+    def test_bet_consistancy_7(self, selected_df, simple_strat) : 
         """bet winnings"""
 
         comps = [   1086541, 1077608, 1072071, 1085443, 1048614, 1084714, 1069172,
@@ -341,7 +344,7 @@ class Test_SimplePlace() :
                     1104867, 1069172, 1068713, 1124149, 1107118, 1086567, 1064538,
                     1099401, 1074598 ]
 
-        bet = Bet("simple_place", Strats.choix_de_la_meilleure_cote)
+        bet = Bet("simple_place", simple_strat)
 
         _df = selected_df.copy()
         _df = _df.loc[_df.comp.apply(lambda i : i in comps), :]   
@@ -349,7 +352,8 @@ class Test_SimplePlace() :
         _df = bet.run(_df)
         assert _df.good_bet.all()
 
-    def test_bet_consistancy_8(self, selected_df) : 
+
+    def test_bet_consistancy_8(self, selected_df, simple_strat) : 
         """bet loosing"""
 
         comps = [   1088486, 1048658, 1113348, 1059769, 1076989, 1086486, 1123937,
@@ -358,7 +362,7 @@ class Test_SimplePlace() :
                     1074660, 1084724, 1073103, 1104679, 1124410, 1071813, 1085999,
                     1113356, 1113356    ]
 
-        bet = Bet("simple_place", Strats.choix_de_la_meilleure_cote)
+        bet = Bet("simple_place", simple_strat)
         _df = selected_df.copy()
         _df = _df.loc[_df.comp.apply(lambda i : i in comps), :]   
 
