@@ -217,12 +217,6 @@ class Bet :
 
         def correct_nums(i) : 
 
-            # if isinstance(i, pd.Series) : 
-            #     if len(i) == 1
-            #         i = i.loc[0]
-            #     else : 
-            #         raise ValueError("2 dim Series")
-            
             if isinstance(i, list):
                 if (len(i) == 2) and isinstance(i[0], int) and isinstance(i[1], int) : 
                     return i
@@ -274,6 +268,7 @@ class Bet :
         _df["gains"]             = _df.good_bet * _df.couple_cote * _df.bet_or_not * _df.bet_autorized 
 
         return _df 
+
 
     @change_repr
     def couple_gagnant(df, strat, N=None,  n=2, mise_min=1.5,verbose=True): 
@@ -377,13 +372,50 @@ class Bet :
     #     raise NotImplementedError
 
 
-    # @change_repr
-    # def deux_sur_quatre(df, strat, N=None, mise_min=3, verbose=True): 
-    #     """2 sur les 4 dans le desordre
-    #     vous devez désigner deux chevaux d’une même course parmi les quatre premiers, quel que soit l’ordre d’arrivée. Votre pari est donc payable si les deux chevaux choisis occupent deux des quatre premières places de l’épreuve.
-    #     Le 2sur4 est proposé sur toutes les courses d’au moins 10 partants.²"""
+    @change_repr
+    def deux_sur_quatre(df, strat, N=None, n=2, mise_min=3, verbose=True): 
+        """2 sur les 4 dans le desordre
+        vous devez désigner deux chevaux d’une même course parmi les quatre premiers, quel que soit l’ordre d’arrivée. Votre pari est donc payable si les deux chevaux choisis occupent deux des quatre premières places de l’épreuve.
+        Le 2sur4 est proposé sur toutes les courses d’au moins 10 partants.²"""
         
-    #     raise NotImplementedError
+        """trouver les 2 premiers dans le desordre
+            Pour les courses d'au moins 8 partants, au Couplé Gagnant, trouver les deux premiers chevaux de l'arrivée, quel que soit l'ordre."""
+
+        assert isinstance(df, pd.DataFrame)
+        assert isinstance(verbose, int)
+        assert callable(strat)
+        assert strat.Class == "CoupleStrats"
+        if N : assert isinstance(N, int)
+        if n : assert isinstance(n, int)
+
+        _df = df.copy()
+
+        _df["bet_autorized"]    = 1
+        _df["bet_horses"]       = _df.results.apply(lambda i : strat(i, N, n=2) )
+        _df["win_horses"]       = _df.results.apply(lambda i : Bet.__n_first_nums(i, 4))
+        _df["good_bet"]         = _df.apply(lambda i : (i.bet_horses[0] in i.win_horses) * (i.bet_horses[1] in i.win_horses) , axis=1)    
+        _df["bet_or_not"]       = _df.bet_horses.apply(lambda i : 1 if len(i) == 2 else 0)
+        _df["couple_cote"]      = -1.0
+
+        for i in _df.index : 
+            if (not _df.loc[i, "good_bet"])  : 
+                continue        
+            horses   = _df.loc[i, "bet_horses"]
+            comp    = _df.loc[i, "comp"]
+            cotes   = pk_load(f"comp-{comp}", "data/cotes/")  
+            cote    = cotes.loc[cotes.type == "deux_sur_quatre" , "pmu"]
+            
+            try : 
+                _df.loc[i, "couple_cote"] = float(cote)             
+            except : 
+                warning(comp)
+                warning(cote)
+                _df.loc[i, "bet_or_not"] = False
+                _df.loc[i, "couple_cote"] = -1.0  
+
+        _df["gains"]             = _df.good_bet * _df.couple_cote * _df.bet_or_not * _df.bet_autorized 
+
+        return _df
 
 
     # @change_repr

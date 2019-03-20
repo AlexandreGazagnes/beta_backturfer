@@ -517,3 +517,30 @@ class Test_CouplePlace() :
 
         for i in ['bet_horses', 'win_horses', 'bet_or_not', 'couple_cote', 'good_bet']  : 
             assert i in _df.columns
+
+
+
+
+
+
+class Test_DeuxSurQuatre() : 
+    """test class for simple places bets"""
+
+    def test_bet_run(self, selected_df, couple_strat) : 
+        """just Bet.run()"""
+
+        bet = Bet("deux_sur_quatre", couple_strat)
+        _df = bet.run(selected_df.copy())
+
+
+    def test_bet_consistancy_0(self, selected_df, couple_strat) : 
+        """bet results columns"""
+
+        bet = Bet("deux_sur_quatre", couple_strat)
+        _df = bet.run(selected_df.copy())
+
+        for i in ['bet_horses', 'win_horses', 'bet_or_not', 'couple_cote', 'good_bet']  : 
+            assert i in _df.columns
+
+
+            

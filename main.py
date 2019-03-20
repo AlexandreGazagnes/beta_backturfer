@@ -45,6 +45,12 @@ df_couple_place = bet.run(df.copy())
 print(df_couple_place.good_bet.value_counts(normalize=True))
 
 
+# deux sur quatre
+bet = Bet("deux_sur_quatre", CoupleStrats.choix_des_2_meilleures_cotes)
+df_2_sur_4 = bet.run(df.copy())
+print(df_2_sur_4.good_bet.value_counts(normalize=True))
+
+
 
 # AddCote.add_cotes(df, cotes="all", cores=6, dest="data/cotes/", lazy=True)
 
