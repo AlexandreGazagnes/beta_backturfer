@@ -55,6 +55,27 @@ class Bet :
         assert isinstance(plateform, str)
         assert plateform in Bet.plateforms
 
+        if "simple" in str(bet_type).lower() : 
+            if not ("simple" or "multi") in strat.Class.lower() : 
+                raise AttributeError(f"Bet.__init__ : incompatibilty between bet_type {bet_type} and strat {strat}")
+        elif "couple" in str(bet_type).lower() : 
+            if not ("couple" or "multi") in strat.Class.lower() : 
+                raise AttributeError(f"Bet.__init__ : incompatibilty between bet_type {bet_type} and strat {strat}")
+        elif "deux_sur_quatre" in str(bet_type).lower() : 
+            if not ("couple" or "multi") in strat.Class.lower() : 
+                raise AttributeError(f"Bet.__init__ : incompatibilty between bet_type {bet_type} and strat {strat}")
+        elif "trio" in str(bet_type).lower() : 
+            if not ("trio" or "multi") in strat.Class.lower() : 
+                raise AttributeError(f"Bet.__init__ : incompatibilty between bet_type {bet_type} and strat {strat}")
+        elif "tierce" in str(bet_type).lower() : 
+            if not ("trio" or "multi") in strat.Class.lower() : 
+                raise AttributeError(f"Bet.__init__ : incompatibilty between bet_type {bet_type} and strat {strat}")
+        elif "quinte" in str(bet_type).lower() : 
+            if not ("quinte" or "multi") in strat.Class.lower() : 
+                raise AttributeError(f"Bet.__init__ : incompatibilty between bet_type {bet_type} and strat {strat}")
+        else : 
+            raise AttributeError("Bet.__init__ : unknown error")
+
         self.bet_type   = bet_type
         self.strat      = strat
         self.N          = N
@@ -70,6 +91,9 @@ class Bet :
     def run(self, df) : 
 
         assert isinstance(df, pd.DataFrame)
+        assert "comp" in df.columns
+        assert "url" in df.columns
+
 
         if "results" not in df.columns : 
             df = GroupBy.internalize_results(df)
@@ -126,21 +150,14 @@ class Bet :
     def simple_gagnant(df, strat, N=None, n=1, mise_min=1.5, verbose=True) : 
         """miser sur un cheval gagnant"""
 
-        assert isinstance(df, pd.DataFrame)
-        assert isinstance(verbose, bool)
-        assert callable(strat)
-        assert strat.Class == "SimpleStrats"
-        if N : assert isinstance(N, int)
-
         _df = df.copy()
-
         _df["bet_autorized"]     = 1
         _df["bet_horse"]         = _df.results.apply(lambda i : strat(i, N) )
         _df["win_horse"]         = _df.results.apply(Bet.__winner_num)
         _df["bet_or_not"]        = _df.bet_horse.apply(lambda i : 1 if i>=1 else 0)
         _df["good_bet"]          = _df.bet_horse == _df.win_horse
-        _df["horse_cote"]        = _df.apply(lambda i :  Bet.__winner_cote(i.results) if i.good_bet else -1.0, axis=1) 
-        _df["gains"]             = _df.good_bet * _df.horse_cote  * _df.bet_or_not * _df.bet_autorized
+        _df["cote"]        = _df.apply(lambda i :  Bet.__winner_cote(i.results) if i.good_bet else -1.0, axis=1) 
+        _df["gains"]             = _df.good_bet * _df.cote  * _df.bet_or_not * _df.bet_autorized
 
         if verbose : 
             info(_df["gains"].describe())
@@ -174,7 +191,7 @@ class Bet :
         _df["bet_or_not"]        = _df.bet_horse.apply(lambda i : 1 if i>=1 else 0)
 
         # find podiumcote of bet_horse
-        _df["horse_cote"]        = -1.0
+        _df["cote"]        = -1.0
 
         for i in _df.index : 
             if (not _df.loc[i, "good_bet"]) or (not (_df.loc[i, "bet_horse"] >= 1)) : 
@@ -188,15 +205,15 @@ class Bet :
             cote    = cotes.loc[mask , "pmu"]
             
             try : 
-                _df.loc[i, "horse_cote"] = float(cote)             
+                _df.loc[i, "cote"] = float(cote)             
             except : 
                 warning(comp)
                 warning(cote)
                 _df.loc[i, "bet_or_not"] = False
-                _df.loc[i, "horse_cote"] = -1.0  
+                _df.loc[i, "cote"] = -1.0  
 
 
-        _df["gains"]             = _df.good_bet * _df.horse_cote * _df.bet_or_not * _df.bet_autorized 
+        _df["gains"]             = _df.good_bet * _df.cote * _df.bet_or_not * _df.bet_autorized 
 
         if verbose : 
             info(_df["gains"].describe())
@@ -241,7 +258,7 @@ class Bet :
         _df["good_bet"]         = _df.apply(lambda i : (i.bet_horses[0] in i.win_horses) * (i.bet_horses[1] in i.win_horses) , axis=1)      
         _df["good_bet"]         = _df.good_bet.apply(bool)
         _df["bet_or_not"]       = _df.bet_horses.apply(lambda i : 1 if len(i) == 3 else 0)
-        _df["couple_cote"]      = -1.0
+        _df["cote"]      = -1.0
 
         for i in _df.index : 
             if (not _df.loc[i, "good_bet"])  : 
@@ -258,14 +275,14 @@ class Bet :
             cote = cotes.loc[mask.values, "pmu"]
 
             try : 
-                _df.loc[i, "couple_cote"] = float(cote)             
+                _df.loc[i, "cote"] = float(cote)             
             except : 
                 warning(comp)
                 warning(cote)
                 _df.loc[i, "bet_or_not"] = False
-                _df.loc[i, "couple_cote"] = -1.0  
+                _df.loc[i, "cote"] = -1.0  
 
-        _df["gains"]             = _df.good_bet * _df.couple_cote * _df.bet_or_not * _df.bet_autorized 
+        _df["gains"]             = _df.good_bet * _df.cote * _df.bet_or_not * _df.bet_autorized 
 
         return _df 
 
@@ -290,7 +307,7 @@ class Bet :
         _df["good_bet"]         = _df.apply(lambda i : (i.bet_horses[0] in i.win_horses) * (i.bet_horses[1] in i.win_horses) , axis=1)    
         _df["good_bet"]         = _df.good_bet.apply(bool)
         _df["bet_or_not"]       = _df.bet_horses.apply(lambda i : 1 if len(i) == 2 else 0)
-        _df["couple_cote"]      = -1.0
+        _df["cote"]      = -1.0
 
         for i in _df.index : 
             if (not _df.loc[i, "good_bet"])  : 
@@ -301,15 +318,15 @@ class Bet :
             cote    = cotes.loc[cotes.type == "couple_gagnant" , "pmu"]
             
             try : 
-                _df.loc[i, "couple_cote"] = float(cote)             
+                _df.loc[i, "cote"] = float(cote)             
             except : 
                 warning(comp)
                 warning(cote)
                 _df.loc[i, "bet_or_not"] = False
-                _df.loc[i, "couple_cote"] = -1.0  
+                _df.loc[i, "cote"] = -1.0  
 
 
-        _df["gains"]             = _df.good_bet * _df.couple_cote * _df.bet_or_not * _df.bet_autorized 
+        _df["gains"]             = _df.good_bet * _df.cote * _df.bet_or_not * _df.bet_autorized 
 
         return _df
 
@@ -334,7 +351,7 @@ class Bet :
         _df["good_bet"]         = _df.apply(lambda i : (i.bet_horses[0] == i.win_horses[0]) * (i.bet_horses[1] == i.win_horses[1]) , axis=1)    
         _df["good_bet"]         = _df.good_bet.apply(bool)
         _df["bet_or_not"]       = _df.bet_horses.apply(lambda i : 1 if len(i) == 2 else 0)
-        _df["couple_cote"]      = -1.0
+        _df["cote"]      = -1.0
 
         for i in _df.index : 
             if (not _df.loc[i, "good_bet"])  : 
@@ -345,15 +362,15 @@ class Bet :
             cote    = cotes.loc[cotes.type == "couple_gagnant" , "pmu"]
             
             try : 
-                _df.loc[i, "couple_cote"] = float(cote)             
+                _df.loc[i, "cote"] = float(cote)             
             except : 
                 warning(comp)
                 warning(cote)
                 _df.loc[i, "bet_or_not"] = False
-                _df.loc[i, "couple_cote"] = -1.0  
+                _df.loc[i, "cote"] = -1.0  
 
 
-        _df["gains"]             = _df.good_bet * _df.couple_cote * _df.bet_or_not * _df.bet_autorized 
+        _df["gains"]             = _df.good_bet * _df.cote * _df.bet_or_not * _df.bet_autorized 
 
         return _df
 
@@ -380,7 +397,7 @@ class Bet :
                                                         * (i.bet_horses[2] == i.win_horses[2]) , axis=1)    
         _df["good_bet"]         = _df.good_bet.apply(bool)
         _df["bet_or_not"]       = _df.bet_horses.apply(lambda i : 1 if len(i) == 3 else 0)
-        _df["trio_cote"]        = -1.0
+        _df["cote"]        = -1.0
 
         for i in _df.index : 
             if (not _df.loc[i, "good_bet"])  : 
@@ -391,15 +408,15 @@ class Bet :
             cote    = cotes.loc[cotes.type == "trio_ordre" , "pmu"]
             
             try : 
-                _df.loc[i, "trio_cote"] = float(cote)             
+                _df.loc[i, "cote"] = float(cote)             
             except : 
                 warning(comp)
                 warning(cote)
                 _df.loc[i, "bet_or_not"] = False
-                _df.loc[i, "trio_cote"] = -1.0  
+                _df.loc[i, "cote"] = -1.0  
 
 
-        _df["gains"]             = _df.good_bet * _df.trio_cote * _df.bet_or_not * _df.bet_autorized 
+        _df["gains"]             = _df.good_bet * _df.cote * _df.bet_or_not * _df.bet_autorized 
 
         return _df
 
@@ -426,7 +443,7 @@ class Bet :
                                                         * (i.bet_horses[2] in i.win_horses) , axis=1)    
         _df["good_bet"]         = _df.good_bet.apply(bool)
         _df["bet_or_not"]       = _df.bet_horses.apply(lambda i : 1 if len(i) == 3 else 0)
-        _df["trio_cote"]      = -1.0
+        _df["cote"]      = -1.0
 
         for i in _df.index : 
             if (not _df.loc[i, "good_bet"])  : 
@@ -437,15 +454,15 @@ class Bet :
             cote    = cotes.loc[cotes.type == "trio_ordre" , "pmu"]
             
             try : 
-                _df.loc[i, "trio_cote"] = float(cote)             
+                _df.loc[i, "cote"] = float(cote)             
             except : 
                 warning(comp)
                 warning(cote)
                 _df.loc[i, "bet_or_not"] = False
-                _df.loc[i, "trio_cote"] = -1.0  
+                _df.loc[i, "cote"] = -1.0  
 
 
-        _df["gains"]             = _df.good_bet * _df.trio_cote * _df.bet_or_not * _df.bet_autorized 
+        _df["gains"]             = _df.good_bet * _df.cote * _df.bet_or_not * _df.bet_autorized 
 
         return _df
 
@@ -475,7 +492,7 @@ class Bet :
         _df["good_bet"]         = _df.apply(lambda i : (i.bet_horses[0] in i.win_horses) * (i.bet_horses[1] in i.win_horses) , axis=1)    
         _df["good_bet"]         = _df.good_bet.apply(bool)
         _df["bet_or_not"]       = _df.bet_horses.apply(lambda i : 1 if len(i) == 2 else 0)
-        _df["couple_cote"]      = -1.0
+        _df["cote"]      = -1.0
 
         for i in _df.index : 
             if (not _df.loc[i, "good_bet"])  : 
@@ -486,14 +503,14 @@ class Bet :
             cote    = cotes.loc[cotes.type == "deux_sur_quatre" , "pmu"]
             
             try : 
-                _df.loc[i, "couple_cote"] = float(cote)             
+                _df.loc[i, "cote"] = float(cote)             
             except : 
                 warning(comp)
                 warning(cote)
                 _df.loc[i, "bet_or_not"] = False
-                _df.loc[i, "couple_cote"] = -1.0  
+                _df.loc[i, "cote"] = -1.0  
 
-        _df["gains"]             = _df.good_bet * _df.couple_cote * _df.bet_or_not * _df.bet_autorized 
+        _df["gains"]             = _df.good_bet * _df.cote * _df.bet_or_not * _df.bet_autorized 
 
         return _df
 
@@ -538,7 +555,7 @@ class Bet :
                                                         * (i.bet_horses[4] in i.win_horses) , axis=1)    
         _df["good_bet"]         = _df.good_bet.apply(bool)
         _df["bet_or_not"]       = _df.bet_horses.apply(lambda i : 1 if len(i) == 5 else 0)
-        _df["quinte_cote"]        = -1.0
+        _df["cote"]        = -1.0
 
         for i in _df.index : 
             if (not _df.loc[i, "good_bet"])  : 
@@ -549,15 +566,15 @@ class Bet :
             cote    = cotes.loc[cotes.type == "quinte_desordre" , "pmu"]
             
             try : 
-                _df.loc[i, "quinte_cote"] = float(cote)             
+                _df.loc[i, "cote"] = float(cote)             
             except : 
                 warning(comp)
                 warning(cote)
                 _df.loc[i, "bet_or_not"] = False
-                _df.loc[i, "quinte_cote"] = -1.0  
+                _df.loc[i, "cote"] = -1.0  
 
 
-        _df["gains"]             = _df.good_bet * _df.quinte_cote * _df.bet_or_not * _df.bet_autorized 
+        _df["gains"]             = _df.good_bet * _df.cote * _df.bet_or_not * _df.bet_autorized 
 
         return _df
 
@@ -586,7 +603,7 @@ class Bet :
                                                         * (i.bet_horses[4] == i.win_horses[4]) , axis=1)    
         _df["good_bet"]         = _df.good_bet.apply(bool)
         _df["bet_or_not"]       = _df.bet_horses.apply(lambda i : 1 if len(i) == 5 else 0)
-        _df["quinte_cote"]        = -1.0
+        _df["cote"]        = -1.0
 
         for i in _df.index : 
             if (not _df.loc[i, "good_bet"])  : 
@@ -597,15 +614,15 @@ class Bet :
             cote    = cotes.loc[cotes.type == "quinte_ordre" , "pmu"]
             
             try : 
-                _df.loc[i, "quinte_cote"] = float(cote)             
+                _df.loc[i, "cote"] = float(cote)             
             except : 
                 warning(comp)
                 warning(cote)
                 _df.loc[i, "bet_or_not"] = False
-                _df.loc[i, "quinte_cote"] = -1.0  
+                _df.loc[i, "cote"] = -1.0  
 
 
-        _df["gains"]             = _df.good_bet * _df.quinte_cote * _df.bet_or_not * _df.bet_autorized 
+        _df["gains"]             = _df.good_bet * _df.cote * _df.bet_or_not * _df.bet_autorized 
 
         return _df
 
