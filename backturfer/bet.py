@@ -109,7 +109,9 @@ class Bet :
         # _df["gains"]         = _df.good_bet * _df.cote * _df.bet_or_not * _df.bet_autorized       
 
         _run = eval(f"Bet.{self.bet_type}")
-        return _run(df=_df, strat=self.strat, N=self.N, n=self.n, verbose=self.verbose)
+        _df = _run(df=_df, strat=self.strat, N=self.N, n=self.n, verbose=self.verbose)
+        
+        return _df 
 
 
     def __define_bet_status(self, _df) : 
