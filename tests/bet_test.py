@@ -125,7 +125,7 @@ class TestSimpleGagnant(TestGeneric) :
         """just Bet.run() and various features"""
         
         _df = self.run(selected_df, self.bet_type, simple_strat)
-        cols = ['bet_horse', 'win_horse', 'bet_or_not', 'horse_cote', 'good_bet']
+        cols = ['bet_horse', 'win_horse', 'bet_or_not', 'cote', 'good_bet']
         self.columns(_df, cols)
 
 
@@ -186,7 +186,7 @@ class TestSimplePlace(TestGeneric) :
         """just Bet.run() and various features"""
         
         _df = self.run(selected_df, self.bet_type, simple_strat)
-        cols = ['bet_horse', 'win_horses', 'bet_or_not', 'horse_cote', 'good_bet']
+        cols = ['bet_horse', 'win_horses', 'bet_or_not', 'cote', 'good_bet']
         self.columns(_df, cols)
 
 
@@ -255,10 +255,6 @@ class TestSimplePlace(TestGeneric) :
     #         assert sub_df.good_bet      == _good_bet
 
 
-
-
-
-
 class TestCoupleGagnant(TestGeneric) : 
     """test class for simple places bets"""
 
@@ -268,7 +264,7 @@ class TestCoupleGagnant(TestGeneric) :
         """just Bet.run() and various features"""
         
         _df = self.run(selected_df, self.bet_type, couple_strat)
-        cols = ['bet_horses', 'win_horses', 'bet_or_not', 'couple_cote', 'good_bet']
+        cols = ['bet_horses', 'win_horses', 'bet_or_not', 'cote', 'good_bet']
         self.columns(_df, cols)
 
     def test_bet_results(self, selected_df, couple_strat) :
@@ -300,7 +296,7 @@ class TestCoupleOrdre(TestGeneric) :
         """just Bet.run() and various features"""
         
         _df = self.run(selected_df, self.bet_type, couple_strat)
-        cols = ['bet_horses', 'win_horses', 'bet_or_not', 'couple_cote', 'good_bet']
+        cols = ['bet_horses', 'win_horses', 'bet_or_not', 'cote', 'good_bet']
         self.columns(_df, cols)
 
 
@@ -334,7 +330,7 @@ class TestCouplePlace(TestGeneric) :
         """just Bet.run() and various features"""
         
         _df = self.run(selected_df, self.bet_type, couple_strat)
-        cols = ['bet_horses', 'win_horses', 'bet_or_not', 'couple_cote', 'good_bet']
+        cols = ['bet_horses', 'win_horses', 'bet_or_not', 'cote', 'good_bet']
         self.columns(_df, cols)
 
 
@@ -348,7 +344,7 @@ class TestDeuxSurQuatre(TestGeneric) :
         """just Bet.run() and various features"""
         
         _df = self.run(selected_df, self.bet_type, couple_strat)
-        cols = ['bet_horses', 'win_horses', 'bet_or_not', 'couple_cote', 'good_bet']
+        cols = ['bet_horses', 'win_horses', 'bet_or_not', 'cote', 'good_bet']
         self.columns(_df, cols)
 
 
@@ -361,7 +357,7 @@ class TestTrioOrdre(TestGeneric) :
         """just Bet.run() and various features"""
         
         _df = self.run(selected_df, self.bet_type, trio_strat)
-        cols = ['bet_horses', 'win_horses', 'bet_or_not', 'trio_cote', 'good_bet']
+        cols = ['bet_horses', 'win_horses', 'bet_or_not', 'cote', 'good_bet']
         self.columns(_df, cols)
 
 
@@ -374,7 +370,7 @@ class TestTrioDesordre(TestGeneric) :
         """just Bet.run() and various features"""
         
         _df = self.run(selected_df, self.bet_type, trio_strat)
-        cols = ['bet_horses', 'win_horses', 'bet_or_not', 'trio_cote', 'good_bet']
+        cols = ['bet_horses', 'win_horses', 'bet_or_not', 'cote', 'good_bet']
         self.columns(_df, cols)
 
 
@@ -387,7 +383,7 @@ class TestTierceOrdre(TestGeneric) :
         """just Bet.run() and various features"""
         
         _df = self.run(selected_df, self.bet_type, trio_strat)
-        cols = ['bet_horses', 'win_horses', 'bet_or_not', 'trio_cote', 'good_bet']
+        cols = ['bet_horses', 'win_horses', 'bet_or_not', 'cote', 'good_bet']
         self.columns(_df, cols)
 
 
@@ -400,7 +396,7 @@ class TestTierceDesordre(TestGeneric) :
         """just Bet.run() and various features"""
         
         _df = self.run(selected_df, self.bet_type, trio_strat)
-        cols = ['bet_horses', 'win_horses', 'bet_or_not', 'trio_cote', 'good_bet']
+        cols = ['bet_horses', 'win_horses', 'bet_or_not', 'cote', 'good_bet']
         self.columns(_df, cols)
 
 
@@ -413,7 +409,7 @@ class TestQuinteOrdre(TestGeneric) :
         """just Bet.run() and various features"""
         
         _df = self.run(selected_df, self.bet_type, quinte_strat)
-        cols = ['bet_horses', 'win_horses', 'bet_or_not', 'quinte_cote', 'good_bet']
+        cols = ['bet_horses', 'win_horses', 'bet_or_not', 'cote', 'good_bet']
         self.columns(_df, cols)
 
 
@@ -426,7 +422,7 @@ class TestQuinteDesordre(TestGeneric) :
         """just Bet.run() and various features"""
         
         _df = self.run(selected_df, self.bet_type, quinte_strat)
-        cols = ['bet_horses', 'win_horses', 'bet_or_not', 'quinte_cote', 'good_bet']
+        cols = ['bet_horses', 'win_horses', 'bet_or_not', 'cote', 'good_bet']
         self.columns(_df, cols)
 
 

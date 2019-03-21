@@ -30,9 +30,9 @@ df          = GroupBy.internalize_results(df)
 comp = 1016312
 
 cotes = pk_load(f"comp-{comp}", "data/cotes/")  
-# # couple gagnant
-# bet = Bet("couple_gagnant", CoupleStrats.choix_des_2_meilleures_cotes)
-# df_couple_gagnant = bet.run(df.copy())
+# couple gagnant
+bet = Bet("couple_gagnant", CoupleStrats.choix_des_2_meilleures_cotes)
+df_couple_gagnant = bet.run(df.copy())
 
 # print(df_couple_gagnant.good_bet.value_counts(normalize=True))
 

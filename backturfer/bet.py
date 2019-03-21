@@ -97,8 +97,8 @@ class Bet :
 
         _df = df.copy()
 
-        # if "results"  not in _df.columns  : _df = GroupBy.internalize_results(_df)
-        # if "inscrits" not in _df.columns  : _df["inscrits"] = _df.results.apply(len)
+        if "results"  not in _df.columns  : _df = GroupBy.internalize_results(_df)
+        if "inscrits" not in _df.columns  : _df["inscrits"] = _df.results.apply(len)
 
         # _df["bet_autorized"] = self.__define_bet_status(_df)
         # _df["bet_horses"]    = self.__find_bet_horses(_df)
@@ -108,7 +108,8 @@ class Bet :
         # _df["cote"]          = self.__find_cote(_df, self.plateform)
         # _df["gains"]         = _df.good_bet * _df.cote * _df.bet_or_not * _df.bet_autorized       
 
-        return eval(f"Bet.{self.bet_type}")(df=_df, strat=self.strat, N=self.N, n=self.n, verbose=self.verbose)
+        _run = eval(f"Bet.{self.bet_type}")
+        return _run(df=_df, strat=self.strat, N=self.N, n=self.n, verbose=self.verbose)
 
 
     def __define_bet_status(self, _df) : 
@@ -326,12 +327,12 @@ class Bet :
 
 
 
-    # def __winner_num(results) : 
-    #     """find the number of winner of the race"""
+    def __winner_num(results) : 
+        """find the number of winner of the race"""
 
-    #     r = results.sort_values("cl", ascending=True, inplace=False)
+        r = results.sort_values("cl", ascending=True, inplace=False)
         
-    #     return r.numero.iloc[0]
+        return r.numero.iloc[0]
 
 
     def __winner_cote(results, cote_type="direct") : 
@@ -358,9 +359,9 @@ class Bet :
         return r[f"cote{cote_type}"].iloc[:n].values
 
 
-    # def __podium_nums(results) : 
+    def __podium_nums(results) : 
         
-    #     return Bet.__n_first_nums(results, 3)
+        return Bet.__n_first_nums(results, 3)
 
 
     def __podium_cotes(results) : 
