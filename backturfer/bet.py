@@ -104,7 +104,8 @@ class Bet :
         _df["bet_horses"]    = self.__find_bet_horses(_df)
         _df["win_horses"]    = self.__find_wining_horses(_df)
         _df["bet_or_not"]    = self.__define_bet_or_not(_df) 
-        _df["good_bet"]      = self.__define_good_bet(_df)      
+        _df["good_bet"]      = self.__define_good_bet(_df)
+        _df["cote"]          = self.__find_cote(_df)      
         # _df["cote"]              = -1.0
         # _df["gains"]             = 0.0
 
@@ -171,9 +172,9 @@ class Bet :
         elif "simple_place" == self.bet_type          : _n_wining = 3 
         elif "couple_place" == self.bet_type          : _n_wining = 3 
         elif "couple" in self.bet_type                : _n_wining = 2
-        elif "deux" in self.bet_type :                : _n_wining = 4        
+        elif "deux" in self.bet_type                  : _n_wining = 4        
         elif ("trio" or "tier") in self.bet_type      : _n_wining = 3  
-        elif "quinte"  in self.bet_type :             : _n_wining = 5 
+        elif "quinte"  in self.bet_type               : _n_wining = 5 
         else : raise AttributeError("Bet.run : something went wrong : 1")
         
         return  _df.results.apply(lambda i : Bet.__n_first_nums(i, _n_wining))
@@ -194,38 +195,137 @@ class Bet :
 
         if "simple_gagnant" == self.bet_type :             
             assert isinstance(_df.win_horses.iloc[0], int) and isinstance(_df.bet_horses.iloc[0], int)
-                return _df.bet_horses == _df.win_horses
+            return _df.bet_horses == _df.win_horses
         elif "simple_place" == self.bet_type : 
             assert (len(_df.win_horses.iloc[0]) == 3) and isinstance(_df.bet_horses.iloc[0], int)
-                return _df.apply(lambda i : i.bet_horses in i. win_horses, axis=1)   
+            return _df.apply(lambda i : i.bet_horses in i. win_horses, axis=1)   
         elif "couple_gagnant" == self.bet_type: 
             assert (len(_df.win_horses.iloc[0]) == 3) and (len(_df.bet_horses.iloc[0]) == 2)
-            return _df.apply(lambda i : (i.bet_horses[0] in i.win_horses[0:2]) \
+            return _df.apply(lambda i :   (i.bet_horses[0] in i.win_horses[0:2]) \
                                         * (i.bet_horses[1] in i.win_horses[0:2]) , axis=1)  
         elif "couple_place" == self.bet_type  : 
             assert (len(_df.win_horses.iloc[0]) == 3) and (len(_df.bet_horses.iloc[0]) == 2)
-            return _df.apply(lambda i : (i.bet_horses[0] in i.win_horses) \
+            return _df.apply(lambda i :   (i.bet_horses[0] in i.win_horses) \
                                         * (i.bet_horses[1] in i.win_horses) , axis=1)   
         elif "couple_ordre" == self.bet_type  :
             assert (len(_df.win_horses.iloc[0]) == 3) and (len(_df.bet_horses.iloc[0]) == 2)
-            return _df.apply(lambda i : (i.bet_horses[0] == i.win_horses[0]) \
+            return _df.apply(lambda i :   (i.bet_horses[0] == i.win_horses[0]) \
                                         * (i.bet_horses[1] == i.win_horses[1]) , axis=1)   
-        elif "trio_ordre" == self.bet_type: 
+        elif ("trio_ordre" or "tierce_ordre") in self.bet_type: 
             assert (len(_df.win_horses.iloc[0]) == 3) and (len(_df.bet_horses.iloc[0]) == 3)
-            return _df.apply(lambda i : (i.bet_horses[0] == i.win_horses[0]) \
+            return _df.apply(lambda i :   (i.bet_horses[0] == i.win_horses[0]) \
                                         * (i.bet_horses[1] == i.win_horses[1]) \
                                         * (i.bet_horses[2] == i.win_horses[2]) , axis=1)   
-        elif "trio_desordre" == self.bet_type: 
+        elif ("trio_desordre" or "tierce_desordre") in self.bet_type: 
             assert (len(_df.win_horses.iloc[0]) == 3) and (len(_df.bet_horses.iloc[0]) == 3)
-            return _df.apply(lambda i : (i.bet_horses[0] in i.win_horses) \
+            return _df.apply(lambda i :   (i.bet_horses[0] in i.win_horses) \
                                         * (i.bet_horses[1] in i.win_horses) \
                                         * (i.bet_horses[2] in i.win_horses) , axis=1)
         elif "deux_sur_quatre" == self.bet_type:
             assert (len(_df.win_horses.iloc[0]) == 4) and (len(_df.bet_horses.iloc[0]) == 2)
-            return _df.apply(lambda i : (i.bet_horses[0] in i.win_horses) 
-                                        * (i.bet_horses[1] in i.win_horses) , axis=1)    
+            return _df.apply(lambda i :   (i.bet_horses[0] in i.win_horses) 
+                                        * (i.bet_horses[1] in i.win_horses) , axis=1)
+        elif "quinte_ordre" == self.bet_type : 
+            assert (len(_df.win_horses.iloc[0]) == 5) and (len(_df.bet_horses.iloc[0]) == 5)
+            return _df.apply(lambda i :   (i.bet_horses[0] == i.win_horses[0]) \
+                                        * (i.bet_horses[1] == i.win_horses[1]) \
+                                        * (i.bet_horses[2] == i.win_horses[2]) \
+                                        * (i.bet_horses[3] == i.win_horses[3]) \
+                                        * (i.bet_horses[4] == i.win_horses[4]) , axis=1)    
+        elif "quinte_desordre" == self.bet_type : 
+            assert (len(_df.win_horses.iloc[0]) == 5) and (len(_df.bet_horses.iloc[0]) == 5)
+            return _df.apply(lambda i :   (i.bet_horses[0] in i.win_horses) \
+                                        * (i.bet_horses[1] in i.win_horses) \
+                                        * (i.bet_horses[2] in i.win_horses) \
+                                        * (i.bet_horses[3] in i.win_horses) \
+                                        * (i.bet_horses[4] in i.win_horses) , axis=1)    
+        else : 
+            raise AttributeError("something went wrong")    
     
 
+    def __find_cote(self, _df, plateform="pmu") : 
+
+        def check_cote(cote, comp) : 
+            try : 
+                cote = float(cote)
+                assert (cote >=1.0) and (cote <= 10000000.0)
+                return cote
+            except :
+                s = f"Error for comp {comp}, cote {cote}, type {type(cote)}" 
+                warning(s)
+                return -1.0
+
+
+        def funct_1(comp, _bet_type, plateform) : 
+            _cotes   = pk_load(f"comp-{comp}", "data/cotes/")  
+            cote     = _cotes.loc[_cotes.type == _bet_type, plateform]
+
+            return check_cote(cote, comp)
+
+
+        def funct_2(comp, horse, _bet_type, plateform) : 
+
+            def corected_nums(i) : 
+                try :       return int(str(i).strip())
+                except :    return i
+
+            cotes   = pk_load(f"comp-{comp}", "data/cotes/")  
+            mask    =     (cotes.type == _bet_type) \
+                        * (cotes.numero.apply(corected_nums) == int(horse))
+            cote    = cotes.loc[mask , plateform]
+
+            return check_cote(cote, comp)
+
+
+        def funct_3(comp, horse, _bet_type, plateform) : 
+            
+            def corrected_nums(i) : 
+                if isinstance(i, list):
+                    if (len(i) == 2) and isinstance(i[0], int) and isinstance(i[1], int) : 
+                        return i
+                    else : 
+                        raise ValueError("wrong shape for cotes of couple_place : a list but not good")
+                elif isinstance(i, str) : 
+                    i = i.split("-")
+                    assert len(i) == 2
+                    i = [ii.strip() for ii in i]
+                    i = [int(ii) for ii in i]
+                    return i 
+                else : 
+                    info(type(i))
+                    info(i)
+                    # raise ValueError("cotes of couple_place : not a list not an str")
+                return None
+
+            cotes   = pk_load(f"comp-{comp}", "data/cotes/")  
+            cotes    = cotes.loc[cotes.type == "couple_place" , :]
+            cotes["numero"] = cotes.numero.apply(corrected_nums)
+            # info(cotes.numero)
+            # info(f"{horses[0]}, {horses[1]}")
+            mask = cotes.numero.apply(lambda i : (horses[0] in i) and (horses[1] in i))
+            # info(mask)
+            cote = cotes.loc[mask.values, plateform]
+
+            return check_cote(cote, comp)
+
+
+        if self.bet_type in [   'simple_gagnant', 'couple_gagnant', 'couple_ordre',      
+                                'trio_desordre', 'trio_ordre', 'deux_sur_quatre',
+                                'tierce_ordre', 'tierce_desordre', 
+                                'quinte_ordre','quinte_desordre' ] : 
+            return _df.apply(lambda i : funct_1(i.comp, self.bet_type, 
+                                        plateform) 
+                                        if i.good_bet else -1 )
+        elif self.bet_type == "simple_place" : 
+            return _df.apply(lambda i : funct_2(i.comp, i.bet_horses, 
+                                        self.bet_type, plateform) 
+                                        if i.good_bet else -1 )
+        elif self.bet_type == "couple_place" : 
+            return _df.apply(lambda i : funct_3(i.comp, i.bet_horses, 
+                                        self.bet_type, plateform) 
+                                        if i.good_bet else -1 )
+        else : 
+            raise ValueError("something went wrong")
 
 
 
