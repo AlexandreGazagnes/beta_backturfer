@@ -104,8 +104,7 @@ class Bet :
         _df["bet_horses"]    = self.__find_bet_horses(_df)
         _df["win_horses"]    = self.__find_wining_horses(_df)
         _df["bet_or_not"]    = self.__define_bet_or_not(_df) 
-
-        # _df["good_bet"]          = False
+        _df["good_bet"]      = self.__define_good_bet(_df)      
         # _df["cote"]              = -1.0
         # _df["gains"]             = 0.0
 
@@ -180,7 +179,7 @@ class Bet :
         return  _df.results.apply(lambda i : Bet.__n_first_nums(i, _n_wining))
 
 
-    def __define_bet_or_not(self, df) : 
+    def __define_bet_or_not(self, _df) : 
         
         def f(i) : 
             if not isinstance(i, Iterable) : 
@@ -190,6 +189,45 @@ class Bet :
 
         return  _df.bet_horses.apply(f)
         
+
+    def __define_good_bet(self, _df) : 
+
+        if "simple_gagnant" == self.bet_type :             
+            assert isinstance(_df.win_horses.iloc[0], int) and isinstance(_df.bet_horses.iloc[0], int)
+                return _df.bet_horses == _df.win_horses
+        elif "simple_place" == self.bet_type : 
+            assert (len(_df.win_horses.iloc[0]) == 3) and isinstance(_df.bet_horses.iloc[0], int)
+                return _df.apply(lambda i : i.bet_horses in i. win_horses, axis=1)   
+        elif "couple_gagnant" == self.bet_type: 
+            assert (len(_df.win_horses.iloc[0]) == 3) and (len(_df.bet_horses.iloc[0]) == 2)
+            return _df.apply(lambda i : (i.bet_horses[0] in i.win_horses[0:2]) \
+                                        * (i.bet_horses[1] in i.win_horses[0:2]) , axis=1)  
+        elif "couple_place" == self.bet_type  : 
+            assert (len(_df.win_horses.iloc[0]) == 3) and (len(_df.bet_horses.iloc[0]) == 2)
+            return _df.apply(lambda i : (i.bet_horses[0] in i.win_horses) \
+                                        * (i.bet_horses[1] in i.win_horses) , axis=1)   
+        elif "couple_ordre" == self.bet_type  :
+            assert (len(_df.win_horses.iloc[0]) == 3) and (len(_df.bet_horses.iloc[0]) == 2)
+            return _df.apply(lambda i : (i.bet_horses[0] == i.win_horses[0]) \
+                                        * (i.bet_horses[1] == i.win_horses[1]) , axis=1)   
+        elif "trio_ordre" == self.bet_type: 
+            assert (len(_df.win_horses.iloc[0]) == 3) and (len(_df.bet_horses.iloc[0]) == 3)
+            return _df.apply(lambda i : (i.bet_horses[0] == i.win_horses[0]) \
+                                        * (i.bet_horses[1] == i.win_horses[1]) \
+                                        * (i.bet_horses[2] == i.win_horses[2]) , axis=1)   
+        elif "trio_desordre" == self.bet_type: 
+            assert (len(_df.win_horses.iloc[0]) == 3) and (len(_df.bet_horses.iloc[0]) == 3)
+            return _df.apply(lambda i : (i.bet_horses[0] in i.win_horses) \
+                                        * (i.bet_horses[1] in i.win_horses) \
+                                        * (i.bet_horses[2] in i.win_horses) , axis=1)
+        elif "deux_sur_quatre" == self.bet_type:
+            assert (len(_df.win_horses.iloc[0]) == 4) and (len(_df.bet_horses.iloc[0]) == 2)
+            return _df.apply(lambda i : (i.bet_horses[0] in i.win_horses) 
+                                        * (i.bet_horses[1] in i.win_horses) , axis=1)    
+    
+
+
+
 
     # def __winner_num(results) : 
     #     """find the number of winner of the race"""
