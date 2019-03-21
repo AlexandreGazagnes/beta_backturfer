@@ -97,19 +97,16 @@ class Bet :
 
         _df = df.copy()
 
-        if "results" not in df.columns   : df = GroupBy.internalize_results(df)
-        if "inscrits" not in df.columns  : df["inscrits"] = df.results.apply(len)
+        # if "results"  not in _df.columns  : _df = GroupBy.internalize_results(_df)
+        # if "inscrits" not in _df.columns  : _df["inscrits"] = _df.results.apply(len)
 
-        _df["bet_autorized"] = self.__define_bet_status(_df)
-        _df["bet_horses"]    = self.__find_bet_horses(_df)
-        _df["win_horses"]    = self.__find_wining_horses(_df)
-        _df["bet_or_not"]    = self.__define_bet_or_not(_df) 
-        _df["good_bet"]      = self.__define_good_bet(_df)
-        _df["cote"]          = self.__find_cote(_df)      
-        # _df["cote"]              = -1.0
-        # _df["gains"]             = 0.0
-
-        # _df = eval(f"Bet.{self.bet_type}")(df=_df, strat=self.strat, N=self.N, n=self.n, verbose=self.verbose)
+        # _df["bet_autorized"] = self.__define_bet_status(_df)
+        # _df["bet_horses"]    = self.__find_bet_horses(_df)
+        # _df["win_horses"]    = self.__find_wining_horses(_df)
+        # _df["bet_or_not"]    = self.__define_bet_or_not(_df) 
+        # _df["good_bet"]      = self.__define_good_bet(_df)
+        # _df["cote"]          = self.__find_cote(_df, self.plateform)
+        # _df["gains"]         = _df.good_bet * _df.cote * _df.bet_or_not * _df.bet_autorized       
 
         return eval(f"Bet.{self.bet_type}")(df=_df, strat=self.strat, N=self.N, n=self.n, verbose=self.verbose)
 
