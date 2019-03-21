@@ -103,9 +103,8 @@ class Bet :
         _df["bet_autorized"] = self.__define_bet_status(_df)
         _df["bet_horses"]    = self.__find_bet_horses(_df)
         _df["win_horses"]    = self.__find_wining_horses(_df)
+        _df["bet_or_not"]    = self.__define_bet_or_not(_df) 
 
-
-        # _df["bet_or_not"]        = True
         # _df["good_bet"]          = False
         # _df["cote"]              = -1.0
         # _df["gains"]             = 0.0
@@ -145,8 +144,15 @@ class Bet :
             # Le 2sur4 est proposé sur toutes les courses d’au moins 10 partants.
             return _df.partants >=10
         elif "tierce" in self.bet_type : 
+            # Le Tiercé se joue une fois par jour.
+            # Vous devez désigner trois chevaux d’une même course, en précisant leur ordre de classement à l’arrivée.
+            #     Si vos trois chevaux sont arrivés aux 3 premières places dans l'ordre indiqué, vous gagnez le rapport "Tiercé dans l'ordre".
+            #     Si vous avez trouvé les 3 premiers chevaux de la course mais dans un ordre différent de celui de l'arrivée, vous gagnez le rapport "Tiercé dans le désordre". 
             return _df.quinte
-
+        elif "quinte" in self.bet_type : 
+            #  Le  a lieu 1 fois/jour :
+            # Au , vous désignez 5 chevaux d'une même course, en précisant leur ordre de classement à l'arrivée.
+            return _df.quinte
 
 
     def __find_bet_horses(self, _df) : 
@@ -173,6 +179,17 @@ class Bet :
         
         return  _df.results.apply(lambda i : Bet.__n_first_nums(i, _n_wining))
 
+
+    def __define_bet_or_not(self, df) : 
+        
+        def f(i) : 
+            if not isinstance(i, Iterable) : 
+                return True if i > 0 else False
+            else :
+                return len([_i for _i in i if _i>0]) == len(i)
+
+        return  _df.bet_horses.apply(f)
+        
 
     # def __winner_num(results) : 
     #     """find the number of winner of the race"""
