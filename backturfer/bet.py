@@ -95,15 +95,14 @@ class Bet :
         assert "comp" in df.columns
         assert "url" in df.columns
 
-        if "results" not in df.columns : 
-            df = GroupBy.internalize_results(df)
-
-
         _df = df.copy()
-        # _df["bet_autorized"]     = True
 
-        # _df["bet_horses"] = self.__find_bet_horses(_df)
-        # _df["win_horses"] = self.__find_wining_horses(_df)
+        if "results" not in df.columns   : df = GroupBy.internalize_results(df)
+        if "inscrits" not in df.columns  : df["inscrits"] = df.results.apply(len)
+
+        _df["bet_autorized"] = self.__define_bet_status(_df)
+        _df["bet_horses"]    = self.__find_bet_horses(_df)
+        _df["win_horses"]    = self.__find_wining_horses(_df)
 
 
         # _df["bet_or_not"]        = True
@@ -116,27 +115,63 @@ class Bet :
         return eval(f"Bet.{self.bet_type}")(df=_df, strat=self.strat, N=self.N, n=self.n, verbose=self.verbose)
 
 
+    def __define_bet_status(self, _df) : 
+
+        if "simple_gagnant" == self.bet_type : 
+            # Au SIMPLE, vous devez désigner un cheval parmi les chevaux engagés dans une épreuve.
+            #     Si vous le jouez en SIMPLE_GAGNANT ou SIMPLE_GAGNANT_INTERNATIONAL(**) :
+            #     vous gagnez s'il arrive premier
+            #     Si vous le jouez en SIMPLE_PLACE :
+            #      - vous gagnez s'il arrive parmi les 3 premiers à l’arrivée dans une course comptant au minimum 8 chevaux inscrits au programme (*)
+            #      - vous gagnez s’il arrive à la première ou à la deuxième place dans une course comptant entre 4 et 7 chevaux inscrits au programme (*)
+            #     Si vous le jouez en SIMPLE_PLACE_INTERNATIONAL(**) : Vous gagnez s’il arrive soit parmi les 2 premiers, soit parmi les 3 premiers à l’arrivée(**)
+            return [True, ] * len(_df)
+        elif "simple_place" == self.bet_type : 
+            return _df.inscrits >= 8
+        elif "couple" in self.bet_type : 
+            # Pour les courses d'au moins 8 partants, au Couplé Gagnant, trouver les deux premiers chevaux de l'arrivée, quel que soit l'ordre.
+            # Pour les courses d'au moins 8 partants, au Couplé Placé, trouver deux des trois premiers chevaux de l'arrivée, quel que soit l'ordre.
+            # Pour les courses de 4 à 7 partants, au Couplé Ordre, trouver les deux premiers chevaux dans l'ordre exact de l'arrivée.
+            return _df.partants >= 8
+        elif "trio" in self.bet_type : 
+            # Pour les courses d'au moins 8 partants (hors course Quinté+), trouvez les trois premiers chevaux de l'arrivée, quel que soit l'ordre.
+            # TRIO_ORDRE
+            # Pour les courses des réunions nationales comportant de 4 à 7 partants maximum (hors courses exclusives internet et courses étrangères 
+            # en masse commune), trouvez les trois premiers chevaux dans l’ordre exact d’arrivée. 
+            return (_df.partants >= 8) * (~_df.quinte) 
+        elif "deux" in self.bet_type : 
+            # Au DEUX_SUR_QUATRE, vous devez désigner deux chevaux d’une même course parmi les quatre premiers, quel que soit l’ordre d’arrivée. Votre pari est donc 
+            # payable si les deux chevaux choisis occupent deux des quatre premières places de l’épreuve.
+            # Le 2sur4 est proposé sur toutes les courses d’au moins 10 partants.
+            return _df.partants >=10
+        elif "tierce" in self.bet_type : 
+            return _df.quinte
+
+
+
     def __find_bet_horses(self, _df) : 
 
-        # if "simple" in self.bet_type                  : _n_horses = 1
-        # elif ("couple" or "deux") in self.bet_type    : _n_horses = 2
-        # elif ("trio" or "tierce") in self.bet_type    : _n_horses = 3
-        # elif "quinte"            in self.bet_type     : _n_horses = 5
-        # else : raise AttributeError("Bet.run : something went wrong : 0")
-        # _df = _df.results.apply(lambda i : self.strat(i, self.N, _n_horses) )
+        if "simple" in self.bet_type                  : _n_horses = 1
+        elif ("couple" or "deux") in self.bet_type    : _n_horses = 2
+        elif ("trio" or "tierce") in self.bet_type    : _n_horses = 3
+        elif "quinte"            in self.bet_type     : _n_horses = 5
+        else : raise AttributeError("Bet.run : something went wrong : 0")
+        
+        return  _df.results.apply(lambda i : self.strat(i, self.N, _n_horses) )
 
 
     def __find_wining_horses(self, _df) : 
 
-        # if "simple_gagnant" == self.bet_type          : _n_wining = 1    
-        # elif "simple_place" == self.bet_type          : _n_wining = 3 
-        # elif "couple_place" == self.bet_type          : _n_wining = 3 
-        # elif "couple in self.bet_type                 : _n_wining = 2
-        # elif "deux" in self.bet_type :                : _n_wining = 4        
-        # elif ("trio" or "tier") in self.bet_type      : _n_wining = 3  
-        # elif "quinte"  in self.bet_type :             : _n_wining = 5 
-        # else : raise AttributeError("Bet.run : something went wrong : 1")
-        # return  _df.results.apply(lambda i : Bet.__n_first_nums(i, _n_wining))
+        if "simple_gagnant" == self.bet_type          : _n_wining = 1    
+        elif "simple_place" == self.bet_type          : _n_wining = 3 
+        elif "couple_place" == self.bet_type          : _n_wining = 3 
+        elif "couple" in self.bet_type                : _n_wining = 2
+        elif "deux" in self.bet_type :                : _n_wining = 4        
+        elif ("trio" or "tier") in self.bet_type      : _n_wining = 3  
+        elif "quinte"  in self.bet_type :             : _n_wining = 5 
+        else : raise AttributeError("Bet.run : something went wrong : 1")
+        
+        return  _df.results.apply(lambda i : Bet.__n_first_nums(i, _n_wining))
 
 
     # def __winner_num(results) : 
