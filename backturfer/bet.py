@@ -55,32 +55,33 @@ class Bet :
         assert isinstance(plateform, str)
         assert plateform in Bet.plateforms
 
-        if "simple" in str(bet_type).lower() : 
+        bet_type = bet_type.lower()
+        if "simple" in bet_type : 
             if not ("simple" or "multi") in strat.Class.lower() : 
                 raise AttributeError(f"Bet.__init__ : incompatibilty between bet_type {bet_type} and strat {strat}")
-        elif "couple" in str(bet_type).lower() : 
+        elif "couple" in bet_type : 
             if not ("couple" or "multi") in strat.Class.lower() : 
                 raise AttributeError(f"Bet.__init__ : incompatibilty between bet_type {bet_type} and strat {strat}")
-        elif "deux_sur_quatre" in str(bet_type).lower() : 
+        elif "deux_sur_quatre" in bet_type : 
             if not ("couple" or "multi") in strat.Class.lower() : 
                 raise AttributeError(f"Bet.__init__ : incompatibilty between bet_type {bet_type} and strat {strat}")
-        elif "trio" in str(bet_type).lower() : 
+        elif "trio" in bet_type : 
             if not ("trio" or "multi") in strat.Class.lower() : 
                 raise AttributeError(f"Bet.__init__ : incompatibilty between bet_type {bet_type} and strat {strat}")
-        elif "tierce" in str(bet_type).lower() : 
+        elif "tierce" in bet_type : 
             if not ("trio" or "multi") in strat.Class.lower() : 
                 raise AttributeError(f"Bet.__init__ : incompatibilty between bet_type {bet_type} and strat {strat}")
-        elif "quinte" in str(bet_type).lower() : 
+        elif "quinte" in bet_type : 
             if not ("quinte" or "multi") in strat.Class.lower() : 
                 raise AttributeError(f"Bet.__init__ : incompatibilty between bet_type {bet_type} and strat {strat}")
         else : 
             raise AttributeError("Bet.__init__ : unknown error")
 
-        self.bet_type   = bet_type
+        self.bet_type   = bet_type.lower()
         self.strat      = strat
         self.N          = N
         self.n          = n
-        self.plateform  = plateform
+        self.plateform  = plateform.lower()
         self.bet_min    = Bet.bets_str[bet_type][1]
         self.verbose    = verbose
 
@@ -101,48 +102,49 @@ class Bet :
         _df = df.copy()
         # _df["bet_autorized"]     = True
 
-        # if "simple" in self.bet_type.lower() :    
-        #     _df["bet_horse"]         = 99
-        # elif ("couple" or "deux") in self.bet_type.lower() : 
-        #     _df["bet_horse"]         = [99, 99]
-        # elif ("trio" or "tierce") in self.bet_type.lower() : 
-        #     _df["bet_horse"]         = [99, 99, 99]
-        # elif "quinte"            in self.bet_type.lower() : 
-        #     _df["bet_horse"]         = [99, 99, 99, 99, 99]
-        # else :
-        #     raise AttributeError("Bet.run : something went wrong : 0")
-        
-        # if "simple_gagnant"  == self.bet_type.lower() :    
-        #     _df["win_horse"]         = 99
-        # elif "simple_place" == self.bet_type.lower() : 
-        #     _df["win_horse"]         = [99, 99, 99]
-        # elif ("couple_gagnant" or "couple_ordre") == self.bet_type.lower() :  
-        #     _df["win_horse"]         = [99, 99]
-        # elif "couple_place" == self.bet_type.lower() : 
-        #     _df["win_horse"]         = [99, 99, 99]
-        # elif "deux" in n self.bet_type.lower() :  
-        #     _df["win_horse"]         = [99, 99, 99, 99]            
-        # elif ("trio" or "tierce") in self.bet_type.lower() : 
-        #     _df["win_horse"]         = [99, 99, 99]
-        # elif "quinte"            in self.bet_type.lower() : 
-        #     _df["win_horse"]         = [99, 99, 99, 99, 99]
-        # else :
-        #     raise AttributeError("Bet.run : something went wrong : 1")
+        # _df["bet_horses"] = self.__find_bet_horses(_df)
+        # _df["win_horses"] = self.__find_wining_horses(_df)
+
 
         # _df["bet_or_not"]        = True
         # _df["good_bet"]          = False
         # _df["cote"]              = -1.0
         # _df["gains"]             = 0.0
 
+        # _df = eval(f"Bet.{self.bet_type}")(df=_df, strat=self.strat, N=self.N, n=self.n, verbose=self.verbose)
+
         return eval(f"Bet.{self.bet_type}")(df=_df, strat=self.strat, N=self.N, n=self.n, verbose=self.verbose)
 
 
-    def __winner_num(results) : 
-        """find the number of winner of the race"""
+    def __find_bet_horses(self, _df) : 
 
-        r = results.sort_values("cl", ascending=True, inplace=False)
+        # if "simple" in self.bet_type                  : _n_horses = 1
+        # elif ("couple" or "deux") in self.bet_type    : _n_horses = 2
+        # elif ("trio" or "tierce") in self.bet_type    : _n_horses = 3
+        # elif "quinte"            in self.bet_type     : _n_horses = 5
+        # else : raise AttributeError("Bet.run : something went wrong : 0")
+        # _df = _df.results.apply(lambda i : self.strat(i, self.N, _n_horses) )
+
+
+    def __find_wining_horses(self, _df) : 
+
+        # if "simple_gagnant" == self.bet_type          : _n_wining = 1    
+        # elif "simple_place" == self.bet_type          : _n_wining = 3 
+        # elif "couple_place" == self.bet_type          : _n_wining = 3 
+        # elif "couple in self.bet_type                 : _n_wining = 2
+        # elif "deux" in self.bet_type :                : _n_wining = 4        
+        # elif ("trio" or "tier") in self.bet_type      : _n_wining = 3  
+        # elif "quinte"  in self.bet_type :             : _n_wining = 5 
+        # else : raise AttributeError("Bet.run : something went wrong : 1")
+        # return  _df.results.apply(lambda i : Bet.__n_first_nums(i, _n_wining))
+
+
+    # def __winner_num(results) : 
+    #     """find the number of winner of the race"""
+
+    #     r = results.sort_values("cl", ascending=True, inplace=False)
         
-        return r.numero.iloc[0]
+    #     return r.numero.iloc[0]
 
 
     def __winner_cote(results, cote_type="direct") : 
@@ -169,9 +171,9 @@ class Bet :
         return r[f"cote{cote_type}"].iloc[:n].values
 
 
-    def __podium_nums(results) : 
+    # def __podium_nums(results) : 
         
-        return Bet.__n_first_nums(results, 3)
+    #     return Bet.__n_first_nums(results, 3)
 
 
     def __podium_cotes(results) : 
@@ -189,7 +191,7 @@ class Bet :
         _df["win_horse"]         = _df.results.apply(Bet.__winner_num)
         _df["bet_or_not"]        = _df.bet_horse.apply(lambda i : 1 if i>=1 else 0)
         _df["good_bet"]          = _df.bet_horse == _df.win_horse
-        _df["cote"]        = _df.apply(lambda i :  Bet.__winner_cote(i.results) if i.good_bet else -1.0, axis=1) 
+        _df["cote"]              = _df.apply(lambda i :  Bet.__winner_cote(i.results) if i.good_bet else -1.0, axis=1) 
         _df["gains"]             = _df.good_bet * _df.cote  * _df.bet_or_not * _df.bet_autorized
 
         if verbose : 
