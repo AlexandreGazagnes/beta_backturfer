@@ -36,6 +36,7 @@ def simple_strat():
 def couple_strat():
     return CoupleStrats.choix_des_2_meilleures_cotes
 
+
 @pytest.fixture
 def trio_strat():
     return TrioStrats.choix_des_3_meilleures_cotes
