@@ -29,7 +29,7 @@ def selected_df() :
 
 @pytest.fixture
 def simple_strat():
-    return SimpleStrats.choix_de_la_meilleure_cote
+    return MultiStrats.choix_de_la_meilleure_cote
 
 
 @pytest.fixture
@@ -39,16 +39,16 @@ def new_simple_strat():
 
 @pytest.fixture
 def couple_strat():
-    return CoupleStrats.choix_des_2_meilleures_cotes
+    return MultiStrats.choix_des_2_meilleures_cotes
 
 
 @pytest.fixture
 def trio_strat():
-    return TrioStrats.choix_des_3_meilleures_cotes
+    return MultiStrats.choix_des_3_meilleures_cotes
 
 @pytest.fixture
 def quinte_strat():
-    return QuinteStrats.choix_des_5_meilleures_cotes
+    return MultiStrats.choix_des_5_meilleures_cotes
 
 
 

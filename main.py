@@ -33,10 +33,19 @@ if __name__ == '__main__':
 
 
 
-    strat = MultiStrats("choix_de_la__N__meilleure_cote", N=0, n=1)
+    strat = MultiStrats.choix_de_la_meilleure_cote
     bt = "simple_place"
     bet = Bet(bt, strat) 
     _ = bet.run(df.copy())
+
+    # bt = "simple_place"
+    # bet = Bet(bt, SimpleStrats.choix_de_la_meilleure_cote) 
+    # _ = bet.run(df.copy())
+
+
+    # bt = "simple_place"
+    # bet = Bet(bt, CoupleStrats.choix_des_2_meilleures_cotes) 
+    # _ = bet.run(df.copy())
 
 
 
