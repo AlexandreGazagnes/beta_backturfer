@@ -197,11 +197,15 @@ class Bet :
 
     def __define_good_bet(self, _df) : 
 
-        if "simple_gagnant" == self.bet_type :             
-            assert isinstance(_df.win_horses.iloc[0], int) and isinstance(_df.bet_horses.iloc[0], int)
+        if "simple_gagnant" == self.bet_type : 
+            debug(f"type win_horses {type(_df.win_horses.iloc[0])}")
+            debug(f"type bet_horses {type(_df.bet_horses.iloc[0])}")            
+            assert isinstance(int(_df.win_horses.iloc[0]), int) and isinstance(int(_df.bet_horses.iloc[0]), int)
             return _df.bet_horses == _df.win_horses
         elif "simple_place" == self.bet_type : 
-            assert (len(_df.win_horses.iloc[0]) == 3) and isinstance(_df.bet_horses.iloc[0], int)
+            debug(f"len win_horses {len(_df.win_horses.iloc[0])}")
+            debug(f"type bet_horses {type(_df.bet_horses.iloc[0])}")
+            assert (len(_df.win_horses.iloc[0]) == 3) and isinstance(int(_df.bet_horses.iloc[0]), int)
             return _df.apply(lambda i : i.bet_horses in i. win_horses, axis=1)   
         elif "couple_gagnant" == self.bet_type: 
             # debug(f"len win_horses {len(_df.win_horses.iloc[0])}")
