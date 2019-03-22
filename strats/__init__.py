@@ -6,4 +6,4 @@ from strats.simple  import SimpleStrats
 from strats.couple  import CoupleStrats
 from strats.trio    import TrioStrats
 from strats.quinte  import QuinteStrats
-
+from strats.multi  import MultiStrats
