@@ -7,48 +7,52 @@
 ###############################################################################
 
 
-# import 
-from backturfer import *
-from strats     import *
+if __name__ == '__main__':
+    # import 
+    from backturfer import *
+    from strats     import *
 
 
-# loading dataframe
-df  = pk_load("WITHOUT_RESULTS_pturf_grouped_and_merged_cache_carac_2016-2019_OK", "data/")
+    # loading dataframe
+    df  = pk_load("WITHOUT_RESULTS_pturf_grouped_and_merged_cache_carac_2016-2019_OK", "data/")
 
 
-# dataframe selection
-form        = { 'date_start': "2017-01-01", 
-                'quinte'    : 1, 
-                'euro_only' : True, 
-                'typec'     : ['attelé', 'monté', "plat"]  }
+    # dataframe selection
+    form        = { 'date_start': "2017-01-01", 
+                    'quinte'    : 1, 
+                    'euro_only' : True, 
+                    'typec'     : ['attelé', 'monté', "plat"]  }
 
-race_sel    = RaceSelector(form)
-df          = race_sel(df)
-df          = GroupBy.internalize_results(df)
-
-
-# # couple gagnant
-# bet = Bet("couple_gagnant", CoupleStrats.choix_des_2_meilleures_cotes)
-# df_couple_gagnant = bet.run(df.copy())
-# print(df_couple_gagnant.good_bet.value_counts(normalize=True))
+    race_sel    = RaceSelector(form)
+    df          = race_sel(df)
+    df          = GroupBy.internalize_results(df)
 
 
-# # couple ordre
-# bet = Bet("couple_ordre", CoupleStrats.choix_des_2_meilleures_cotes)
-# df_couple_ordre = bet.run(df.copy())
-# print(df_couple_ordre.good_bet.value_counts(normalize=True))
+    # comp = 1016312
+    # cotes = pk_load(f"comp-{comp}", "data/cotes/")  
 
 
-# # couple place
-# bet = Bet("couple_place", CoupleStrats.choix_des_2_meilleures_cotes)
-# df_couple_place = bet.run(df.copy())
-# print(df_couple_place.good_bet.value_counts(normalize=True))
+    bets = [    ("simple_place",     SimpleStrats.choix_de_la_meilleure_cote),
+                ("simple_gagnant",   SimpleStrats.choix_de_la_meilleure_cote),
+                ("couple_ordre",     CoupleStrats.choix_des_2_meilleures_cotes),
+                ("couple_gagnant",   CoupleStrats.choix_des_2_meilleures_cotes),
+                ("couple_place",     CoupleStrats.choix_des_2_meilleures_cotes),
+                ("deux_sur_quatre",  CoupleStrats.choix_des_2_meilleures_cotes),
+                ("trio_ordre",       TrioStrats.choix_des_3_meilleures_cotes),
+                ("trio_desordre",    TrioStrats.choix_des_3_meilleures_cotes),
+                ("trio_ordre",       TrioStrats.choix_des_3_meilleures_cotes),
+                ("trio_desordre",    TrioStrats.choix_des_3_meilleures_cotes),
+                ("quinte_ordre",     QuinteStrats.choix_des_5_meilleures_cotes),
+                ("quinte_desordre",  QuinteStrats.choix_des_5_meilleures_cotes) ]
+
+    for bt, st in bets : 
+
+        debug(f"bet {bt} strat {st}")
+        bet = Bet(bt, st)
+        _ = bet.run(df.copy())
 
 
-# deux sur quatre
-bet = Bet("deux_sur_quatre", CoupleStrats.choix_des_2_meilleures_cotes)
-df_2_sur_4 = bet.run(df.copy())
-print(df_2_sur_4.good_bet.value_counts(normalize=True))
+
 
 
 
@@ -80,7 +84,7 @@ print(df_2_sur_4.good_bet.value_counts(normalize=True))
 
 # DF  = df.copy()
 
-def main() : 
+# def main() : 
 
     # # build dataframe    
     # cachedate = Build.create_dataframe("cachedate_2016-2019_OK.csv", "data/")   
@@ -103,9 +107,4 @@ def main() :
 
 
     # # # call
-
-
-if __name__ == '__main__':
-    main()
-
 
