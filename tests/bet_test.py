@@ -64,8 +64,8 @@ class TestGeneric() :
 
     def individuals(self, _selected_df, _bet_type, _strat, params) : 
 
-        if _bet_type == "simple_gagnant" : _bet_horse_label, _win_horse_label = "bet_horse", "win_horse"
-        elif _bet_type == "simple_place" : _bet_horse_label, _win_horse_label = "bet_horse", "win_horses"
+        if _bet_type == "simple_gagnant" : _bet_horse_label, _win_horse_label = "bet_horses", "win_horses"
+        elif _bet_type == "simple_place" : _bet_horse_label, _win_horse_label = "bet_horses", "win_horses"
         else                             : _bet_horse_label, _win_horse_label = "bet_horses", "win_horses"
 
         # force to have list items for bet_horse and win_horse
@@ -125,7 +125,7 @@ class TestSimpleGagnant(TestGeneric) :
         """just Bet.run() and various features"""
         
         _df = self.run(selected_df, self.bet_type, simple_strat)
-        cols = ['bet_horse', 'win_horse', 'bet_or_not', 'cote', 'good_bet']
+        cols = ['bet_horses', 'win_horses', 'bet_or_not', 'cote', 'good_bet']
         self.columns(_df, cols)
 
 
@@ -154,7 +154,7 @@ class TestSimpleGagnant(TestGeneric) :
         self.rate(selected_df, self.bet_type, simple_strat, 0.25)
 
         params = [
-        #   comp        bet_horse   win_horse       good_bet    url
+        #   comp        bet_horses  win_horses     good_bet    url
         [   1086803,    2,          6,              False,      "https://www.paris-turf.com/programme-courses/2018-08-21/reunion-deauville/resultats-rapports/prix-de-la-barberie-1086803"],
         [   1101558,    16,         13,             False,      "https://www.paris-turf.com/programme-courses/2018-10-16/reunion-chantilly/resultats-rapports/prix-d-orry-1101558"],    
         [   1115896,    7,          17,             False,      "https://www.paris-turf.com/programme-courses/2019-01-18/reunion-cagnes-sur-mer/resultats-rapports/prix-charles-gastaud-1115896"], 
@@ -186,7 +186,7 @@ class TestSimplePlace(TestGeneric) :
         """just Bet.run() and various features"""
         
         _df = self.run(selected_df, self.bet_type, simple_strat)
-        cols = ['bet_horse', 'win_horses', 'bet_or_not', 'cote', 'good_bet']
+        cols = ['bet_horses', 'win_horses', 'bet_or_not', 'cote', 'good_bet']
         self.columns(_df, cols)
 
 

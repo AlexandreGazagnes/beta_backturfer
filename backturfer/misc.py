@@ -36,7 +36,7 @@ sns.set()
 
 # logger 
 logger = logging.getLogger()
-logger.setLevel(logging.DEBUG)
+logger.setLevel(logging.WARNING)
 
 
 # consts
