@@ -67,6 +67,7 @@ class MultiStrats :
 
 
 
+
     # __strat_types = ["choix_de_la__N__meilleure_cote", ]
     # __cote_types = ["direct", "prob"]
  
