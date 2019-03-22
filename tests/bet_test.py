@@ -29,7 +29,12 @@ def selected_df() :
 
 @pytest.fixture
 def simple_strat():
-    return MultiStrats.choix_de_la__N__meilleure_cote(N=0, n=1)
+    return SimpleStrats.choix_de_la_meilleure_cote
+
+
+@pytest.fixture
+def new_simple_strat():
+    return MultiStrats("choix_de_la__N__meilleure_cote", N=0, n=1)
 
 
 @pytest.fixture
