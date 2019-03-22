@@ -8,8 +8,6 @@ from backturfer.groupby     import GroupBy
 from backturfer.strats      import * 
 
 
-
-
 class TurfingRoom : 
     """ """
     
