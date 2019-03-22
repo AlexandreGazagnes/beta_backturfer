@@ -10,7 +10,7 @@
 if __name__ == '__main__':
     # import 
     from backturfer import *
-    from strats     import *
+    # from strats     import *
 
 
     # loading dataframe

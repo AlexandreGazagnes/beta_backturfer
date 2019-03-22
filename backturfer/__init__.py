@@ -10,5 +10,6 @@ from backturfer.select         import RaceSelector
 from backturfer.addcote        import AddCote
 from backturfer.bet            import Bet
 from backturfer.turf           import TurfingRoom
+from backturfer.strats         import *
 
 

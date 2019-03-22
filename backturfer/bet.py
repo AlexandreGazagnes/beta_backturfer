@@ -5,7 +5,7 @@
 # import 
 from backturfer.misc    import *
 from backturfer.groupby import GroupBy
-from strats             import * 
+from backturfer.strats  import * 
 
 
 # class
