@@ -4,10 +4,8 @@
 
 # import 
 from backturfer.misc        import *
-from backturfer.groupby     import GroupBy
-from strats                 import * 
-
-
+from backturfer.model       import GroupBy
+from backturfer.strats      import * 
 
 
 class TurfingRoom : 

@@ -4,8 +4,8 @@
 
 # import 
 from backturfer.misc    import *
-from backturfer.groupby import GroupBy
-from strats             import * 
+from backturfer.model   import *
+from backturfer.strats  import * 
 
 
 # class
@@ -55,27 +55,22 @@ class Bet :
         assert isinstance(plateform, str)
         assert plateform in Bet.plateforms
 
-        bet_type = bet_type.lower()
-        if "simple" in bet_type : 
-            if not ("simple" or "multi") in strat.Class.lower() : 
-                raise AttributeError(f"Bet.__init__ : incompatibilty between bet_type {bet_type} and strat {strat}")
-        elif "couple" in bet_type : 
-            if not ("couple" or "multi") in strat.Class.lower() : 
-                raise AttributeError(f"Bet.__init__ : incompatibilty between bet_type {bet_type} and strat {strat}")
-        elif "deux_sur_quatre" in bet_type : 
-            if not ("couple" or "multi") in strat.Class.lower() : 
-                raise AttributeError(f"Bet.__init__ : incompatibilty between bet_type {bet_type} and strat {strat}")
-        elif "trio" in bet_type : 
-            if not ("trio" or "multi") in strat.Class.lower() : 
-                raise AttributeError(f"Bet.__init__ : incompatibilty between bet_type {bet_type} and strat {strat}")
-        elif "tierce" in bet_type : 
-            if not ("trio" or "multi") in strat.Class.lower() : 
-                raise AttributeError(f"Bet.__init__ : incompatibilty between bet_type {bet_type} and strat {strat}")
-        elif "quinte" in bet_type : 
-            if not ("quinte" or "multi") in strat.Class.lower() : 
-                raise AttributeError(f"Bet.__init__ : incompatibilty between bet_type {bet_type} and strat {strat}")
-        else : 
-            raise AttributeError("Bet.__init__ : unknown error")
+        bet_type     = bet_type.lower()
+        _strat_class = strat.Class.lower()
+
+        if not "multi" in _strat_class : 
+
+            check_dict = {  "simple":"simple", 
+                            "couple":"couple", "deux_sur_quatre":"couple", 
+                            "tierce":"trio", "trio":"trio", 
+                            "quinte" : "quinte"}
+
+            key = [i for i in check_dict.keys() if i in bet_type]
+            debug(key)
+            key = key[0]
+
+            if (not check_dict[key] in _strat_class) : 
+                    raise AttributeError(f"Bet.__init__ : incompatibilty between bet_type {bet_type} and strat {strat}")
 
         self.bet_type   = bet_type.lower()
         self.strat      = strat

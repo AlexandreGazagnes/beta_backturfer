@@ -10,7 +10,7 @@
 if __name__ == '__main__':
     # import 
     from backturfer import *
-    from strats     import *
+    # from strats     import *
 
 
     # loading dataframe
@@ -32,24 +32,42 @@ if __name__ == '__main__':
     # cotes = pk_load(f"comp-{comp}", "data/cotes/")  
 
 
-    bets = [    ("simple_place",     SimpleStrats.choix_de_la_meilleure_cote),
-                ("simple_gagnant",   SimpleStrats.choix_de_la_meilleure_cote),
-                ("couple_ordre",     CoupleStrats.choix_des_2_meilleures_cotes),
-                ("couple_gagnant",   CoupleStrats.choix_des_2_meilleures_cotes),
-                ("couple_place",     CoupleStrats.choix_des_2_meilleures_cotes),
-                ("deux_sur_quatre",  CoupleStrats.choix_des_2_meilleures_cotes),
-                ("trio_ordre",       TrioStrats.choix_des_3_meilleures_cotes),
-                ("trio_desordre",    TrioStrats.choix_des_3_meilleures_cotes),
-                ("trio_ordre",       TrioStrats.choix_des_3_meilleures_cotes),
-                ("trio_desordre",    TrioStrats.choix_des_3_meilleures_cotes),
-                ("quinte_ordre",     QuinteStrats.choix_des_5_meilleures_cotes),
-                ("quinte_desordre",  QuinteStrats.choix_des_5_meilleures_cotes) ]
 
-    for bt, st in bets : 
+    strat = MultiStrats.choix_de_la_meilleure_cote
+    bt = "simple_place"
+    bet = Bet(bt, strat) 
+    _ = bet.run(df.copy())
 
-        debug(f"bet {bt} strat {st}")
-        bet = Bet(bt, st)
-        _ = bet.run(df.copy())
+    # bt = "simple_place"
+    # bet = Bet(bt, SimpleStrats.choix_de_la_meilleure_cote) 
+    # _ = bet.run(df.copy())
+
+
+    # bt = "simple_place"
+    # bet = Bet(bt, CoupleStrats.choix_des_2_meilleures_cotes) 
+    # _ = bet.run(df.copy())
+
+
+
+
+# bets = [    ("simple_place",     SimpleStrats.choix_de_la_meilleure_cote),
+#             ("simple_gagnant",   SimpleStrats.choix_de_la_meilleure_cote),
+#             ("couple_ordre",     CoupleStrats.choix_des_2_meilleures_cotes),
+#             ("couple_gagnant",   CoupleStrats.choix_des_2_meilleures_cotes),
+#             ("couple_place",     CoupleStrats.choix_des_2_meilleures_cotes),
+#             ("deux_sur_quatre",  CoupleStrats.choix_des_2_meilleures_cotes),
+#             ("trio_ordre",       TrioStrats.choix_des_3_meilleures_cotes),
+#             ("trio_desordre",    TrioStrats.choix_des_3_meilleures_cotes),
+#             ("trio_ordre",       TrioStrats.choix_des_3_meilleures_cotes),
+#             ("trio_desordre",    TrioStrats.choix_des_3_meilleures_cotes),
+#             ("quinte_ordre",     QuinteStrats.choix_des_5_meilleures_cotes),
+#             ("quinte_desordre",  QuinteStrats.choix_des_5_meilleures_cotes) ]
+
+# for bt, st in bets : 
+
+#     debug(f"bet {bt} strat {st}")
+#     bet = Bet(bt, st)
+#     _ = bet.run(df.copy())
 
 
 
