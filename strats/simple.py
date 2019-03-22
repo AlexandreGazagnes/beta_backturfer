@@ -87,7 +87,7 @@ class SimpleStrats :
 
 
     @change_repr
-    def choix_de_la__N__meilleure_cote(results, N, cote_type="direct") : 
+    def choix_de_la__N__meilleure_cote(results, N, n=0, cote_type="direct") : 
         """chose the horse with nth best cote"""
         
         if not isinstance(N, int) : 
@@ -103,10 +103,10 @@ class SimpleStrats :
 
 
     @change_repr
-    def choix_de_la_meilleure_cote(results, N=None, cote_type="direct") : 
+    def choix_de_la_meilleure_cote(results, N=None, n=0, cote_type="direct") : 
         """chose the horse with best cote"""
 
-        return SimpleStrats.choix_de_la__N__meilleure_cote(results, 0, cote_type)
+        return SimpleStrats.choix_de_la__N__meilleure_cote(results, 0, n, cote_type)
 
 
     @change_repr

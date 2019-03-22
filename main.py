@@ -27,52 +27,28 @@ df          = race_sel(df)
 df          = GroupBy.internalize_results(df)
 
 
-comp = 1016312
-
-cotes = pk_load(f"comp-{comp}", "data/cotes/")  
-# couple gagnant
-bet = Bet("couple_gagnant", CoupleStrats.choix_des_2_meilleures_cotes)
-df_couple_gagnant = bet.run(df.copy())
-
-# print(df_couple_gagnant.good_bet.value_counts(normalize=True))
+# comp = 1016312
+# cotes = pk_load(f"comp-{comp}", "data/cotes/")  
 
 
-# # couple ordre
-# bet = Bet("couple_ordre", CoupleStrats.choix_des_2_meilleures_cotes)
-# df_couple_ordre = bet.run(df.copy())
+bets = [    ("simple_place",     SimpleStrats.choix_de_la_meilleure_cote),
+            ("simple_gagnant",   SimpleStrats.choix_de_la_meilleure_cote),
+            ("couple_ordre",     CoupleStrats.choix_des_2_meilleures_cotes),
+            ("couple_gagnant",   CoupleStrats.choix_des_2_meilleures_cotes),
+            ("couple_place",     CoupleStrats.choix_des_2_meilleures_cotes),
+            ("deux_sur_quatre",  CoupleStrats.choix_des_2_meilleures_cotes),
+            ("trio_ordre",       TrioStrats.choix_des_3_meilleures_cotes),
+            ("trio_desordre",    TrioStrats.choix_des_3_meilleures_cotes),
+            ("trio_ordre",       TrioStrats.choix_des_3_meilleures_cotes),
+            ("trio_desordre",    TrioStrats.choix_des_3_meilleures_cotes),
+            ("quinte_ordre",     QuinteStrats.choix_des_5_meilleures_cotes),
+            ("quinte_desordre",  QuinteStrats.choix_des_5_meilleures_cotes) ]
 
-# print(df_couple_ordre.good_bet.value_counts(normalize=True))
+for bt, st in bets : 
 
-
-# # couple place
-# bet = Bet("couple_place", CoupleStrats.choix_des_2_meilleures_cotes)
-# df_couple_place = bet.run(df.copy())
-# print(df_couple_place.good_bet.value_counts(normalize=True))
-
-
-# # deux sur quatre
-# bet = Bet("deux_sur_quatre", CoupleStrats.choix_des_2_meilleures_cotes)
-# df_2_sur_4 = bet.run(df.copy())
-# print(df_2_sur_4.good_bet.value_counts(normalize=True))
-
-
-# bet = Bet("trio_ordre", TrioStrats.choix_des_3_meilleures_cotes)
-# df_trio_ordre = bet.run(df.copy())
-# print(df_trio_ordre.good_bet.value_counts(normalize=True))
-
-
-# bet = Bet("quinte_desordre", QuinteStrats.choix_des_5_meilleures_cotes)
-# df_quinte_desordre = bet.run(df.copy())
-# print(df_quinte_desordre.good_bet.value_counts(normalize=True))
-
-# info(df_couple_gagnant)
-# info(df_couple_ordre)
-# info(df_couple_place)
-# info(df_2_sur_4)
-# info(df_trio_ordre)
-# info(df_quinte_desordre)
-
-
+    debug(f"bet {bt} strat {st}")
+    bet = Bet(bt, st)
+    _ = bet.run(df.copy())
 
 # AddCote.add_cotes(df, cotes="all", cores=6, dest="data/cotes/", lazy=True)
 
@@ -129,5 +105,7 @@ def main() :
 
 if __name__ == '__main__':
     main()
+
+
 
 

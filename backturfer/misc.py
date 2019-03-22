@@ -5,7 +5,7 @@
 # builtin
 # import sqlite3
 import os, sys, time, pickle, logging, string, secrets
-from logging import warning, info
+from logging import warning, info, debug
 from itertools import product
 from multiprocessing import Process, cpu_count
 from collections import Iterable, OrderedDict
@@ -36,7 +36,7 @@ sns.set()
 
 # logger 
 logger = logging.getLogger()
-logger.setLevel(logging.INFO)
+logger.setLevel(logging.DEBUG)
 
 
 # consts
