@@ -13,7 +13,6 @@ class MultiStrats :
     _subtype    = "multi"
 
 
-
     @change_repr
     def choix_de_la__N__meilleure_cote(results, N, n, cote_type="direct") : 
         """chose the horse with nth best cote"""
@@ -68,11 +67,9 @@ class MultiStrats :
 
 
 
-
     # __strat_types = ["choix_de_la__N__meilleure_cote", ]
     # __cote_types = ["direct", "prob"]
  
-
 
     # def __init__(self, strat_type, N=0, n=1, cote_type="direct") : 
 
@@ -103,8 +100,6 @@ class MultiStrats :
     #     return f"MultiStrats.{self.strat_type}"
 
 
-
-
     # @change_repr
     # def choix_de_la__N__meilleure_cote(results, N, n=0, cote_type="direct") : 
     #     """chose the horse with nth best cote"""
@@ -119,5 +114,4 @@ class MultiStrats :
     #     r = results.sort_values(f"cote{cote_type}", ascending=True, inplace=False)
 
     #     return r.numero.iloc[N]
-
 
