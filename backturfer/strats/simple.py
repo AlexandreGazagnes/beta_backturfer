@@ -4,6 +4,7 @@
 
 # import 
 from backturfer.misc import *
+from backturfer.strats.multi   import MultiStrats
 from numpy.random import randint, choice
 
 
@@ -27,26 +28,7 @@ class SimpleStrats :
                     ('choisir_la_pire_cote_partante', 'choisir la pire cote partante')]
 
 
-    @change_repr
-    def choix_aleatoire_parmi_les_inscrits(results, N=None, n=1, cote_type="direct") : 
-        """chose one horse random"""
 
-        r = choice(results.numero, size=n, replace=False)
-        if len(r) == 1 : 
-            r = r[0]
-
-        return r
-
-
-    @change_repr
-    def choix_aleatoire_parmi_les_partants(results, N=None, n=1, cote_type="direct") : 
-        """chose one horse random"""
-
-        r = choice(results.numero, size=n, replace=False)
-        if len(r) == 1 : 
-            r = r[0]
-
-        raise NotImplementedError
 
 
     @change_repr

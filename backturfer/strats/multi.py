@@ -14,61 +14,174 @@ class MultiStrats :
 
 
     @change_repr
-    def choix_de_la__N__meilleure_cote(results, N, n, cote_type="direct") : 
+    def choix_des_N__meilleures_cotes(results, N, n, cote_type="direct") : 
         """chose the horse with nth best cote"""
-        
-        if not isinstance(N, int) : 
-            raise ValueError("N should be an int")
 
-        if not isinstance(n, int) : 
-            raise ValueError("N should be an int")
-  
-        if N >= len(results) : 
-            warning(f"N sup >= nb chevaux : {N} >= {len(results)}")
-            input()
-            return -1
-
-        if (n >5) or(n<1) : 
-            warning(f"invalid n : {n}")
-            input()
-            return -1
-
+        assert isinstance(results, pd.DataFrame)
+        len_r = len(results) 
+        if not isinstance(int(N), int):  raise ValueError("N should be an int")
+        if not isinstance(int(n), int):  raise ValueError("n should be an int")
+        if (N>len_r):               raise AttributeError(f"N >= n chevaux : {N} >= {len_r}")
+        if (n>len_r):               raise AttributeError(f"n >= n chevaux : {n} >= {len_r}")
+        if (n>5) or(n<1) :          raise AttributeError(f"invalid n : {n}")
+        if (n>1) and ((n+N)>len_r): raise AttributeError(f"invalid n+N > {n}+{N} > {len_r} ")
 
         r = results.sort_values(f"cote{cote_type}", ascending=True, inplace=False)
 
         if n==1             : return r.numero.iloc[N]
         elif n > 1 and n <6 : return list(r.numero.iloc[N:n+N])
-        else                : raise ValueError("choix_de_la__N__meilleure_cote")
+        else                : raise ValueError("choix_des_N__meilleures_cotes")
+
+
+
+    @change_repr
+    def choix_aleatoire_parmi_les_inscrits(results, N, n, cote_type="direct") : 
+        """chose one horse random"""
+        N=1
+
+        assert isinstance(results, pd.DataFrame)
+        len_r = len(results) 
+        if not isinstance(int(N), int):  raise ValueError("N should be an int")
+        if not isinstance(int(n), int):  raise ValueError("n should be an int")
+        if (N>len_r):               raise AttributeError(f"N >= n chevaux : {N} >= {len_r}")
+        if (n>len_r):               raise AttributeError(f"n >= n chevaux : {n} >= {len_r}")
+        if (n>5) or(n<1) :          raise AttributeError(f"invalid n : {n}")
+        if (n>1) and ((n+N)>len_r): raise AttributeError(f"invalid n+N > {n}+{N} > {len_r} ")
+
+
+
+        r = choice(results.numero, size=n, replace=False)
+        if len(r) == 1 : r = r[0]
+
+        return r
+
+
+    @change_repr
+    def choix_aleatoire_parmi_les_partants(results, N, n, cote_type="direct") : 
+        """chose one horse random"""
+
+        assert isinstance(results, pd.DataFrame)
+        len_r = len(results) 
+        if not isinstance(int(N), int):  raise ValueError("N should be an int")
+        if not isinstance(int(n), int):  raise ValueError("n should be an int")
+        if (N>len_r):               raise AttributeError(f"N >= n chevaux : {N} >= {len_r}")
+        if (n>len_r):               raise AttributeError(f"n >= n chevaux : {n} >= {len_r}")
+        if (n>5) or(n<1) :          raise AttributeError(f"invalid n : {n}")
+        if (n>1) and ((n+N)>len_r): raise AttributeError(f"invalid n+N > {n}+{N} > {len_r} ")
+
+        _results = results.loc[results.partant == True, :]
+        r = choice(_results.numero, size=n, replace=False)
+        if len(r) == 1 : 
+            r = r[0]
+
+        return r
+
+
+    @change_repr
+    def choix_aleatoire_des_N__meilleures_cotes(results, N, n, cote_type="direct") : 
+        """chose the horse with nth best cote"""
+
+        assert isinstance(results, pd.DataFrame)
+        len_r = len(results) 
+        if not isinstance(int(N), int):  raise ValueError("N should be an int")
+        if not isinstance(int(n), int):  raise ValueError("n should be an int")
+        if (N>len_r):               raise AttributeError(f"N >= n chevaux : {N} >= {len_r}")
+        if (n>len_r):               raise AttributeError(f"n >= n chevaux : {n} >= {len_r}")
+        if (n>5) or(n<1) :          raise AttributeError(f"invalid n : {n}")
+        if (n>1) and ((n+N)>len_r): raise AttributeError(f"invalid n+N > {n}+{N} > {len_r} ")
+
+        r = results.sort_values(f"cote{cote_type}", ascending=True, inplace=False)
+
+        r = choice(results.numero.iloc[:N], size=n, replace=False)
+        if len(r) == 1 : r = r[0]
+        
+        return r
+
+    @change_repr
+    def ne_jamais_parier(results, N=None, n=None, cote_type="None") : 
+        """just go to the hippo, no bets, just enjoy races and stalk beautiful ladies"""
+
+        return -1
+
+    @change_repr
+    def choix_des_N__pires_cotes_inscrites(results, N, n, cote_type="direct") : 
+        """chose the horse with best cote)"""
+
+        assert isinstance(results, pd.DataFrame)
+        len_r = len(results) 
+        if not isinstance(int(N), int):  raise ValueError("N should be an int")
+        if not isinstance(int(n), int):  raise ValueError("n should be an int")
+        if (N>len_r):               raise AttributeError(f"N >= n chevaux : {N} >= {len_r}")
+        if (n>len_r):               raise AttributeError(f"n >= n chevaux : {n} >= {len_r}")
+        if (n>5) or(n<1) :          raise AttributeError(f"invalid n : {n}")
+        if (n>1) and ((n+N)>len_r): raise AttributeError(f"invalid n+N > {n}+{N} > {len_r} ")
+
+        r = results.sort_values(f"cote{cote_type}", ascending=True, inplace=False)
+
+        if n==1             : return r.numero.iloc[N]
+        elif n > 1 and n <6 : return list(r.numero.iloc[N:n+N])
+        else                : raise ValueError("choix_des_N__pires_cotes")
+
+
+    @change_repr
+    def choix_des_N__pires_cotes_partantes(results, N, n, cote_type="direct")  : 
+        """chose the horse with best cote)"""
+
+        r = results.sort_values(f"cote{cote_type}", ascending=True, inplace=False)
+
+        raise NotImplementedError
+
 
 
 
     @change_repr
     def choix_de_la_meilleure_cote(results, N=None, n=None, cote_type="direct") : 
         """chose the horse with best cote"""
-        return MultiStrats.choix_de_la__N__meilleure_cote(results, 0, 1, cote_type)
+        return MultiStrats.choix_des_N__meilleures_cotes(results, 0, 1, cote_type)
 
 
     @change_repr
     def choix_des_2_meilleures_cotes(results, N=None, n=None, cote_type="direct") : 
         """chose the horse with best cote"""
-        return MultiStrats.choix_de_la__N__meilleure_cote(results, 0, 2, cote_type)
+        return MultiStrats.choix_des_N__meilleures_cotes(results, 0, 2, cote_type)
+
 
     @change_repr
     def choix_des_3_meilleures_cotes(results, N=None, n=None, cote_type="direct") : 
         """chose the horse with best cote"""
-        return MultiStrats.choix_de_la__N__meilleure_cote(results, 0, 3, cote_type)
+        return MultiStrats.choix_des_N__meilleures_cotes(results, 0, 3, cote_type)
 
 
     @change_repr
     def choix_des_5_meilleures_cotes(results, N=None, n=None, cote_type="direct") : 
         """chose the horse with best cote"""
 
-        return MultiStrats.choix_de_la__N__meilleure_cote(results, 0, 5, cote_type)
+        return MultiStrats.choix_des_N__meilleures_cotes(results, 0, 5, cote_type)
 
 
+    @change_repr
+    def choix_aleatoire_un_inscrit(results, N=None, n=None, cote_type="direct") : 
+        """chose the horse with best cote"""
+        return MultiStrats.choix_aleatoire_parmi_les_inscrits(results, 0, 1, cote_type)
 
 
-    # __strat_types = ["choix_de_la__N__meilleure_cote", ]
+    @change_repr
+    def choix_aleatoire_2_inscrits(results, N=None, n=None, cote_type="direct") : 
+        """chose the horse with best cote"""
+        return MultiStrats.choix_aleatoire_parmi_les_inscrits(results, 0, 2, cote_type)
+
+
+    @change_repr
+    def choix_aleatoire_3_inscrits(results, N=None, n=None, cote_type="direct") : 
+        """chose the horse with best cote"""
+        return MultiStrats.choix_aleatoire_parmi_les_inscrits(results, 0, 3, cote_type)
+
+    @change_repr
+    def choix_aleatoire_5_inscrits(results, N=None, n=None, cote_type="direct") : 
+        """chose the horse with best cote"""
+        return MultiStrats.choix_aleatoire_parmi_les_inscrits(results, 0, 5, cote_type)
+
+    # __strat_types = ["choix_des_N__meilleures_cotes", ]
     # __cote_types = ["direct", "prob"]
  
 
