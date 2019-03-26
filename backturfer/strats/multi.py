@@ -4,7 +4,6 @@
 
 # import 
 from backturfer.misc import *
-from numpy.random import randint, choice
 
 # class
 class MultiStrats : 
@@ -33,7 +32,6 @@ class MultiStrats :
         else                : raise ValueError("choix_des_N__meilleures_cotes")
 
 
-
     @change_repr
     def choix_aleatoire_parmi_les_inscrits(results, N, n, cote_type="direct") : 
         """chose one horse random"""
@@ -48,9 +46,7 @@ class MultiStrats :
         if (n>5) or(n<1) :          raise AttributeError(f"invalid n : {n}")
         if (n>1) and ((n+N)>len_r): raise AttributeError(f"invalid n+N > {n}+{N} > {len_r} ")
 
-
-
-        r = choice(results.numero, size=n, replace=False)
+        r = np.choice(results.numero, size=n, replace=False)
         if len(r) == 1 : r = r[0]
 
         return r
@@ -70,7 +66,7 @@ class MultiStrats :
         if (n>1) and ((n+N)>len_r): raise AttributeError(f"invalid n+N > {n}+{N} > {len_r} ")
 
         _results = results.loc[results.partant == True, :]
-        r = choice(_results.numero, size=n, replace=False)
+        r = np.choice(_results.numero, size=n, replace=False)
         if len(r) == 1 : 
             r = r[0]
 
@@ -78,7 +74,7 @@ class MultiStrats :
 
 
     @change_repr
-    def choix_aleatoire_des_N__meilleures_cotes(results, N, n, cote_type="direct") : 
+    def choix_aleatoire_parmi_les__N__meilleures_cotes(results, N, n, cote_type="direct") : 
         """chose the horse with nth best cote"""
 
         assert isinstance(results, pd.DataFrame)
@@ -92,7 +88,7 @@ class MultiStrats :
 
         r = results.sort_values(f"cote{cote_type}", ascending=True, inplace=False)
 
-        r = choice(results.numero.iloc[:N], size=n, replace=False)
+        r = np.choice(results.numero.iloc[:N], size=n, replace=False)
         if len(r) == 1 : r = r[0]
         
         return r
@@ -104,7 +100,7 @@ class MultiStrats :
         return -1
 
     @change_repr
-    def choix_des_N__pires_cotes_inscrites(results, N, n, cote_type="direct") : 
+    def choix_des__N__pires_cotes_inscrites(results, N, n, cote_type="direct") : 
         """chose the horse with best cote)"""
 
         assert isinstance(results, pd.DataFrame)
@@ -127,17 +123,15 @@ class MultiStrats :
     def choix_des_N__pires_cotes_partantes(results, N, n, cote_type="direct")  : 
         """chose the horse with best cote)"""
 
-        r = results.sort_values(f"cote{cote_type}", ascending=True, inplace=False)
-
         raise NotImplementedError
 
 
 
 
-    @change_repr
-    def choix_de_la_meilleure_cote(results, N=None, n=None, cote_type="direct") : 
-        """chose the horse with best cote"""
-        return MultiStrats.choix_des_N__meilleures_cotes(results, 0, 1, cote_type)
+    # @change_repr
+    # def choix_de_la_meilleure_cote(results, N=None, n=None, cote_type="direct") : 
+    #     """chose the horse with best cote"""
+    #     return MultiStrats.choix_des_N__meilleures_cotes(results, 0, 1, cote_type)
 
 
     @change_repr
@@ -159,10 +153,10 @@ class MultiStrats :
         return MultiStrats.choix_des_N__meilleures_cotes(results, 0, 5, cote_type)
 
 
-    @change_repr
-    def choix_aleatoire_un_inscrit(results, N=None, n=None, cote_type="direct") : 
-        """chose the horse with best cote"""
-        return MultiStrats.choix_aleatoire_parmi_les_inscrits(results, 0, 1, cote_type)
+    # @change_repr
+    # def choix_aleatoire_un_inscrit(results, N=None, n=None, cote_type="direct") : 
+    #     """chose the horse with best cote"""
+    #     return MultiStrats.choix_aleatoire_parmi_les_inscrits(results, 0, 1, cote_type)
 
 
     @change_repr

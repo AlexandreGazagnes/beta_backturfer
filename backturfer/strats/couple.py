@@ -3,16 +3,48 @@
 
 
 # import 
-from backturfer.misc import *
-from numpy.random import randint, choice
-
+# from backturfer.misc import *
+from backturfer.strats.multi   import MultiStrats
+# from numpy.random import randint, choice
 
 
 # class
-class CoupleStrats : 
+class CoupleStrats(MultiStrats) : 
 
     _type       = "strats"
     _subtype    = "couple"
+
+
+    @change_repr
+    def choix_des_2_meilleures_cotes(results, N=None, n=None, cote_type="direct") : 
+        """chose the horse with best cote"""
+        return self.choix_des_N__meilleures_cotes(results, 0, 2, cote_type)
+
+
+    @change_repr
+    def choix_aleatoire_2_inscrits(results, N=None, n=None, cote_type="direct") : 
+        """chose the horse with best cote"""
+        return self.choix_aleatoire_parmi_les_inscrits(results, 0, 2, cote_type)
+
+
+    @change_repr
+    def choix_aleatoire_2_partants(results, N=None, n=None, cote_type="direct") : 
+        """chose the horse with best cote"""
+        raise NotImplementedError("not NotImplementedError")
+
+
+    @change_repr
+    def choix_aleatoire_2_parmi_les__N__meilleures_cotes(results, N, n=None, cote_type="direct") : 
+        """chose the horse with best cote"""   
+        return self.choix_aleatoire_parmi_les__N__meilleures_cotes(results, N, 2, cote_type)
+
+
+    @change_repr
+    def choix_aleatoire_2_parmi_les_3_meilleures_cotes(results, N,=None, n=None, cote_type="direct") : 
+        """chose the horse with best cote"""   
+        return self.choix_aleatoire_parmi_les__N__meilleures_cotes(results, 3, 2, cote_type)
+
+
 
     # strats_str =[   ('choix_de_la_meilleure_cote', 'choix de la meilleure cote'),
     #                 ('choix_de_la__N__meilleure_cote', 'choix de la - N - meilleure cote'),
@@ -46,41 +78,41 @@ class CoupleStrats :
     #         raise ValueError("N should be an int")
 
     #     if  N == 0 : 
+    # #         return -1
+
+    # #     r = results.sort_values(f"cote{cote_type}", ascending=True, inplace=False)
+    # #     best_N_cotedirect = r.numero.iloc[:N].values
+
+    # #     r = choice(best_N_cotedirect, size=n, replace=False)
+    # #     if len(r) == 1 : 
+    # #         r = r[0]
+
+    # #     return r
+
+    # @change_repr
+    # def choix_de_la__N__meilleure_cote(results, N, n=1, cote_type="direct") : 
+    #     """chose the horse with nth best cote"""
+        
+    #     if not isinstance(N, int) : 
+    #         raise ValueError("N should be an int")
+
+    #     if N >= len(results) : 
+    #         info("N sup >= nb chevaux")
     #         return -1
 
     #     r = results.sort_values(f"cote{cote_type}", ascending=True, inplace=False)
-    #     best_N_cotedirect = r.numero.iloc[:N].values
 
-    #     r = choice(best_N_cotedirect, size=n, replace=False)
-    #     if len(r) == 1 : 
-    #         r = r[0]
-
-    #     return r
-
-    @change_repr
-    def choix_de_la__N__meilleure_cote(results, N, n=1, cote_type="direct") : 
-        """chose the horse with nth best cote"""
-        
-        if not isinstance(N, int) : 
-            raise ValueError("N should be an int")
-
-        if N >= len(results) : 
-            info("N sup >= nb chevaux")
-            return -1
-
-        r = results.sort_values(f"cote{cote_type}", ascending=True, inplace=False)
-
-        if n==1 : 
-            return r.numero.iloc[N]
-        elif n > 1 and n <7 : 
-            return list(r.numero.iloc[N:n+N])
+    #     if n==1 : 
+    #         return r.numero.iloc[N]
+    #     elif n > 1 and n <7 : 
+    #         return list(r.numero.iloc[N:n+N])
 
 
-    @change_repr
-    def choix_des_2_meilleures_cotes(results, N=None, n=None, cote_type="direct") : 
-        """chose the horse with best cote"""
+    # @change_repr
+    # def choix_des_2_meilleures_cotes(results, N=None, n=None, cote_type="direct") : 
+    #     """chose the horse with best cote"""
 
-        return CoupleStrats.choix_de_la__N__meilleure_cote(results, 0, 2, cote_type)
+    #     return CoupleStrats.choix_de_la__N__meilleure_cote(results, 0, 2, cote_type)
 
 
 
