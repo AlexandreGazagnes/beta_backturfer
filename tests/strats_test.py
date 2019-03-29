@@ -107,6 +107,27 @@ class TestCoupleStratsGagnant(TestGeneric) :
 
 
 
+class TestCoupleStratsPlace(TestGeneric) : 
+    """test class for simple gagnants bets"""
+    
+    bet_type = "couple_place"
+
+    def test_choix_des_2_meilleures_cotes(self, selected_df) : 
+        _df = self.run(selected_df, self.bet_type, SimpleStrats.choix_des_2_meilleures_cotes)
+
+    def test_choix_aleatoire_2_inscrits(self, selected_df) : 
+        _df = self.run(selected_df, self.bet_type, SimpleStrats.choix_aleatoire_2_inscrits)
+
+    def test_choix_aleatoire_2_partants(self, selected_df) : 
+        _df = self.run(selected_df, self.bet_type, SimpleStrats.choix_aleatoire_un_partant)
+
+    def test_choix_aleatoire_2_parmi_les_3_meilleures_cotes(self, selected_df) : 
+        _df = self.run(selected_df, self.bet_type, SimpleStratschoix_aleatoire_2_parmi_les_3_meilleures_cotes)
+
+    # def test_choix_aleatoire_2_parmi_les__N__meilleures_cotes(self, selected_df) : 
+    #     _df = self.run(selected_df, self.bet_type, SimpleStrats.choix_aleatoire_2_parmi_les__N__meilleures_cotes)
+
+
 
 # class TestTriotrats(TestGeneric) : 
 #     """test class for simple gagnants bets"""
