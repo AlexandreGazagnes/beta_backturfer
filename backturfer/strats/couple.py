@@ -35,7 +35,7 @@ class CoupleStrats(MultiStrats) :
 
 
     @change_repr
-    def choix_aleatoire_2_parmi_les__N__meilleures_cotes(results, N, n=None, cote_type="direct") : 
+    def choix_aleatoire_2_parmi_les__N__meilleures_cotes(results, N=5, n=None, cote_type="direct") : 
         """chose the horse with best cote"""   
         return MultiStrats.choix_aleatoire_parmi_les__N__meilleures_cotes(results, N, 2, cote_type)
 

@@ -46,7 +46,7 @@ class MultiStrats :
         if (n>5) or(n<1) :          raise AttributeError(f"invalid n : {n}")
         if (n>1) and ((n+N)>len_r): raise AttributeError(f"invalid n+N > {n}+{N} > {len_r} ")
 
-        r = np.choice(results.numero, size=n, replace=False)
+        r = np.random.choice(results.numero, size=n, replace=False)
         if len(r) == 1 : r = r[0]
 
         return r
@@ -66,7 +66,7 @@ class MultiStrats :
         if (n>1) and ((n+N)>len_r): raise AttributeError(f"invalid n+N > {n}+{N} > {len_r} ")
 
         _results = results.loc[results.partant == True, :]
-        r = np.choice(_results.numero, size=n, replace=False)
+        r = np.random.choice(_results.numero, size=n, replace=False)
         if len(r) == 1 : 
             r = r[0]
 
@@ -88,7 +88,7 @@ class MultiStrats :
 
         r = results.sort_values(f"cote{cote_type}", ascending=True, inplace=False)
 
-        r = np.choice(results.numero.iloc[:N], size=n, replace=False)
+        r = np.random.choice(results.numero.iloc[:N], size=n, replace=False)
         if len(r) == 1 : r = r[0]
         
         return r
