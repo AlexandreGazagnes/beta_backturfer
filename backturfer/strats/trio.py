@@ -4,6 +4,7 @@
 
 # import 
 # from backturfer.misc import *
+from backturfer.misc import change_repr
 from backturfer.strats.multi   import MultiStrats
 # from numpy.random import randint, choice
 
@@ -31,13 +32,13 @@ class TrioStrats(MultiStrats) :
     @change_repr
     def choix_des_3_meilleures_cotes(results, N=None, n=None, cote_type="direct") : 
         """chose the horse with best cote"""
-        return self.choix_des_N__meilleures_cotes(results, 0, 3, cote_type)
+        return MultiStrats.choix_des_N__meilleures_cotes(results, 0, 3, cote_type)
 
 
     @change_repr
     def choix_aleatoire_3_inscrits(results, N=None, n=None, cote_type="direct") : 
         """chose the horse with best cote"""
-        return self.choix_aleatoire_parmi_les_inscrits(results, 0, 3, cote_type)
+        return MultiStrats.choix_aleatoire_parmi_les_inscrits(results, 0, 3, cote_type)
 
 
     @change_repr
@@ -49,10 +50,10 @@ class TrioStrats(MultiStrats) :
     @change_repr
     def choix_aleatoire_3_parmi_les__N__meilleures_cotes(results, N, n=None, cote_type="direct") : 
         """chose the horse with best cote"""   
-        return self.choix_aleatoire_parmi_les__N__meilleures_cotes(results, N, 3, cote_type)
+        return MultiStrats.choix_aleatoire_parmi_les__N__meilleures_cotes(results, N, 3, cote_type)
 
 
     @change_repr
-    def choix_aleatoire_3_parmi_les_5_meilleures_cotes(results, N,=None, n=None, cote_type="direct") : 
+    def choix_aleatoire_3_parmi_les_5_meilleures_cotes(results, N=None, n=None, cote_type="direct") : 
         """chose the horse with best cote"""   
-        return self.choix_aleatoire_parmi_les__N__meilleures_cotes(results, 5, 3, cote_type)
+        return MultiStrats.choix_aleatoire_parmi_les__N__meilleures_cotes(results, 5, 3, cote_type)
