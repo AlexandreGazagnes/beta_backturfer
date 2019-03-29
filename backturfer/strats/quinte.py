@@ -35,29 +35,25 @@ class QuinteStrats(MultiStrats)  :
         """chose the horse with best cote"""
         return MultiStrats.choix_des_N__meilleures_cotes(results, 0, 5, cote_type)
 
-
     @change_repr
     def choix_aleatoire_5_inscrits(results, N=None, n=None, cote_type="direct") : 
         """chose the horse with best cote"""
         return MultiStrats.choix_aleatoire_parmi_les_inscrits(results, 0, 5, cote_type)
-
 
     @change_repr
     def choix_aleatoire_5_partants(results, N=None, n=None, cote_type="direct") : 
         """chose the horse with best cote"""
         raise NotImplementedError("not NotImplementedError")
 
-
     @change_repr
     def choix_aleatoire_5_parmi_les__N__meilleures_cotes(results, N, n=None, cote_type="direct") : 
         """chose the horse with best cote"""   
         return MultiStrats.choix_aleatoire_parmi_les__N__meilleures_cotes(results, N, 5, cote_type)
 
-
     @change_repr
-    def choix_aleatoire_5_parmi_les_10_meilleures_cotes(results, N=None, n=None, cote_type="direct") : 
+    def choix_aleatoire_5_parmi_les_7_meilleures_cotes(results, N=None, n=None, cote_type="direct") : 
         """chose the horse with best cote"""   
-        return MultiStrats.choix_aleatoire_parmi_les__N__meilleures_cotes(results, 10, 5, cote_type)
+        return MultiStrats.choix_aleatoire_parmi_les__N__meilleures_cotes(results, 7, 5, cote_type)
 
 
 
