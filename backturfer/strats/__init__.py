@@ -2,6 +2,7 @@
 # coding: utf-8
 
 
+from backturfer.strats.multi   import MultiStrats
 from backturfer.strats.simple  import SimpleStrats
 from backturfer.strats.couple  import CoupleStrats
 from backturfer.strats.trio    import TrioStrats

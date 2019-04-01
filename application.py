@@ -12,7 +12,7 @@ from backturfer import *
 
 
 # dataframe
-df          = pk_load("WITHOUT_RESULTS_pturf_grouped_and_merged_cache_carac_2016-2019_OK", "data/")
+df  = pk_load("WITHOUT_RESULTS_pturf_grouped_and_merged_cache_carac_2016-2019_OK", "data/")
 
 
 # init flask and Session
@@ -29,8 +29,8 @@ index_data  = { "hippo_list"    : sorted(df.hippo.dropna().unique()),
                 "typec_list"    : df.typec.dropna().unique(), 
                 "today"         : web_today(),
                 "date_start"    : "2017-01-01", # timestamp_to_str(int_to_timestamp(df.jour.min()))
-                "bet_list"      : Bet.bets_str,
-                "strat_list"    : Strats.strats_str  }
+                "bet_list"      : list(Bet.bets_str.keys()),
+                "strat_list"    : ["strat_a", "strat_b", "strat_c"]  }
 
 
 # routes
@@ -42,49 +42,49 @@ def index():
     return render_template("index.html", index_data=index_data)
 
 
-@app.route("/turfing", methods=["POST"])
-def turfing():
-    """main app page"""
+# @app.route("/turfing", methods=["POST"])
+# def turfing():
+#     """main app page"""
 
-    form, errors = FormCheck.check(request.form, verbose=True)
-    info(f"ERRRORS = {errors}")
-    if errors : return render_template("index.html", errors=errors, index_data=index_data)
+#     form, errors = FormCheck.check(request.form, verbose=True)
+#     info(f"ERRRORS = {errors}")
+#     if errors : return render_template("index.html", errors=errors, index_data=index_data)
   
-    results, errors = App.run(df, form, verbose=True)
-    info(f"ERRRORS = {errors}")
-    if errors : return render_template( "index.html", 
-                                        errors=errors, 
-                                        index_data=index_data)
+#     results, errors = App.run(df, form, verbose=True)
+#     info(f"ERRRORS = {errors}")
+#     if errors : return render_template( "index.html", 
+#                                         errors=errors, 
+#                                         index_data=index_data)
 
-    return render_template("turfing.html", title="results", results=results)
+#     return render_template("turfing.html", title="results", results=results)
 
 
-@app.route("/register", methods=['GET', 'POST'])
-def register():
-    """register page"""
 
-    form = RegistrationForm()
-    if form.validate_on_submit():
-        flash(f'Account created for {form.username.data}!', 'success')
-        return redirect(url_for('index'))
+# @app.route("/register", methods=['GET', 'POST'])
+# def register():
+#     """register page"""
+
+#     form = RegistrationForm()
+#     if form.validate_on_submit():
+#         flash(f'Account created for {form.username.data}!', 'success')
+#         return redirect(url_for('index'))
     
-    return render_template('register.html', title='Register', form=form)
+#     return render_template('register.html', title='Register', form=form)
 
 
+# @app.route("/login", methods=['GET', 'POST'])
+# def login():
+#     """login page """
 
-@app.route("/login", methods=['GET', 'POST'])
-def login():
-    """login page """
-
-    form = LoginForm()
-    if form.validate_on_submit():
-        if form.email.data == 'admin@blog.com' and form.password.data == 'azertyaz':
-            flash('You have been logged in!', 'success')
-            return redirect(url_for('index'))
-        else:
-            flash('Login Unsuccessful. Please check username and password', 'danger')
+#     form = LoginForm()
+#     if form.validate_on_submit():
+#         if form.email.data == 'admin@blog.com' and form.password.data == 'azertyaz':
+#             flash('You have been logged in!', 'success')
+#             return redirect(url_for('index'))
+#         else:
+#             flash('Login Unsuccessful. Please check username and password', 'danger')
     
-    return render_template('login.html', title='Login', form=form)
+#     return render_template('login.html', title='Login', form=form)
 
 
 # main

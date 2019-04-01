@@ -9,10 +9,6 @@ sys.path.insert(0, myPath + '/../')
 from tests.generic import *
 
 
-
-
-
-
 class TestSimpleStratsGagnant(TestGeneric) : 
     """test class for simple gagnants bets"""
 
