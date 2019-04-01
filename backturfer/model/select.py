@@ -486,11 +486,18 @@ class BetStratSelector(dict) :
 
         errors = list()
         errors.append(self.__check_bet_type(hard_check=hard_check))
+        errors.append(self.__check_strategy(hard_check=hard_check))
+        errors.append(self.__check_strategy_n(hard_check=hard_check))
+        errors.append(self.__check_plateform(hard_check=hard_check))
+        errors.append(self.__check_bet_strat_consistancy(hard_check=hard_check))
+        self.errors = errors
+
+        if  verbose : 
+            info("RaceSelector done ! ")
 
 
-
-    def __check_bet_type(self, hard_check=hard_check) : 
-        pass
+    def __check_bet_type(self, hard_check=0) : 
+        """chehck bet_type"""
 
         # check type       
         if isinstance(self['bet_type'], str) : 
@@ -506,6 +513,49 @@ class BetStratSelector(dict) :
                 return "Error invalid bet_type expected an str"
             else : 
                 raise ValueError("Error invalid bet_type expected an str")
+
+        return None
+
+
+    def __check_strategy(self, hard_check=0) : 
+        """check_strategy"""
+
+        # # check type       
+        # if isinstance(self['bet_type'], str) : 
+        #     if not self["bet_type"] in list(Bet.bets_str.keys()) : 
+        #         if not hard_check : 
+        #             self['bet_type'] = "simple_gagnant"
+        #             return "Error invalid bet_type"
+        #         else : 
+        #             raise ValueError("Error invalid bet_type")
+        # else : 
+        #     if not hard_check : 
+        #         self['bet_type'] = "simple_gagnant"
+        #         return "Error invalid bet_type expected an str"
+        #     else : 
+        #         raise ValueError("Error invalid bet_type expected an str")
+
+        # return None
+        raise NotImplementedError("NotImplementedError")
+
+
+    def __check_strategy_n(self, hard_check=0) : 
+        """check strategy_n"""
+        raise NotImplementedError("NotImplementedError")
+
+
+    def __check_plateform(self, hard_check=0) : 
+        """check_plateform"""
+        raise NotImplementedError("NotImplementedError")
+
+
+    def __check_bet_strat_consistancy(self, hard_check=0) : 
+        """check if bet_type and strategy work together or not"""
+        raise NotImplementedError("NotImplementedError")
+
+
+
+
 
 
 

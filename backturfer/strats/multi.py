@@ -11,9 +11,18 @@ class MultiStrats :
     _type       = "strats"
     _subtype    = "multi"
 
+    strats_str  = { 'choix_des__N__meilleures_cotes'      : 'choix des N meilleures_cotes',
+                    'choix_aleatoire_parmi_les_inscrits'  : 'choix aléatoire parmi les inscrits',
+                    'choix_aleatoire_parmi_les_partants'  : 'choix aléatoire parmi les partants',  
+                    'choix_aleatoire_parmi_les__N__meilleures_cotes' : 'choix alétoire parmi les N meilleures cotes', 
+                    'ne_jamais_parier' : 'ne_jamais_parier',
+                    'choix_aleatoire_entre_les__N__et__M__meilleures_cotes': 'choix_aleatoire entre les N et M  meilleures_cotes',
+                    'choix_des__N__pires_cotes_inscrites': 'choix_des__N__pires_cotes_inscrites', 
+                    'choix_des_N__pires_cotes_partantes': , 'choix_des_N__pires_cotes_partantes'   }
+
 
     @change_repr
-    def choix_des_N__meilleures_cotes(results, N, n, cote_type="direct") : 
+    def choix_des__N__meilleures_cotes(results, N, n, cote_type='direct') : 
         """chose the horse with nth best cote"""
 
         assert isinstance(results, pd.DataFrame)
@@ -94,6 +103,11 @@ class MultiStrats :
         return r
 
     @change_repr
+    def choix_aleatoire_entre_les__N__et__M__meilleures_cotes(results, N, M, n cote_type="direct") : 
+        raise NotImplementedError
+
+
+    @change_repr
     def ne_jamais_parier(results, N=None, n=None, cote_type="None") : 
         """just go to the hippo, no bets, just enjoy races and stalk beautiful ladies"""
 
@@ -134,23 +148,23 @@ class MultiStrats :
     #     return MultiStrats.choix_des_N__meilleures_cotes(results, 0, 1, cote_type)
 
 
-    @change_repr
-    def choix_des_2_meilleures_cotes(results, N=None, n=None, cote_type="direct") : 
-        """chose the horse with best cote"""
-        return MultiStrats.choix_des_N__meilleures_cotes(results, 0, 2, cote_type)
+    # @change_repr
+    # def choix_des_2_meilleures_cotes(results, N=None, n=None, cote_type="direct") : 
+    #     """chose the horse with best cote"""
+    #     return MultiStrats.choix_des_N__meilleures_cotes(results, 0, 2, cote_type)
 
 
-    @change_repr
-    def choix_des_3_meilleures_cotes(results, N=None, n=None, cote_type="direct") : 
-        """chose the horse with best cote"""
-        return MultiStrats.choix_des_N__meilleures_cotes(results, 0, 3, cote_type)
+    # @change_repr
+    # def choix_des_3_meilleures_cotes(results, N=None, n=None, cote_type="direct") : 
+    #     """chose the horse with best cote"""
+    #     return MultiStrats.choix_des_N__meilleures_cotes(results, 0, 3, cote_type)
 
 
-    @change_repr
-    def choix_des_5_meilleures_cotes(results, N=None, n=None, cote_type="direct") : 
-        """chose the horse with best cote"""
+    # @change_repr
+    # def choix_des_5_meilleures_cotes(results, N=None, n=None, cote_type="direct") : 
+    #     """chose the horse with best cote"""
 
-        return MultiStrats.choix_des_N__meilleures_cotes(results, 0, 5, cote_type)
+    #     return MultiStrats.choix_des_N__meilleures_cotes(results, 0, 5, cote_type)
 
 
     # @change_repr
@@ -159,21 +173,23 @@ class MultiStrats :
     #     return MultiStrats.choix_aleatoire_parmi_les_inscrits(results, 0, 1, cote_type)
 
 
-    @change_repr
-    def choix_aleatoire_2_inscrits(results, N=None, n=None, cote_type="direct") : 
-        """chose the horse with best cote"""
-        return MultiStrats.choix_aleatoire_parmi_les_inscrits(results, 0, 2, cote_type)
+    # @change_repr
+    # def choix_aleatoire_2_inscrits(results, N=None, n=None, cote_type="direct") : 
+    #     """chose the horse with best cote"""
+    #     return MultiStrats.choix_aleatoire_parmi_les_inscrits(results, 0, 2, cote_type)
 
 
-    @change_repr
-    def choix_aleatoire_3_inscrits(results, N=None, n=None, cote_type="direct") : 
-        """chose the horse with best cote"""
-        return MultiStrats.choix_aleatoire_parmi_les_inscrits(results, 0, 3, cote_type)
+    # @change_repr
+    # def choix_aleatoire_3_inscrits(results, N=None, n=None, cote_type="direct") : 
+    #     """chose the horse with best cote"""
+    #     return MultiStrats.choix_aleatoire_parmi_les_inscrits(results, 0, 3, cote_type)
 
-    @change_repr
-    def choix_aleatoire_5_inscrits(results, N=None, n=None, cote_type="direct") : 
-        """chose the horse with best cote"""
-        return MultiStrats.choix_aleatoire_parmi_les_inscrits(results, 0, 5, cote_type)
+
+    # @change_repr
+    # def choix_aleatoire_5_inscrits(results, N=None, n=None, cote_type="direct") : 
+    #     """chose the horse with best cote"""
+    #     return MultiStrats.choix_aleatoire_parmi_les_inscrits(results, 0, 5, cote_type)
+
 
     # __strat_types = ["choix_des_N__meilleures_cotes", ]
     # __cote_types = ["direct", "prob"]

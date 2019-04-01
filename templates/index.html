@@ -78,8 +78,8 @@
       <!-- bet type -->
       <label for="bet_type">Bet type</label>
       <select name="bet_type">
-      {% for key in index_data['bet_list'] %}
-            <option value="{{key}}">{{key}}</option>
+      {% for key, val in index_data['bet_list'] %}
+            <option value="{{key}}">{{val}}</option>
       {% endfor %}
       </select>
       <br>

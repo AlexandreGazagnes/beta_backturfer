@@ -29,7 +29,7 @@ index_data  = { "hippo_list"    : sorted(df.hippo.dropna().unique()),
                 "typec_list"    : df.typec.dropna().unique(), 
                 "today"         : web_today(),
                 "date_start"    : "2017-01-01", # timestamp_to_str(int_to_timestamp(df.jour.min()))
-                "bet_list"      : list(Bet.bets_str.keys()),
+                "bet_list"      : [(k, v[0]) for k, v in Bet.bets_str.items()],
                 "strat_list"    : ["strat_a", "strat_b", "strat_c"]  }
 
 
@@ -48,20 +48,18 @@ def turfing():
 
     errors = list()
     warning(request.form)
-    race_sel = RaceSelector(request.form, hard_check=1, verbose=True)
-    errors = errors + race_sel.errors
-
-
-
-
-
-    if errors : 
-        info(errors)
-        pass
-    else : 
-        results, errors = App.run(df, form, verbose=True)
+    race_sel = RaceSelector(request.form, hard_check=0, verbose=True)
+    errors = errors.extend(race_sel.errors)
 
     return "results"
+
+    # if errors : 
+    #     info(errors)
+    #     pass
+    # else : 
+    #     results, errors = App.run(df, form, verbose=True)
+
+    # return "results"
 
 # def nothing():
 #     form, errors = FormCheck.check(request.form, verbose=True)
