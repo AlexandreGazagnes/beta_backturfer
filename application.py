@@ -42,21 +42,19 @@ def index():
     return render_template("index.html", index_data=index_data)
 
 
-# @app.route("/turfing", methods=["POST"])
-# def turfing():
-#     """main app page"""
+@app.route("/turfing", methods=["POST"])
 
-#     form, errors = FormCheck.check(request.form, verbose=True)
-#     info(f"ERRRORS = {errors}")
-#     if errors : return render_template("index.html", errors=errors, index_data=index_data)
+    form, errors = FormCheck.check(request.form, verbose=True)
+    info(f"ERRRORS = {errors}")
+    if errors : return render_template("index.html", errors=errors, index_data=index_data)
   
-#     results, errors = App.run(df, form, verbose=True)
-#     info(f"ERRRORS = {errors}")
-#     if errors : return render_template( "index.html", 
-#                                         errors=errors, 
-#                                         index_data=index_data)
+    results, errors = App.run(df, form, verbose=True)
+    info(f"ERRRORS = {errors}")
+    if errors : return render_template( "index.html", 
+                                        errors=errors, 
+                                        index_data=index_data)
 
-#     return render_template("turfing.html", title="results", results=results)
+    return render_template("turfing.html", title="results", results=results)
 
 
 
