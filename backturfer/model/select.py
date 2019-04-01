@@ -8,7 +8,6 @@ from backturfer.misc import *
 
 class RaceSelector(dict) : 
 
-
     __price_min_max = 5000000
     __price_max_min = 1000
     __typec = [ 'steeple-chase cross-country', 'steeple-chase', 'haies', 'plat', 
@@ -471,4 +470,45 @@ class RaceSelector(dict) :
 
         return _df
         
+
+
+class BetStratSelector(dict) : 
+
+
+    __valid_keys = ['bet_type', 'strategy', 'strategy_n', 'platform']
+
+    def __init__(self, form=dict(), hard_check=1, verbose=True) : 
+
+
+        form = {i: j for i, j in form.items() if i in BetStratSelector.__valid_keys}
+
+        super().__init__(form)
+
+        errors = list()
+        errors.append(self.__check_bet_type(hard_check=hard_check))
+
+
+
+    def __check_bet_type(self, hard_check=hard_check) : 
+        pass
+
+        # check type       
+        if isinstance(self['bet_type'], str) : 
+            if not self["bet_type"] in list(Bet.bets_str.keys()) : 
+                if not hard_check : 
+                    self['bet_type'] = "simple_gagnant"
+                    return "Error invalid bet_type"
+                else : 
+                    raise ValueError("Error invalid bet_type")
+        else : 
+            if not hard_check : 
+                self['bet_type'] = "simple_gagnant"
+                return "Error invalid bet_type expected an str"
+            else : 
+                raise ValueError("Error invalid bet_type expected an str")
+
+
+
+
+
 

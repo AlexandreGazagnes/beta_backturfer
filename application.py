@@ -45,7 +45,22 @@ def index():
 @app.route("/turfing", methods=["POST"])
 def turfing():
     """results page"""
+
+    errors = list()
     warning(request.form)
+    race_sel = RaceSelector(request.form, hard_check=1, verbose=True)
+    errors = errors + race_sel.errors
+
+
+
+
+
+    if errors : 
+        info(errors)
+        pass
+    else : 
+        results, errors = App.run(df, form, verbose=True)
+
     return "results"
 
 # def nothing():
