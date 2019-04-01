@@ -33,7 +33,7 @@ if __name__ == '__main__':
 
 
 
-    strat = MultiStrats.choix_de_la_meilleure_cote
+    strat = SimpleStrats.choix_de_la_meilleure_cote
     bt = "simple_place"
     bet = Bet(bt, strat) 
     _ = bet.run(df.copy())
