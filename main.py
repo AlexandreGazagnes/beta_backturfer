@@ -18,10 +18,21 @@ if __name__ == '__main__':
 
 
     # dataframe selection
-    form        = { 'date_start': "2017-01-01", 
-                    'quinte'    : 1, 
-                    'euro_only' : True, 
-                    'typec'     : ['attelé', 'monté', "plat"]  }
+    form        = { 'date_start': '2017-01-01',
+                    'date_stop': '2019-04-01',
+                    'country': 'france',
+                    'hippo': '',
+                    'quinte': 'all',
+                    'euro_only': 'True',
+                    'price_min': '',
+                    'price_max': '',
+                    'bet_type': 'simple_gagnant',
+                    'strategy': 'strat_a',
+                    'strategy_n': '0',
+                    'plateform': 'hippodrome',
+                    'stratey_param': '',
+                    'bet_value_type': 'fixed'}
+
 
     race_sel    = RaceSelector(form)
     df          = race_sel(df)
@@ -33,10 +44,10 @@ if __name__ == '__main__':
 
 
 
-    strat = SimpleStrats.choix_de_la_meilleure_cote
-    bt = "simple_place"
-    bet = Bet(bt, strat) 
-    _ = bet.run(df.copy())
+    # strat = SimpleStrats.choix_de_la_meilleure_cote
+    # bt = "simple_place"
+    # bet = Bet(bt, strat) 
+    # _ = bet.run(df.copy())
 
     # bt = "simple_place"
     # bet = Bet(bt, SimpleStrats.choix_de_la_meilleure_cote) 

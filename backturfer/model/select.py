@@ -14,7 +14,8 @@ class RaceSelector(dict) :
     __typec = [ 'steeple-chase cross-country', 'steeple-chase', 'haies', 'plat', 
                 'attelé', 'monté', np.nan]
 
-    __valid_keys = ['date_start', 'date_stop', 'hippo', 'country', 'quinte', 'euro_only', 'price_min', 'price_max', 'typec']
+    __valid_keys = ['date_start', 'date_stop', 'hippo', 'country', 'quinte', 
+                    'euro_only', 'price_min', 'price_max', 'typec']
 
     def __init__(self, form=dict(), hard_check=1, verbose=True) : 
 
@@ -246,7 +247,9 @@ class RaceSelector(dict) :
 
         self['price_min'] = str(self['price_min'])
         self['price_min'] = self['price_min'].strip().replace(" ", "").replace("-", "").replace("€", "").strip()
-        
+        if not self['price_min'] : 
+            self['price_min'] = 0
+
         try : 
             self['price_min'] = int(self['price_min'])
         except Exception as e:
@@ -280,6 +283,8 @@ class RaceSelector(dict) :
 
         self['price_max'] = str(self['price_max'])
         self['price_max'] = self['price_max'].strip().replace(" ", "").replace("-", "").replace("€", "").strip()
+        if not self['price_max'] : 
+            self['price_max'] = 500000000
         
         try : 
             self['price_max'] = int(self['price_max'])
