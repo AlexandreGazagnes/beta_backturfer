@@ -43,46 +43,20 @@ def index():
 
 
 @app.route("/turfing", methods=["POST"])
-
-    form, errors = FormCheck.check(request.form, verbose=True)
-    info(f"ERRRORS = {errors}")
-    if errors : return render_template("index.html", errors=errors, index_data=index_data)
+form, errors = FormCheck.check(request.form, verbose=True)
+    # info(f"ERRRORS = {errors}")
+    # if errors : return render_template("index.html", errors=errors, index_data=index_data)
   
-    results, errors = App.run(df, form, verbose=True)
-    info(f"ERRRORS = {errors}")
-    if errors : return render_template( "index.html", 
-                                        errors=errors, 
-                                        index_data=index_data)
+    # results, errors = App.run(df, form, verbose=True)
+    # info(f"ERRRORS = {errors}")
+    # if errors : return render_template( "index.html", 
+    #                                     errors=errors, 
+    #                                     index_data=index_data)
 
-    return render_template("turfing.html", title="results", results=results)
+    # return render_template("turfing.html", title="results", results=results)
 
-
-
-# @app.route("/register", methods=['GET', 'POST'])
-# def register():
-#     """register page"""
-
-#     form = RegistrationForm()
-#     if form.validate_on_submit():
-#         flash(f'Account created for {form.username.data}!', 'success')
-#         return redirect(url_for('index'))
-    
-#     return render_template('register.html', title='Register', form=form)
-
-
-# @app.route("/login", methods=['GET', 'POST'])
-# def login():
-#     """login page """
-
-#     form = LoginForm()
-#     if form.validate_on_submit():
-#         if form.email.data == 'admin@blog.com' and form.password.data == 'azertyaz':
-#             flash('You have been logged in!', 'success')
-#             return redirect(url_for('index'))
-#         else:
-#             flash('Login Unsuccessful. Please check username and password', 'danger')
-    
-#     return render_template('login.html', title='Login', form=form)
+    info("request.form")
+    return "results"
 
 
 # main
