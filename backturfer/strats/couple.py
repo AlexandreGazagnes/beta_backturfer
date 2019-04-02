@@ -15,7 +15,6 @@ class CoupleStrats(MultiStrats) :
     _type       = "strats"
     _subtype    = "couple"
 
-
     strats_str = {  
         'choix_des_2_meilleures_cotes' : 'choix des 2 meilleures_cotes', 
         'choix_des_2_et_3_meilleures_cotes' : 'choix des 2ème et 3ème meilleures_cotes',
@@ -67,7 +66,7 @@ class CoupleStrats(MultiStrats) :
         return MultiStrats.choix_des_N__meilleures_cotes(results, 2, 2, cote_type)
 
     @change_repr
-    def choix_des__N_et__Np1__meilleures_cotes(results, N=None, n=None, cote_type="direct") : 
+    def choix_des__N__et__Np1__meilleures_cotes(results, N=None, n=None, cote_type="direct") : 
         return MultiStrats.choix_des_N__meilleures_cotes(results, N-1, 2, cote_type)
 
 
