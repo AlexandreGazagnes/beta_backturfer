@@ -8,3 +8,15 @@ from backturfer.strats.couple  import CoupleStrats
 from backturfer.strats.trio    import TrioStrats
 from backturfer.strats.quinte  import QuinteStrats
 
+
+class Strats() : 
+
+
+    strats_str = {  'MultiStrats'  : MultiStrats.strats_str, 
+                    'SimpleStrats' : SimpleStrats.strats_str,
+                    'CoupleStrats' : CoupleStrats.strats_str, 
+                    'TrioStrats'   : TrioStrats.strats_str, 
+                    'QuinteStrats' : QuinteStrats.strats_str,              }
+
+
+

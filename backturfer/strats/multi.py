@@ -79,7 +79,7 @@ class MultiStrats :
         if len(r) == 1 : 
             r = r[0]
 
-        return r
+        raise NotImplementedError
 
 
     @change_repr
@@ -126,7 +126,7 @@ class MultiStrats :
         if (n>5) or(n<1) :          raise AttributeError(f"invalid n : {n}")
         if (n>1) and ((n+N)>len_r): raise AttributeError(f"invalid n+N > {n}+{N} > {len_r} ")
 
-        r = results.sort_values(f"cote{cote_type}", ascending=True, inplace=False)
+        r = results.sort_values(f"cote{cote_type}", ascending=False, inplace=False)
 
         if n==1             : return r.numero.iloc[N]
         elif n > 1 and n <6 : return list(r.numero.iloc[N:n+N])
