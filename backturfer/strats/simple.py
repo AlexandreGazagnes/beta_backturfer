@@ -15,36 +15,37 @@ class SimpleStrats(MultiStrats) :
     _subtype    = "simple"
 
 
-    strats_str  = { 'choix_de_la_meilleure_cote' : 'choix de la meilleure cote',
-                    'choix_de_la_2_meilleure_cote' : 'choix de la 2ème meilleure cote',
-                    'choix_de_la_3_meilleure_cote' : 'choix de la 3ème meilleure cote',
-                    'choix_de_la__N__meilleure_cote' : 'choix de la -N-ème meilleure_cote',
+    strats_str  = { 
+    'choix_de_la_meilleure_cote' : 'choix de la meilleure cote',
+    'choix_de_la_2_meilleure_cote' : 'choix de la 2ème meilleure cote',
+    'choix_de_la_3_meilleure_cote' : 'choix de la 3ème meilleure cote',
+    'choix_de_la__N__meilleure_cote' : 'choix de la -N-ème meilleure_cote',
 
-                    'choix_de_la_pire_cote_inscrite' : 'choix de la pire cote inscrite',
-                    'choix_de_la_pire_cote_partante' : 'choix de la pire cote partante',
-                    'choix_de_la_2_pire_cote_inscrite' : 'choix de la 2ème pire cote inscrite',
-                    'choix_de_la_2_pire_cote_partante' : 'choix de la 2ème pire cote partante',
-                    'choix_de_la_3_pire_cote_inscrite' : 'choix de la 3ème pire cote inscrite',
-                    'choix_de_la_3_pire_cote_partante' : 'choix de la 3ème pire cote partante',
-                    'choix_de_la__N__pire_cote_inscrite' : 'choix de la -N-ème pire cote inscrite',
-                    'choix_de_la__N__pire_cote_partante' : 'choix de la -N-ème pire cote partante',
-                    
-                    'choix_aleatoire_un_inscrit' : 'choix aléatoire parmi les inscrits',
-                    'choix_aleatoire_un_partant' : 'choix aléatoire parmi les partants',
-                    'choix_aleatoire_entre_les__N__et__M__meilleures_cotes' : 'choix aléatoire entre les -N-ème et -M-ème meilleures cotes',
-                    'choix_aleatoire_entre_les__N__et__M__pires_cotes_inscrites' : 'choix aléatoire entre les -N-ème et -M-ème pires cotes inscrites',
-                    'choix_aleatoire_entre_les__N__et__M__pires_cotes_partantes' : 'choix aléatoire entre les -N-ème et -M-ème pires cotes partantes',
-                    
-                    'choix_aleatoire_parmi_les_3_meilleures_cotes' : 'choix aléatoire parmi les 3 meilleures cotes',
-                    'choix_aleatoire_parmi_les_5_meilleures_cotes' : 'choix aléatoire parmi les 5 meilleures cotes',
-                    'choix_aleatoire_parmi_les__N__meilleures_cotes' : 'choix aléatoire parmi les -N- meilleures cotes',
+    'choix_de_la_pire_cote_inscrite' : 'choix de la pire cote inscrite',
+    'choix_de_la_pire_cote_partante' : 'choix de la pire cote partante',
+    'choix_de_la_2_pire_cote_inscrite' : 'choix de la 2ème pire cote inscrite',
+    'choix_de_la_2_pire_cote_partante' : 'choix de la 2ème pire cote partante',
+    'choix_de_la_3_pire_cote_inscrite' : 'choix de la 3ème pire cote inscrite',
+    'choix_de_la_3_pire_cote_partante' : 'choix de la 3ème pire cote partante',
+    'choix_de_la__N__pire_cote_inscrite' : 'choix de la -N-ème pire cote inscrite',
+    'choix_de_la__N__pire_cote_partante' : 'choix de la -N-ème pire cote partante',
+    
+    'choix_aleatoire_un_inscrit' : 'choix aléatoire parmi les inscrits',
+    'choix_aleatoire_un_partant' : 'choix aléatoire parmi les partants',
+    'choix_aleatoire_entre_les__N__et__M__meilleures_cotes' : 'choix aléatoire entre les -N-ème et -M-ème meilleures cotes',
+    'choix_aleatoire_entre_les__N__et__M__pires_cotes_inscrites' : 'choix aléatoire entre les -N-ème et -M-ème pires cotes inscrites',
+    'choix_aleatoire_entre_les__N__et__M__pires_cotes_partantes' : 'choix aléatoire entre les -N-ème et -M-ème pires cotes partantes',
+    
+    'choix_aleatoire_parmi_les_3_meilleures_cotes' : 'choix aléatoire parmi les 3 meilleures cotes',
+    'choix_aleatoire_parmi_les_5_meilleures_cotes' : 'choix aléatoire parmi les 5 meilleures cotes',
+    'choix_aleatoire_parmi_les__N__meilleures_cotes' : 'choix aléatoire parmi les -N- meilleures cotes',
 
-                    'choix_aleatoire_parmi_les_3_pires_cotes_inscrites' : 'choix aléatoire parmi les 3 pires cotes inscrites',
-                    'choix_aleatoire_parmi_les_3_pires_cotes_partantes' : 'choix aléatoire parmi les 3 pires cotes partantes',
-                    'choix_aleatoire_parmi_les_5_pires_cotes_inscrites' : 'choix aléatoire parmi les 5 pires cotes inscrites',
-                    'choix_aleatoire_parmi_les_5_pires_cotes_partantes' : 'choix aléatoire parmi les 5 pires cotes partantes',
-                    'choix_aleatoire_parmi_les__N__pires_cotes_inscrites' : 'choix aléatoire parmi les -N- pires cotes inscrites',
-                    'choix_aleatoire_parmi_les__N__pires_cotes_partantes' : 'choix aléatoire parmi les -N- pires cotes partantes',
+    'choix_aleatoire_parmi_les_3_pires_cotes_inscrites' : 'choix aléatoire parmi les 3 pires cotes inscrites',
+    'choix_aleatoire_parmi_les_3_pires_cotes_partantes' : 'choix aléatoire parmi les 3 pires cotes partantes',
+    'choix_aleatoire_parmi_les_5_pires_cotes_inscrites' : 'choix aléatoire parmi les 5 pires cotes inscrites',
+    'choix_aleatoire_parmi_les_5_pires_cotes_partantes' : 'choix aléatoire parmi les 5 pires cotes partantes',
+    'choix_aleatoire_parmi_les__N__pires_cotes_inscrites' : 'choix aléatoire parmi les -N- pires cotes inscrites',
+    'choix_aleatoire_parmi_les__N__pires_cotes_partantes' : 'choix aléatoire parmi les -N- pires cotes partantes',
                 }
 
 
