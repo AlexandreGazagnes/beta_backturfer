@@ -71,6 +71,10 @@ class SimpleStrats(MultiStrats) :
         """chose the horse with best cote"""
         raise NotImplementedError("not NotImplementedError")
 
+    @change_repr
+    def choix_aleatoire_entre_les__N__et__M__meilleures_cotes(results, N, M, n=None, cote_type="direct") : 
+        raise NotImplementedError("not NotImplementedError")
+
 
     # CHOIX ALEATOIRE VS COTES - MEILLEURS
 
@@ -87,7 +91,7 @@ class SimpleStrats(MultiStrats) :
 
 
     @change_repr
-    def choix_aleatoire_parmi_les__N__meilleures_cotes(results, N=5, n=None, cote_type="direct") : 
+    def choix_aleatoire_parmi_les__N__meilleures_cotes(results, N, n=None, cote_type="direct") : 
         """chose the horse with best cote"""   
         return MultiStrats.choix_aleatoire_parmi_les__N__meilleures_cotes(results, N, 1, cote_type)
 
@@ -95,16 +99,23 @@ class SimpleStrats(MultiStrats) :
 
     # CHOIX ALEATOIRE VS COTES - PIRES
 
+    @change_repr
+    def choix_aleatoire_parmi_les_3_pires_cotes_inscrites(results, N=None, n=None, cote_type="direct") : 
+        return NotImplementedError("NotImplementedError")
+
+    @change_repr
+    def choix_aleatoire_parmi_les_3_pires_cotes_partantes(results, N=None, n=None, cote_type="direct") : 
+        return NotImplementedError("NotImplementedError")
+
+    @change_repr
+    def choix_aleatoire_parmi_les_5_pires_cotes_inscrites(results, N=None, n=None, cote_type="direct") : 
+        return NotImplementedError("NotImplementedError")
+
+    @change_repr
+    def choix_aleatoire_parmi_les_5_pires_cotes_partantes(results, N=None, n=None, cote_type="direct") : 
+        return NotImplementedError("NotImplementedError")
 
 
-
-choix_aleatoire_parmi_les_3_pires_cotes_inscrites
-
-choix_aleatoire_parmi_les_5_pires_cotes_partantes
-
-choix_aleatoire_parmi_les_3_pires_cotes_inscrites
-
-choix_aleatoire_parmi_les_5_pires_cotes_partantes
 
 
     # # @change_repr
