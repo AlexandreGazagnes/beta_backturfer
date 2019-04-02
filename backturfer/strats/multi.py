@@ -15,10 +15,10 @@ class MultiStrats :
                     'choix_aleatoire_parmi_les_inscrits'  : 'choix aléatoire parmi les inscrits',
                     'choix_aleatoire_parmi_les_partants'  : 'choix aléatoire parmi les partants',  
                     'choix_aleatoire_parmi_les__N__meilleures_cotes' : 'choix alétoire parmi les N meilleures cotes', 
-                    'ne_jamais_parier' : 'ne_jamais_parier',
-                    'choix_aleatoire_entre_les__N__et__M__meilleures_cotes': 'choix_aleatoire entre les N et M  meilleures_cotes',
-                    'choix_des__N__pires_cotes_inscrites': 'choix_des__N__pires_cotes_inscrites', 
-                    'choix_des_N__pires_cotes_partantes': , 'choix_des_N__pires_cotes_partantes'   }
+                    'ne_jamais_parier' : 'ne jamais parier',
+                    'choix_aleatoire_entre_les__N__et__M__meilleures_cotes': 'choix_aleatoire entre les N et M  meilleures cotes',
+                    'choix_des__N__pires_cotes_inscrites': 'choix des N pires cotes inscrites', 
+                    'choix_des__N__pires_cotes_partantes':  'choix des N pires cotes partantes'   }
 
 
     @change_repr
@@ -103,7 +103,7 @@ class MultiStrats :
         return r
 
     @change_repr
-    def choix_aleatoire_entre_les__N__et__M__meilleures_cotes(results, N, M, n cote_type="direct") : 
+    def choix_aleatoire_entre_les__N__et__M__meilleures_cotes(results, N, M, n, cote_type="direct") : 
         raise NotImplementedError
 
 
@@ -134,7 +134,7 @@ class MultiStrats :
 
 
     @change_repr
-    def choix_des_N__pires_cotes_partantes(results, N, n, cote_type="direct")  : 
+    def choix_des__N__pires_cotes_partantes(results, N, n, cote_type="direct")  : 
         """chose the horse with best cote)"""
 
         raise NotImplementedError

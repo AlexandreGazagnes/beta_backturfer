@@ -520,23 +520,22 @@ class BetStratSelector(dict) :
     def __check_strategy(self, hard_check=0) : 
         """check_strategy"""
 
-        # # check type       
-        # if isinstance(self['bet_type'], str) : 
-        #     if not self["bet_type"] in list(Bet.bets_str.keys()) : 
-        #         if not hard_check : 
-        #             self['bet_type'] = "simple_gagnant"
-        #             return "Error invalid bet_type"
-        #         else : 
-        #             raise ValueError("Error invalid bet_type")
-        # else : 
-        #     if not hard_check : 
-        #         self['bet_type'] = "simple_gagnant"
-        #         return "Error invalid bet_type expected an str"
-        #     else : 
-        #         raise ValueError("Error invalid bet_type expected an str")
+        # check type       
+        if isinstance(self['strategy'], str) : 
+            if not self["strategy"] in list(Bet.bets_str.keys()) : 
+                if not hard_check : 
+                    self['strategy'] = SimpleStrats.choix_de_la_meilleure_cote
+                    return "Error invalid strategy"
+                else : 
+                    raise ValueError("Error invalid strategy")
+        else : 
+            if not hard_check : 
+                self['strategy'] = SimpleStrats.choix_de_la_meilleure_cote
+                return "Error invalid strategy expected an str"
+            else : 
+                raise ValueError("Error invalid strategy expected an str")
 
-        # return None
-        raise NotImplementedError("NotImplementedError")
+        return None
 
 
     def __check_strategy_n(self, hard_check=0) : 
