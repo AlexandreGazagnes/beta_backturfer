@@ -87,8 +87,10 @@
       <!-- strategy -->
       <label for="strategy">Strategy</label>
       <select name="strategy">
-        {% for key in index_data['strat_list'] %}
-              <option value="{{key}}">{{key}}</option>
+        {% for strat, data in index_data['strat_list'].items() %}
+          {% for key, val in data.items()%}
+              <option value="{{strat}}.{{key}}">{{val}}</option>
+          {% endfor %}
         {% endfor %}
       </select>
       <br>

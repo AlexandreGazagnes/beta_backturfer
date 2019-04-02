@@ -12,7 +12,7 @@ from backturfer.strats.quinte  import QuinteStrats
 class Strats() : 
 
 
-    strats_str = {  'MultiStrats'  : MultiStrats.strats_str, 
+    strats_str = {  # 'MultiStrats'  : MultiStrats.strats_str, 
                     'SimpleStrats' : SimpleStrats.strats_str,
                     'CoupleStrats' : CoupleStrats.strats_str, 
                     'TrioStrats'   : TrioStrats.strats_str, 
