@@ -25,10 +25,8 @@ class TrioStrats(MultiStrats) :
         'choix_des_3_pires_cotes_partantes' : 'choix_des 3 pires cotes partantes',
         'choix_des_2_et_3_et_4_pires_cotes_inscrites' : 'choix des 2ème 3ème et 4ème pires cotes inscrites',
         'choix_des_2_et_3_et_4_pires_cotes_partantes' : 'choix des 2ème 3ème et 4ème pires cotes partantes',
-        'choix_des_3_et_4_et_5_pires_cotes_inscrites' : 'choix des 3ème 4ème et 5ème pires cotes inscrites',
-        'choix_des_3_et_4_et_5_pires_cotes_partantes' : 'choix des 3ème 4ème et 5ème pires cotes partantes',
         'choix_des__N__et__Np1__et__Np2__pires_cotes_inscrites' : 'choix des -N-ème -Np1-ème et -Np2-ème pires cotes inscrites',
-        'choix_des__N__et__Np1__et__Np2__pires_cotes_inscrites' : 'choix des -N-ème -Np1-ème et -Np2-ème pires cotes inscrites',
+        'choix_des__N__et__Np1__et__Np2__pires_cotes_inscrites' : 'choix des -N-ème -Np1-ème et -Np2-ème pires cotes partantes',
 
         'choix_aleatoire_3_inscrits' :'choix_aleatoire_3_inscrits',
         'choix_aleatoire_3_inscrits' : 'choix_aleatoire_3_partants',
