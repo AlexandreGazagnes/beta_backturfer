@@ -30,7 +30,7 @@ index_data  = { "hippo_list"    : sorted(df.hippo.dropna().unique()),
                 "today"         : web_today(),
                 "date_start"    : "2017-01-01", # timestamp_to_str(int_to_timestamp(df.jour.min()))
                 "bet_list"      : [(k, v[0]) for k, v in Bet.bets_str.items()],
-                "strat_list"    : Strats.strats_str }
+                "strat_list"    : Strats }
 
 
 # routes

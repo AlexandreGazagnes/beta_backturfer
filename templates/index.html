@@ -77,23 +77,25 @@
 
       <!-- bet type -->
       <label for="bet_type">Bet type</label>
-      <select name="bet_type">
+      <select name="bet_type" id="bet_type">
       {% for key, val in index_data['bet_list'] %}
             <option value="{{key}}">{{val}}</option>
       {% endfor %}
       </select>
       <br>
 
+
       <!-- strategy -->
       <label for="strategy">Strategy</label>
-      <select name="strategy">
-        {% for strat, data in index_data['strat_list'].items() %}
-          {% for key, val in data.items()%}
-              <option value="{{strat}}.{{key}}">{{val}}</option>
-          {% endfor %}
+      {% for _key, _val in index_data['bet_list'] %}
+        <select name="strategy" style="display:none" class="select_strats select_{{_key}}">
+        {% for key, val in index_data["strat_list"].asso(_key).items() %}
+            <option value="{{key}}">{{val}} </option>
         {% endfor %}
-      </select>
+        </select>
+      {% endfor %}
       <br>
+
 
       <!-- param -->
       <label for="strategy_n">parametre - N -</label>
