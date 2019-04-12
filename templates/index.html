@@ -6,158 +6,151 @@
   <!-- form -->
   <form action="{{url_for('turfing')}}" method="post">
 
-    <!-- database -->
-    <h2>Selection des courses</h2>
+    <div class="race_selection">
+      <h2>Courses</h2>
 
-    <!-- date -->
-    <label for="date_start">Start</label>
-    <input type="date" name="date_start", value="{{index_data['date_start']}}">
-    <label for="date_stop">Stop</label>
-    <input type="date" name="date_stop", value="{{index_data['today']}}">
-    <br>
+      <!-- date -->
+      <label for="date_start">Start</label>
+      <input type="date" name="date_start", value="{{index_data['date_start']}}">
+      <label for="date_stop">Stop</label>
+      <input type="date" name="date_stop", value="{{index_data['today']}}">
+      <br>
 
-    <!-- country -->
-    <label for="country">Country</label>
-    <select name="country">
-      <option value="france">France</option>
-      <option value="france_10">France - top 10</option>
-      <option value="france_25">France - top 25</option>
-      <option value="france_50">France - top 50</option>
-      <option value="france_100">France - top 100</option>
-      <option value="europe">Europe</option>
-      <option value="monde">Monde</option>
-    </select>
-    <br>
+      <!-- country -->
+      <label for="country">Country</label>
+      <select name="country">
+        <option value="france">France</option>
+        <option value="france_10">France - top 10</option>
+        <option value="france_25">France - top 25</option>
+        <option value="france_50">France - top 50</option>
+        <option value="france_100">France - top 100</option>
+        <option value="europe">Europe</option>
+        <option value="monde">Monde</option>
+      </select>
+      <br>
 
-    <!-- specific hippo -->
-    <label for="hippo">Specific hippodrome</label>
-    <input list="list" type="text" name="hippo">
-    <datalist id="list">
-      {% for hippo in index_data['hippo_list'] %}
-        <option value= {{ hippo }}>{{ hippo }}</option>
+      <!-- specific hippo -->
+      <label for="hippo">Specific hippodrome</label>
+      <input list="list" type="text" name="hippo">
+      <datalist id="list">
+        {% for hippo in index_data['hippo_list'] %}
+          <option value= {{ hippo }}>{{ hippo }}</option>
+        {% endfor %}
+      </datalist>
+      <br>
+
+      <!-- quinte -->
+      <label for="quinte">Race type</label>
+      <select name="quinte">
+        <option value="all" selected="selected">All</option>
+        <option value="only_quinte">Only quinte</option>
+        <option value="only_not_quinte">Only not quinte</option>
+      </select>
+      <br>
+
+      <!-- currency -->
+      <label for="euro_only">Currency</label>
+      <select name="euro_only">
+        <option value="True" selected="selected">Euro only</option>
+        <option value="False">All currencies</option>
+      </select>
+      <br>
+
+      <!-- cheque -->
+      <label for="price_min">Price min</label>
+      <input type="text" name="price_min" placeholder="0">
+      <label for="price_max">Price max</label>
+      <input type="text" name="price_max" placeholder="50 000 000">
+      <br>
+
+      <!-- race type -->
+      {% for typec in index_data['typec_list'] %}
+        <label for="{{typec}}">{{typec}}</label>
+        <input type="checkbox" name="{{typec}}">
       {% endfor %}
-    </datalist>
-    <br>
-
-    <!-- quinte -->
-    <label for="quinte">Race type</label>
-    <select name="quinte">
-      <option value="all" selected="selected">All</option>
-      <option value="only_quinte">Only quinte</option>
-      <option value="only_not_quinte">Only not quinte</option>
-    </select>
-    <br>
-
-    <!-- currency -->
-    <label for="euro_only">Currency</label>
-    <select name="euro_only">
-      <option value="True" selected="selected">Euro only</option>
-      <option value="False">All currencies</option>
-    </select>
-    <br>
-
-    <!-- cheque -->
-    <label for="price_min">Price min</label>
-    <input type="text" name="price_min" placeholder="0">
-    <label for="price_max">Price max</label>
-    <input type="text" name="price_max" placeholder="50 000 000">
-    <br>
-
-    <!-- race type -->
-    {% for typec in index_data['typec_list'] %}
-      <label for="{{typec}}">{{typec}}</label>
-      <input type="checkbox" name="{{typec}}">
-    {% endfor %}
-    <!--
-    <label for="monté">monté</label>
-    <input type="checkbox" name="monté" checked>
-    <label for="attelé">attelé</label>
-    <input type="checkbox" name="attelé" checked>
-    <label for="plat">plat</label>
-    <input type="checkbox" name="plat" >
-    <label for="haies">haies</label>
-    <input type="checkbox" name="haies" >
-    <label for="steeple-chase">steeple-chase</label>
-    <input type="checkbox" name="steeple-chase" >
-    <label for="steeple-chase cross-country">cross-country</label>
-    <input type="checkbox" name="steeple-chase cross-country" > -->
+      <br>
+    </div>
 
     <!-- bet options -->
-    <h2>Pari et stratégie</h2>
+    <div class="bet_and_strat">
+      <h2>Pari / Stratégie</h2>
 
-    <!-- bet type -->
-    <!-- <label for="bet_type">Bet type</label>
-    <select name="bet_type">
-      <option value="winning">gagnant</option>
-      <option value="placed">placé</option>
-      <option value="duo">duo</option>
-      <option value="ordered_tierce">tiercé ordre</option>
-      <option value="unordered_tierce">tiercé désordre</option>
-    </select>
-    <br> -->
-
-    <label for="bet_type">Bet type</label>
-    <select name="bet_type">
-    {% for key, val in index_data['bet_list'] %}
-          <option value="{{key}}">{{val}}</option>
-    {% endfor %}
-    </select>
-    <br>
-
-    <!-- strategy -->
-    <label for="strategy">Strategy</label>
-    <select name="strategy">
-      {% for key, val in index_data['strat_list'] %}
+      <!-- bet type -->
+      <label for="bet_type">Bet type</label>
+      <select name="bet_type" id="bet_type">
+      {% for key, val in index_data['bet_list'] %}
             <option value="{{key}}">{{val}}</option>
       {% endfor %}
-    </select>
-    <br>
+      </select>
+      <br>
 
-    <!-- param -->
-    <label for="strategy_n">parametre - N -</label>
-    <input type="number" name="strategy_n" min="0" max="100" placeholder="0" value="0">
 
-    <!-- plateform -->
-    <label for="plateform">Bet plateform</label>
-    <select name="plateform">
-          <option value="hippodrome">hippodrome</option>
-          <option value="web">web</option>
-          <option value="indifferent">indifférent</option>
-          <option value="random">random</option>
-    </select>
-    <br>
+      <!-- strategy -->
+      <label for="strategy">Strategy</label>
+      {% for _key, _val in index_data['bet_list'] %}
+        <select name="strategy" style="display:none" class="select_strats select_{{_key}}">
+        {% for key, val in index_data["strat_list"].asso(_key).items() %}
+            <option value="{{key}}">{{val}} </option>
+        {% endfor %}
+        </select>
+      {% endfor %}
+      <br>
+
+
+      <!-- param -->
+      <label for="strategy_n">parametre - N -</label>
+      <input type="number" name="strategy_n" min="0" max="100" placeholder="0" value="0">
+
+      <!-- plateform -->
+      <label for="plateform">Bet plateform</label>
+      <select name="plateform">
+            <option value="hippodrome">hippodrome</option>
+            <option value="web">web</option>
+            <option value="indifferent">indifférent</option>
+            <option value="random">random</option>
+      </select>
+      <br>
+    </div>
 
     <!-- money management -->
-    <h2>Mises et gestion du cash</h2>
+    <div class="money_management">
+      <h2>Mises</h2>
 
-    <!-- bet value     -->
-    <label for="bet_value">Bet_value</label>
-    <input type="number" name="stratey_param" min="1" max="1000" placeholder="1">
-    <br>
+      <!-- bet value     -->
+      <label for="bet_value">Bet_value</label>
+      <input type="number" name="stratey_param" min="1" max="1000" placeholder="1">
+      <br>
 
-    <!-- bet type -->
-    <label for="bet_value_type">Bet strategy</label>
-    <select name="bet_value_type">
-      <option value="fixed">fixed</option>
-      <option value="placed">dynamic</option>
-    </select>
+      <!-- bet type -->
+      <label for="bet_value_type">Bet strategy</label>
+      <select name="bet_value_type">
+        <option value="fixed">fixed</option>
+        <option value="placed">dynamic</option>
+      </select>
+      <br>
+    </div>
+
 
     <!-- other -->
-    <h2>Autres options</h2>
+    <div class="other">
+      <h2>Autres options</h2>
 
-    <!-- not implemented -->
-    <p>dataset min size</p>
-    <p>randomize</p>
-    <p>randomize exp min</p>
+      <!-- not implemented -->
+      <p>dataset min size</p>
+      <p>randomize</p>
+      <p>randomize exp min</p>
+      <br>
+    </div>
 
-    <h2>ready for back turf</h2>
-    <button type="submit" class="btn btn-primary">submit</button>
-    <!-- old button
-    <input type="submit" value="Submit">
-    -->
-
-
-
+    <!-- button -->
+    <div class="button">
+      <h2>Ready for back turf</h2>
+      <button type="submit" class="btn btn-primary">submit</button>
+      <!-- old button
+      <input type="submit" value="Submit">
+      -->
+    </div>
+    <br>
   </form>
 
 {% endblock %}

@@ -8,13 +8,13 @@ from backturfer.misc import *
 
 class RaceSelector(dict) : 
 
-
     __price_min_max = 5000000
     __price_max_min = 1000
     __typec = [ 'steeple-chase cross-country', 'steeple-chase', 'haies', 'plat', 
                 'attelé', 'monté', np.nan]
 
-    __valid_keys = ['date_start', 'date_stop', 'hippo', 'country', 'quinte', 'euro_only', 'price_min', 'price_max', 'typec']
+    __valid_keys = ['date_start', 'date_stop', 'hippo', 'country', 'quinte', 
+                    'euro_only', 'price_min', 'price_max', 'typec']
 
     def __init__(self, form=dict(), hard_check=1, verbose=True) : 
 
@@ -246,7 +246,9 @@ class RaceSelector(dict) :
 
         self['price_min'] = str(self['price_min'])
         self['price_min'] = self['price_min'].strip().replace(" ", "").replace("-", "").replace("€", "").strip()
-        
+        if not self['price_min'] : 
+            self['price_min'] = 0
+
         try : 
             self['price_min'] = int(self['price_min'])
         except Exception as e:
@@ -280,6 +282,8 @@ class RaceSelector(dict) :
 
         self['price_max'] = str(self['price_max'])
         self['price_max'] = self['price_max'].strip().replace(" ", "").replace("-", "").replace("€", "").strip()
+        if not self['price_max'] : 
+            self['price_max'] = 500000000
         
         try : 
             self['price_max'] = int(self['price_max'])
@@ -466,4 +470,94 @@ class RaceSelector(dict) :
 
         return _df
         
+
+
+class BetStratSelector(dict) : 
+
+
+    __valid_keys = ['bet_type', 'strategy', 'strategy_n', 'platform']
+
+    def __init__(self, form=dict(), hard_check=1, verbose=True) : 
+
+
+        form = {i: j for i, j in form.items() if i in BetStratSelector.__valid_keys}
+
+        super().__init__(form)
+
+        errors = list()
+        errors.append(self.__check_bet_type(hard_check=hard_check))
+        errors.append(self.__check_strategy(hard_check=hard_check))
+        errors.append(self.__check_strategy_n(hard_check=hard_check))
+        errors.append(self.__check_plateform(hard_check=hard_check))
+        errors.append(self.__check_bet_strat_consistancy(hard_check=hard_check))
+        self.errors = errors
+
+        if  verbose : 
+            info("RaceSelector done ! ")
+
+
+    def __check_bet_type(self, hard_check=0) : 
+        """chehck bet_type"""
+
+        # check type       
+        if isinstance(self['bet_type'], str) : 
+            if not self["bet_type"] in list(Bet.bets_str.keys()) : 
+                if not hard_check : 
+                    self['bet_type'] = "simple_gagnant"
+                    return "Error invalid bet_type"
+                else : 
+                    raise ValueError("Error invalid bet_type")
+        else : 
+            if not hard_check : 
+                self['bet_type'] = "simple_gagnant"
+                return "Error invalid bet_type expected an str"
+            else : 
+                raise ValueError("Error invalid bet_type expected an str")
+
+        return None
+
+
+    def __check_strategy(self, hard_check=0) : 
+        """check_strategy"""
+
+        # check type       
+        if isinstance(self['strategy'], str) : 
+            if not self["strategy"] in list(Bet.bets_str.keys()) : 
+                if not hard_check : 
+                    self['strategy'] = SimpleStrats.choix_de_la_meilleure_cote
+                    return "Error invalid strategy"
+                else : 
+                    raise ValueError("Error invalid strategy")
+        else : 
+            if not hard_check : 
+                self['strategy'] = SimpleStrats.choix_de_la_meilleure_cote
+                return "Error invalid strategy expected an str"
+            else : 
+                raise ValueError("Error invalid strategy expected an str")
+
+        return None
+
+
+    def __check_strategy_n(self, hard_check=0) : 
+        """check strategy_n"""
+        raise NotImplementedError("NotImplementedError")
+
+
+    def __check_plateform(self, hard_check=0) : 
+        """check_plateform"""
+        raise NotImplementedError("NotImplementedError")
+
+
+    def __check_bet_strat_consistancy(self, hard_check=0) : 
+        """check if bet_type and strategy work together or not"""
+        raise NotImplementedError("NotImplementedError")
+
+
+
+
+
+
+
+
+
 
