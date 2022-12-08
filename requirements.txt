@@ -8,7 +8,7 @@ bleach==3.0.2
 bokeh==1.0.1
 Bottleneck==1.2.1
 cachetools==3.1.0
-certifi==2018.10.15
+certifi==2022.12.7
 chardet==3.0.4
 Click==7.0
 cycler==0.10.0
